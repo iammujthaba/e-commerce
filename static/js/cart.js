@@ -94,7 +94,7 @@ function updateCartItemTotal(productId, total) {
 }
 
 function updateCartTotalWithShipping(total) {
-    const shippingCost = 60; // Assuming shipping cost is always 60
+    const shippingCost = 0; // shipping cost is always 0 as default
     const totalWithShipping = parseFloat(total) + shippingCost;
     const totalWithShippingElement = document.querySelector('.cart-total-with-shipping');
     if (totalWithShippingElement) {
