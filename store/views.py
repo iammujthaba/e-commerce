@@ -8,7 +8,8 @@ from .models import *
 from .utils import cartData, cookieWishlist
 from django.contrib.auth.decorators import login_required
 import logging
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from django.middleware.csrf import get_token
 from django.conf import settings
 import razorpay
 
@@ -81,7 +82,7 @@ def calculate_shipping(state, items):
     return total_shipping
 
 
-@csrf_exempt
+@csrf_protect
 def calculate_shipping_ajax(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -96,6 +97,7 @@ def calculate_shipping_ajax(request):
         return JsonResponse({'shipping_charge': float(shipping_charge)})
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+@ensure_csrf_cookie
 def cart(request):
     data = cartData(request)
     cartItems = data['cartItems']
@@ -127,7 +129,7 @@ def cart(request):
     }
     return render(request, 'store/Cart.html', context)
 
-
+@ensure_csrf_cookie
 def checkout(request):
     if request.user.is_authenticated:
         data = cartData(request)
@@ -176,6 +178,7 @@ def checkout(request):
     else:
         return redirect('store_app:account_info')
 
+@csrf_protect
 def payment(request):
     if request.user.is_authenticated:
         data = cartData(request)
@@ -212,12 +215,14 @@ def payment(request):
             'razorpay_key_id': settings.RAZORPAY_KEY_ID,
             'razorpay_order_id': razorpay_order['id'],
             'total_amount': total_amount,
+            'csrf_token': get_token(request),
         }
 
         return render(request, 'store/payment.html', context)
     else:
         return redirect('store_app:account_info')
 
+@csrf_protect
 def updateItem(request):
     data = json.loads(request.body)
     productId = data['productId']
@@ -260,9 +265,8 @@ def updateItem(request):
         'itemTotal': orderItem.get_total if orderItem.id else 0,
     }, safe=False)
 
-from django.views.decorators.csrf import csrf_exempt
 
-@csrf_exempt
+@csrf_protect
 def processOrder(request):
     if request.method != 'POST':
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
@@ -464,9 +468,6 @@ def myorders(request):
         shipping_address = ShippingAddress.objects.filter(order=order).first()
         shipping_cost = shipping_address.Shipping_cost if shipping_address else 0
 
-        print('..................................')
-        print('transaction_id',order.transaction_id)
-
         orders_with_details.append({
             'order': order,
             'total_quantity': total_quantity or 0,
@@ -522,6 +523,7 @@ def account_info(request):
     }
     return render(request, 'store/account_info.html', context)
 
+@csrf_protect
 def add_to_wishlist(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -555,6 +557,7 @@ def add_to_wishlist(request):
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+@csrf_protect
 def remove_from_wishlist(request):
     if request.method == 'POST':
         data = json.loads(request.body)

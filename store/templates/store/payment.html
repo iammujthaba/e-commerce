@@ -143,7 +143,10 @@ function submitFormData(paymentResponse){
             'Content-Type': 'application/json',
             'X-CSRFToken': '{{ csrf_token }}',
         },
-        body: JSON.stringify({'shipping': shippingInfo }),
+        body: JSON.stringify({
+            'shipping': shippingInfo,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        }),
     })
     .then((response) => response.json())
     .then((data) => {
