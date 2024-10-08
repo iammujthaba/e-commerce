@@ -2,6 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from store.models import Customer
+from django import forms
 
 class RegistrationForm(forms.Form):
     username = forms.CharField(max_length=150, required=True)
@@ -17,10 +18,10 @@ class RegistrationForm(forms.Form):
             raise ValidationError('This contact number is already registered.')
         return contact_number
 
-from django import forms
 
 class LoginForm(forms.Form):
     contact_number = forms.CharField(max_length=12)
+
 
 class SuperuserPasswordForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
