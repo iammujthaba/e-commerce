@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.http import JsonResponse
 import json
-import datetime
 from .models import *
 from .utils import cartData, cookieWishlist
 from django.contrib.auth.decorators import login_required
@@ -12,6 +11,8 @@ from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.middleware.csrf import get_token
 from django.conf import settings
 import razorpay
+from decimal import Decimal
+from django.db.models import Sum
 
 client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 logger = logging.getLogger(__name__)
@@ -60,7 +61,212 @@ def allProdCat(request, c_slug=None):
         'categories': categories,  # Pass all categories to the template
     })
 
-from decimal import Decimal
+
+def proDetail(request, c_slug, product_slug):
+    try:
+        product = Product.objects.get(category__slug=c_slug, slug=product_slug)
+
+        in_wishlist = is_product_in_wishlist(request, product)
+
+        if request.user.is_authenticated:
+            wishlist_count = Wishlist.objects.filter(user=request.user).count()
+        else:
+            cookie_data = cookieWishlist(request)
+            wishlist_count = cookie_data['wishlist_count']
+
+    except Product.DoesNotExist:
+        logger.error(f"Product not found: category_slug={c_slug}, product_slug={product_slug}")
+        return render(request, 'store/error.html')
+
+    if c_slug:
+        c_page = get_object_or_404(Category, slug=c_slug)
+        products_list = Product.objects.filter(category=c_page, active=True)
+        paginator = Paginator(products_list, 5)
+        try:
+            page = int(request.GET.get('page', '1'))
+        except (ValueError, TypeError):
+            page = 1
+        try:
+            products = paginator.page(page)
+        except (InvalidPage, EmptyPage):
+            products = paginator.page(paginator.num_pages)
+
+        return render(request, 'store/product.html', {
+            'product': product,
+            'products': products,
+            'in_wishlist': in_wishlist,
+            'wishlist_count': wishlist_count
+        })
+    else:
+        return render(request, 'store/product.html', {
+            'product': product,
+            'in_wishlist': in_wishlist,
+            'wishlist_count': wishlist_count
+        })
+
+
+def Category_list(request):
+    categorys_list = Category.objects.all().order_by('priority', 'name')
+    return render(request, 'store/category_listing.html', {'categorys_list': categorys_list})
+
+
+def allProductListing(request):
+    products_list = Product.objects.filter(active=True)
+    categories = Category.objects.all().order_by('priority', 'name')  # Get all categories
+    
+    paginator = Paginator(products_list, 14)
+    
+    try:
+        page = int(request.GET.get('page', '1'))
+    except:
+        page = 1
+    
+    try:
+        products = paginator.page(page)
+    except (InvalidPage, EmptyPage):
+        products = paginator.page(paginator.num_pages)
+    
+    return render(request, 'store/shop.html', {
+        'products': products,
+        'categories': categories,  # Pass all categories to the template
+    })
+
+
+def offerProductListing(request):
+    products_list = Product.objects.filter(old_price__gt=0, active=True)
+    categories = Category.objects.all().order_by('priority', 'name')  # Get all categories
+    
+    paginator = Paginator(products_list, 14)
+    
+    try:
+        page = int(request.GET.get('page', '1'))
+    except:
+        page = 1
+    
+    try:
+        products = paginator.page(page)
+    except (InvalidPage, EmptyPage):
+        products = paginator.page(paginator.num_pages)
+    
+    return render(request, 'store/shop.html', {
+        'products': products,
+        'page': 'offer',
+        'categories': categories,  # Pass all categories to the template
+    })
+
+
+def wishlist(request):
+    wishlist_items = []
+
+    if request.user.is_authenticated:
+        # Fetch wishlist items for authenticated users
+        wishlist_objects = Wishlist.objects.filter(user=request.user)
+        for item in wishlist_objects:
+            wishlist_items.append({
+                'id': item.product.id,
+                'name': item.product.name,
+                'stock': item.product.stock,
+                'image_url': item.product.imageURL,
+                'new_price': item.product.new_price,
+                'old_price': item.product.old_price,
+                'get_url': item.product.get_url(),
+                'discount_percentage': item.product.get_discounted_price if item.product.old_price != None and item.product.old_price != 0 else None,
+            })
+    else:
+        # Use cookie data for unauthenticated users
+        cookie_data = cookieWishlist(request)
+        wishlist_items = cookie_data['wishlist_items']
+        for item in wishlist_items:
+            item['discount_percentage'] = (
+                int(round(((item['old_price'] - item['new_price']) / item['old_price']) * 100))
+                if item['old_price'] and item['new_price'] < item['old_price']
+                else None
+            )
+
+    wishlist_count = len(wishlist_items)
+
+    return render(request, 'store/Wishlist.html', {
+        'wishlist_items': wishlist_items,
+        'wishlist_count': wishlist_count,
+    })
+
+
+@csrf_protect
+def add_to_wishlist(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        product_id = data.get('productId')
+
+        if request.user.is_authenticated:
+            product = Product.objects.get(id=product_id)
+            wishlist_item, created = Wishlist.objects.get_or_create(user=request.user, product=product)
+            if not created:
+                wishlist_item.delete()
+                added = False
+            else:
+                added = True
+            wishlist_count = Wishlist.objects.filter(user=request.user).count()
+        else:
+            wishlist = json.loads(request.COOKIES.get('wishlist', '{}'))
+            if str(product_id) in wishlist:
+                del wishlist[str(product_id)]
+                added = False
+            else:
+                wishlist[str(product_id)] = True
+                added = True
+            wishlist_count = len(wishlist)
+
+        response = JsonResponse({'added': added, 'wishlist_count': wishlist_count})
+
+        if not request.user.is_authenticated:
+            response.set_cookie('wishlist', json.dumps(wishlist))
+
+        return response
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@csrf_protect
+def remove_from_wishlist(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        product_id = data.get('productId')
+
+        if request.user.is_authenticated:
+            product = Product.objects.get(id=product_id)
+            wishlist_item = Wishlist.objects.filter(user=request.user, product=product).first()
+            if wishlist_item:
+                wishlist_item.delete()
+                removed = True
+            else:
+                removed = False
+            wishlist_count = Wishlist.objects.filter(user=request.user).count()
+        else:
+            wishlist = json.loads(request.COOKIES.get('wishlist', '{}'))
+            if str(product_id) in wishlist:
+                del wishlist[str(product_id)]
+                removed = True
+            else:
+                removed = False
+            wishlist_count = len(wishlist)
+
+        response = JsonResponse({'removed': removed, 'wishlist_count': wishlist_count})
+
+        if not request.user.is_authenticated:
+            response.set_cookie('wishlist', json.dumps(wishlist))
+
+        return response
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def is_product_in_wishlist(request, product):
+    if request.user.is_authenticated:
+        return Wishlist.objects.filter(user=request.user, product=product).exists()
+    else:
+        cookie_data = cookieWishlist(request)
+        return str(product.id) in cookie_data['wishlist_items']
+
 
 def calculate_shipping(state, items):
     try:
@@ -97,6 +303,7 @@ def calculate_shipping_ajax(request):
         return JsonResponse({'shipping_charge': float(shipping_charge)})
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+
 @ensure_csrf_cookie
 def cart(request):
     data = cartData(request)
@@ -128,6 +335,51 @@ def cart(request):
         'shipping_charge': shipping_charge,
     }
     return render(request, 'store/Cart.html', context)
+
+
+@csrf_protect
+def updateItem(request):
+    data = json.loads(request.body)
+    productId = data['productId']
+    action = data['action']
+    customer = request.user.customer if request.user.is_authenticated else None
+    product = Product.objects.get(id=productId)
+    order, created = Order.objects.get_or_create(customer=customer, complete=False)
+    orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
+
+    added = True
+    message = ""
+
+    if action == 'add':
+        if orderItem.quantity + 1 <= product.stock:
+            orderItem.quantity += 1
+            orderItem.save()
+        else:
+            added = False
+            message = "There is no more stock available. If you want more, please contact us."
+    elif action == 'remove':
+        orderItem.quantity -= 1
+        if orderItem.quantity <= 0:
+            orderItem.delete()
+        else:
+            orderItem.save()
+    elif action == 'remove-all':
+        orderItem.delete()
+
+    cart_total = order.get_cart_total
+    cart_items = order.get_cart_items
+    total_price_difference = sum((item.product.old_price - item.product.new_price if item.product.old_price else 0) * item.quantity for item in order.orderitem_set.all())
+
+    return JsonResponse({
+        'added': added,
+        'message': message,
+        'cartItems': cart_items,
+        'cartTotal': cart_total,
+        'totalPriceDifference': total_price_difference,
+        'itemQuantity': orderItem.quantity if orderItem.id else 0,
+        'itemTotal': orderItem.get_total if orderItem.id else 0,
+    }, safe=False)
+
 
 @ensure_csrf_cookie
 def checkout(request):
@@ -178,6 +430,7 @@ def checkout(request):
     else:
         return redirect('store_app:account_info')
 
+
 @csrf_protect
 def payment(request):
     if request.user.is_authenticated:
@@ -221,49 +474,6 @@ def payment(request):
         return render(request, 'store/payment.html', context)
     else:
         return redirect('store_app:account_info')
-
-@csrf_protect
-def updateItem(request):
-    data = json.loads(request.body)
-    productId = data['productId']
-    action = data['action']
-    customer = request.user.customer if request.user.is_authenticated else None
-    product = Product.objects.get(id=productId)
-    order, created = Order.objects.get_or_create(customer=customer, complete=False)
-    orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
-
-    added = True
-    message = ""
-
-    if action == 'add':
-        if orderItem.quantity + 1 <= product.stock:
-            orderItem.quantity += 1
-            orderItem.save()
-        else:
-            added = False
-            message = "There is no more stock available. If you want more, please contact us."
-    elif action == 'remove':
-        orderItem.quantity -= 1
-        if orderItem.quantity <= 0:
-            orderItem.delete()
-        else:
-            orderItem.save()
-    elif action == 'remove-all':
-        orderItem.delete()
-
-    cart_total = order.get_cart_total
-    cart_items = order.get_cart_items
-    total_price_difference = sum((item.product.old_price - item.product.new_price if item.product.old_price else 0) * item.quantity for item in order.orderitem_set.all())
-
-    return JsonResponse({
-        'added': added,
-        'message': message,
-        'cartItems': cart_items,
-        'cartTotal': cart_total,
-        'totalPriceDifference': total_price_difference,
-        'itemQuantity': orderItem.quantity if orderItem.id else 0,
-        'itemTotal': orderItem.get_total if orderItem.id else 0,
-    }, safe=False)
 
 
 @csrf_protect
@@ -356,99 +566,6 @@ def processOrder(request):
         return JsonResponse({'success': False, 'message': 'An error occurred while processing the order.'})
 
 
-def proDetail(request, c_slug, product_slug):
-    try:
-        product = Product.objects.get(category__slug=c_slug, slug=product_slug)
-
-        in_wishlist = is_product_in_wishlist(request, product)
-
-        if request.user.is_authenticated:
-            wishlist_count = Wishlist.objects.filter(user=request.user).count()
-        else:
-            cookie_data = cookieWishlist(request)
-            wishlist_count = cookie_data['wishlist_count']
-
-    except Product.DoesNotExist:
-        logger.error(f"Product not found: category_slug={c_slug}, product_slug={product_slug}")
-        return render(request, 'store/error.html')
-
-    if c_slug:
-        c_page = get_object_or_404(Category, slug=c_slug)
-        products_list = Product.objects.filter(category=c_page, active=True)
-        paginator = Paginator(products_list, 5)
-        try:
-            page = int(request.GET.get('page', '1'))
-        except (ValueError, TypeError):
-            page = 1
-        try:
-            products = paginator.page(page)
-        except (InvalidPage, EmptyPage):
-            products = paginator.page(paginator.num_pages)
-
-        return render(request, 'store/product.html', {
-            'product': product,
-            'products': products,
-            'in_wishlist': in_wishlist,
-            'wishlist_count': wishlist_count
-        })
-    else:
-        return render(request, 'store/product.html', {
-            'product': product,
-            'in_wishlist': in_wishlist,
-            'wishlist_count': wishlist_count
-        })
-
-
-def allProductListing(request):
-    products_list = Product.objects.filter(active=True)
-    categories = Category.objects.all().order_by('priority', 'name')  # Get all categories
-    
-    paginator = Paginator(products_list, 14)
-    
-    try:
-        page = int(request.GET.get('page', '1'))
-    except:
-        page = 1
-    
-    try:
-        products = paginator.page(page)
-    except (InvalidPage, EmptyPage):
-        products = paginator.page(paginator.num_pages)
-    
-    return render(request, 'store/shop.html', {
-        'products': products,
-        'categories': categories,  # Pass all categories to the template
-    })
-
-def offerProductListing(request):
-    products_list = Product.objects.filter(old_price__gt=0, active=True)
-    categories = Category.objects.all().order_by('priority', 'name')  # Get all categories
-    
-    paginator = Paginator(products_list, 14)
-    
-    try:
-        page = int(request.GET.get('page', '1'))
-    except:
-        page = 1
-    
-    try:
-        products = paginator.page(page)
-    except (InvalidPage, EmptyPage):
-        products = paginator.page(paginator.num_pages)
-    
-    return render(request, 'store/shop.html', {
-        'products': products,
-        'page': 'offer',
-        'categories': categories,  # Pass all categories to the template
-    })
-
-def Category_list(request):
-    categorys_list = Category.objects.all().order_by('priority', 'name')
-    return render(request, 'store/category_listing.html', {'categorys_list': categorys_list})
-
-
-from django.db.models import Sum
-
 def myorders(request):
     if not request.user.is_authenticated:
         return redirect('auth_app:login')
@@ -484,6 +601,46 @@ def myorders(request):
     return render(request, 'store/myorder.html', context)
 
 
+def updateOrderStatus(request, order_id):
+    if request.method == "POST":
+        status = request.POST.get("status")
+        order = get_object_or_404(Order, id=order_id)
+        order.status = status
+        order.save()
+        messages.success(request, f"Order status updated to {status}")
+        return redirect('some_view_to_redirect_to')
+    else:
+        return redirect('some_view_to_redirect_to')
+
+
+@login_required
+def trackOrder(request, order_id):
+    order = get_object_or_404(Order, id=order_id, customer=request.user.customer)
+    order_items = OrderItem.objects.filter(order=order)
+    shipping_address = ShippingAddress.objects.filter(order=order).first()
+
+    context = {
+        'order': order,
+        'order_items': order_items,
+        'shipping_address': shipping_address,
+    }
+    return render(request, 'store/trackOrder.html', context)
+
+
+def account_info(request):
+    if not request.user.is_authenticated:
+        return redirect('auth_app:loginOrRegister')
+
+    customer = request.user.customer
+    last_shipping = ShippingAddress.objects.filter(customer=customer).order_by('-date_added').first()
+
+    context = {
+        'user': request.user,
+        'shipping_info': last_shipping,
+    }
+    return render(request, 'store/account_info.html', context)
+
+
 def about(request):
     return render(request, 'resources/about.html')
 
@@ -499,149 +656,3 @@ def faq(request):
 def devolopper(request):
     return render(request, 'resources/About_Devolopper.html')
 
-def updateOrderStatus(request, order_id):
-    if request.method == "POST":
-        status = request.POST.get("status")
-        order = get_object_or_404(Order, id=order_id)
-        order.status = status
-        order.save()
-        messages.success(request, f"Order status updated to {status}")
-        return redirect('some_view_to_redirect_to')
-    else:
-        return redirect('some_view_to_redirect_to')
-
-def account_info(request):
-    if not request.user.is_authenticated:
-        return redirect('auth_app:loginOrRegister')
-
-    customer = request.user.customer
-    last_shipping = ShippingAddress.objects.filter(customer=customer).order_by('-date_added').first()
-
-    context = {
-        'user': request.user,
-        'shipping_info': last_shipping,
-    }
-    return render(request, 'store/account_info.html', context)
-
-@csrf_protect
-def add_to_wishlist(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        product_id = data.get('productId')
-
-        if request.user.is_authenticated:
-            product = Product.objects.get(id=product_id)
-            wishlist_item, created = Wishlist.objects.get_or_create(user=request.user, product=product)
-            if not created:
-                wishlist_item.delete()
-                added = False
-            else:
-                added = True
-            wishlist_count = Wishlist.objects.filter(user=request.user).count()
-        else:
-            wishlist = json.loads(request.COOKIES.get('wishlist', '{}'))
-            if str(product_id) in wishlist:
-                del wishlist[str(product_id)]
-                added = False
-            else:
-                wishlist[str(product_id)] = True
-                added = True
-            wishlist_count = len(wishlist)
-
-        response = JsonResponse({'added': added, 'wishlist_count': wishlist_count})
-
-        if not request.user.is_authenticated:
-            response.set_cookie('wishlist', json.dumps(wishlist))
-
-        return response
-
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-@csrf_protect
-def remove_from_wishlist(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        product_id = data.get('productId')
-
-        if request.user.is_authenticated:
-            product = Product.objects.get(id=product_id)
-            wishlist_item = Wishlist.objects.filter(user=request.user, product=product).first()
-            if wishlist_item:
-                wishlist_item.delete()
-                removed = True
-            else:
-                removed = False
-            wishlist_count = Wishlist.objects.filter(user=request.user).count()
-        else:
-            wishlist = json.loads(request.COOKIES.get('wishlist', '{}'))
-            if str(product_id) in wishlist:
-                del wishlist[str(product_id)]
-                removed = True
-            else:
-                removed = False
-            wishlist_count = len(wishlist)
-
-        response = JsonResponse({'removed': removed, 'wishlist_count': wishlist_count})
-
-        if not request.user.is_authenticated:
-            response.set_cookie('wishlist', json.dumps(wishlist))
-
-        return response
-
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-
-def wishlist(request):
-    wishlist_items = []
-
-    if request.user.is_authenticated:
-        # Fetch wishlist items for authenticated users
-        wishlist_objects = Wishlist.objects.filter(user=request.user)
-        for item in wishlist_objects:
-            wishlist_items.append({
-                'id': item.product.id,
-                'name': item.product.name,
-                'stock': item.product.stock,
-                'image_url': item.product.imageURL,
-                'new_price': item.product.new_price,
-                'old_price': item.product.old_price,
-                'get_url': item.product.get_url(),
-                'discount_percentage': item.product.get_discounted_price if item.product.old_price != None and item.product.old_price != 0 else None,
-            })
-    else:
-        # Use cookie data for unauthenticated users
-        cookie_data = cookieWishlist(request)
-        wishlist_items = cookie_data['wishlist_items']
-        for item in wishlist_items:
-            item['discount_percentage'] = (
-                int(round(((item['old_price'] - item['new_price']) / item['old_price']) * 100))
-                if item['old_price'] and item['new_price'] < item['old_price']
-                else None
-            )
-
-    wishlist_count = len(wishlist_items)
-
-    return render(request, 'store/Wishlist.html', {
-        'wishlist_items': wishlist_items,
-        'wishlist_count': wishlist_count,
-    })
-
-def is_product_in_wishlist(request, product):
-    if request.user.is_authenticated:
-        return Wishlist.objects.filter(user=request.user, product=product).exists()
-    else:
-        cookie_data = cookieWishlist(request)
-        return str(product.id) in cookie_data['wishlist_items']
-
-@login_required
-def trackOrder(request, order_id):
-    order = get_object_or_404(Order, id=order_id, customer=request.user.customer)
-    order_items = OrderItem.objects.filter(order=order)
-    shipping_address = ShippingAddress.objects.filter(order=order).first()
-
-    context = {
-        'order': order,
-        'order_items': order_items,
-        'shipping_address': shipping_address,
-    }
-    return render(request, 'store/trackOrder.html', context)
