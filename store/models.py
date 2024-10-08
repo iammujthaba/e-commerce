@@ -8,6 +8,7 @@ from django.utils.text import slugify
 import uuid
 # from django import forms
 
+
 class Category(models.Model):
     name = models.CharField(max_length=250, unique=True)
     slug = models.SlugField(max_length=250, unique=True, blank=True)  # Make blank=True
@@ -35,15 +36,6 @@ class Category(models.Model):
 
     def get_url(self):
         return reverse('store_app:product_by_category', args=[self.slug])
-
-    def __str__(self):
-        return self.name
-
-
-class Customer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200, null=True)
-    contact_number = models.CharField(max_length=12, unique=True, null=True)
 
     def __str__(self):
         return self.name
@@ -126,6 +118,28 @@ class Product(models.Model):
             url = ''
         return url
 
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'product')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name}"
+
+
+class Customer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200, null=True)
+    contact_number = models.CharField(max_length=12, unique=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Order(models.Model):
     STATUS_CHOICES = [
         ('Processing', 'Processing'),
@@ -174,6 +188,15 @@ class Order(models.Model):
         super().save(*args, **kwargs)
 
 
+class ShippingRate(models.Model):
+    state = models.CharField(max_length=100, unique=True)
+    base_rate = models.DecimalField(max_digits=6, decimal_places=2)
+    additional_item_rate = models.DecimalField(max_digits=6, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.state}: ₹{self.base_rate} (₹{self.additional_item_rate} per additional item)"
+    
+
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
@@ -209,15 +232,6 @@ class ShippingAddress(models.Model):
         return self.address
 
 
-class ShippingRate(models.Model):
-    state = models.CharField(max_length=100, unique=True)
-    base_rate = models.DecimalField(max_digits=6, decimal_places=2)
-    additional_item_rate = models.DecimalField(max_digits=6, decimal_places=2)
-
-    def __str__(self):
-        return f"{self.state}: ₹{self.base_rate} (₹{self.additional_item_rate} per additional item)"
-
-
 class PurchaseHistory(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -227,14 +241,3 @@ class PurchaseHistory(models.Model):
     def __str__(self):
         return f"{self.customer.name} - {self.product.name}"
 
-
-class Wishlist(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    added_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ('user', 'product')
-
-    def __str__(self):
-        return f"{self.user.username} - {self.product.name}"
