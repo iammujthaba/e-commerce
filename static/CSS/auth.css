@@ -104,3 +104,15 @@ h2.message {
     text-align: center;
     width: 100%;
 }
+
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    display: block;
+    margin-top: 5px;
+}

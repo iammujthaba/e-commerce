@@ -7,8 +7,10 @@ from .forms import RegistrationForm, LoginForm, SuperuserPasswordForm
 from django.contrib.auth import authenticate, login as auth_login
 import json
 
+# chnage it into (os.environ.get) Importend
 
 SUPERUSER_CONTACT_NUMBER = '1234567890'
+# RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID')
 PREDEFINED_SUPERUSER_PASSWORD = '1234'
 
 
@@ -18,29 +20,28 @@ def register(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             contact_number = form.cleaned_data['contact_number']
-
-            user = User.objects.create_user(username=username)
-            Customer.objects.create(user=user, name=username, contact_number=contact_number)
-
-            # Log in the newly registered user
-            auth_login(request, user)
-
-            # Merge cookies cart with user cart
-            cart_response = merge_cookie_cart_with_user_cart(request, user)
-
-            # Merge cookies wishlist with user wishlist
-            wishlist_response = merge_cookie_wishlist_with_user_wishlist(request, user)
-
-            if cart_response:
-                return cart_response
-            elif wishlist_response:
-                return wishlist_response
-            return redirect('auth_app:login')
+            try:
+                user = User.objects.create_user(username=username)
+                Customer.objects.create(user=user, name=username, contact_number=contact_number)
+                auth_login(request, user)
+                # Merge cookies cart with user cart
+                cart_response = merge_cookie_cart_with_user_cart(request, user)
+                # Merge cookies wishlist with user wishlist
+                wishlist_response = merge_cookie_wishlist_with_user_wishlist(request, user)
+                if cart_response:
+                    return cart_response
+                elif wishlist_response:
+                    return wishlist_response
+                return redirect('auth_app:login')
+            except Exception as e:
+                messages.error(request, f"An error occurred: {str(e)}")
         else:
-            for error in form.errors.values():
-                messages.error(request, error)
-            return redirect('auth_app:register')
-    form = RegistrationForm()
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")
+    else:
+        form = RegistrationForm()
+    
     return render(request, 'register.html', {'form': form})
 
 
