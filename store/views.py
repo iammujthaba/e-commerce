@@ -452,7 +452,8 @@ def payment(request):
         razorpay_order = client.order.create({
             'amount': int(total_amount * 100),
             'currency': 'INR',
-            'payment_capture': '1'
+            'payment_capture': '1',
+            "receipt": "order_rcptid_11"
         })
 
         # Update the order with Razorpay order ID
