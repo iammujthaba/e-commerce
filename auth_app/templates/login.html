@@ -17,9 +17,13 @@
         </form>
         <p class="register-link" style="margin-top: 0px;">Don't have an account? <a href="{% url 'auth_app:register' %}">Register here</a></p>
         <p class="register-link explore-link">Explore Website <a href="{% url 'store_app:allProdCat' %}">Explore here</a></p>
-        {% for mes in messages %}
-        <h2 class="message">{{mes}}</h2>
-        {% endfor %}
+        {% if form.errors %}
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <p class="error-message">{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
     </div>
 </body>
 </html>

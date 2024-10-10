@@ -6,6 +6,7 @@ from store.models import Product, Order, OrderItem, Customer, Wishlist
 from .forms import RegistrationForm, LoginForm, SuperuserPasswordForm
 from django.contrib.auth import authenticate, login as auth_login
 import json
+from django.contrib.messages import get_messages
 
 # chnage it into (os.environ.get) Importend
 
@@ -38,7 +39,7 @@ def register(request):
         else:
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, f"{field.capitalize()}: {error}")
+                    messages.error(request, f"{error}")
     else:
         form = RegistrationForm()
     
@@ -64,7 +65,7 @@ def login(request):
                     
                     # Merge cookie wishlist with user wishlist
                     wishlist_response = merge_cookie_wishlist_with_user_wishlist(request, user)
-                    
+
                     # Determine which response to return
                     if cart_response:
                         return cart_response
@@ -73,11 +74,16 @@ def login(request):
                     else:
                         return redirect('/')
                 except Customer.DoesNotExist:
-                    form.add_error('contact_number', 'This number is not found')
+                    form.add_error('contact_number', 'This number is not registered')
     else:
         form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+    
+    # Clear any messages that might have been set during registration
+    storage = get_messages(request)
+    for message in storage:
+        pass  # This will clear all messages
 
+    return render(request, 'login.html', {'form': form})
 
 def superuser_password(request):
     if request.method == 'POST':
