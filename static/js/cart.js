@@ -57,7 +57,7 @@ function updateUserOrder(productId, action, currentQuantity = NaN) {
             updateCartCount(data.cartItems);
             updateCartTotal(data.cartTotal);
             updateTotalPriceDifference(data.totalPriceDifference);
-            updateCartTotalWithShipping(data.cartTotal);
+            updateShippingCharge();  // Add this line to update shipping charge
             if (data.itemQuantity <= 0) {
                 removeCartItem(productId);
             } else {
@@ -70,6 +70,37 @@ function updateUserOrder(productId, action, currentQuantity = NaN) {
             }
         }
     });
+}
+
+function updateShippingCharge() {
+    let state = document.getElementById('state').value;
+    if (!state) return;
+    let items = [];
+    document.querySelectorAll('.card[data-product-id]').forEach(card => {
+        let productId = card.getAttribute('data-product-id');
+        let quantity = parseInt(card.querySelector('.cart-quantity').value);
+        items.push({productId, quantity});
+    });
+    fetch('/calculate-shipping/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({state, items})
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.querySelector('.shipping-charge').textContent = '₹ ' + data.shipping_charge.toFixed(2);
+        updateTotalWithShipping();
+    });
+}
+
+function updateTotalWithShipping() {
+    let cartTotal = parseFloat(document.querySelector('.cart-total').textContent.replace('₹', ''));
+    let shippingCharge = parseFloat(document.querySelector('.shipping-charge').textContent.replace('₹', ''));
+    let total = cartTotal + shippingCharge;
+    document.querySelector('.cart-total-with-shipping').textContent = '₹ ' + total.toFixed(2);
 }
 
 function updateCartTotal(total) {
@@ -212,7 +243,7 @@ function addCookieItem(productId, action, stock, currentQuantity = 1) {
     updateCartDataForUnauthorizedUser();
     updateCartItemQuantity(productId, cart[productId] ? cart[productId]['quantity'] : 0);
     updateCartTotals();
-
+    updateShippingCharge();  // Add this line to update shipping charge
     if (Object.keys(cart).length === 0) {
         showEmptyCartMessage();
     }
@@ -233,7 +264,7 @@ function updateCartTotals() {
 
     updateCartTotal(cartTotal);
     updateTotalPriceDifference(totalPriceDifference);
-    updateCartTotalWithShipping(cartTotal);
+    updateShippingCharge();  // Add this line to update shipping charge
 }
 
 // Make sure to call updateCartDataForUnauthorizedUser on page load for unauthorized users
@@ -248,6 +279,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Add event listener for state change
+document.addEventListener('DOMContentLoaded', function() {
+    const stateSelect = document.getElementById('state');
+    if (stateSelect) {
+        stateSelect.addEventListener('change', updateShippingCharge);
+    }
+});
 
 function updateCartCount(cartItems) {
     const cartCountElements = document.querySelectorAll('.cart-count');
