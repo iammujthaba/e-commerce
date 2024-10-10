@@ -36,7 +36,7 @@ class RegistrationForm(forms.Form):
     def clean_contact_number(self):
         contact_number = self.cleaned_data.get('contact_number')
         if Customer.objects.filter(contact_number=contact_number).exists():
-            raise ValidationError('This contact number is already registered.')
+            raise ValidationError(f'This contact number {contact_number} is already registered.')
         return contact_number
     
 
