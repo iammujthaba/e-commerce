@@ -59,13 +59,10 @@ def login(request):
                     customer = Customer.objects.get(contact_number=contact_number)
                     user = customer.user
                     auth_login(request, user)
-                    
                     # Merge cookie cart with user cart
                     cart_response = merge_cookie_cart_with_user_cart(request, user)
-                    
                     # Merge cookie wishlist with user wishlist
                     wishlist_response = merge_cookie_wishlist_with_user_wishlist(request, user)
-
                     # Determine which response to return
                     if cart_response:
                         return cart_response
@@ -74,7 +71,7 @@ def login(request):
                     else:
                         return redirect('/')
                 except Customer.DoesNotExist:
-                    form.add_error('contact_number', 'This number is not registered')
+                    form.add_error(None, 'This number is not registered')
     else:
         form = LoginForm()
     
@@ -85,6 +82,7 @@ def login(request):
 
     return render(request, 'login.html', {'form': form})
 
+    
 def superuser_password(request):
     if request.method == 'POST':
         form = SuperuserPasswordForm(request.POST)
