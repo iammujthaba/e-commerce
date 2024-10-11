@@ -57,14 +57,13 @@ function updateUserOrder(productId, action, currentQuantity = NaN) {
             updateCartCount(data.cartItems);
             updateCartTotal(data.cartTotal);
             updateTotalPriceDifference(data.totalPriceDifference);
-            updateShippingCharge();  // Add this line to update shipping charge
+            updateTotalWithShipping(); // Replace updateShippingCharge() with this
             if (data.itemQuantity <= 0) {
                 removeCartItem(productId);
             } else {
                 updateCartItemQuantity(productId, data.itemQuantity);
                 updateCartItemTotal(productId, data.itemTotal);
             }
-
             if (data.cartItems === 0) {
                 showEmptyCartMessage();
             }
@@ -98,7 +97,7 @@ function updateShippingCharge() {
 
 function updateTotalWithShipping() {
     let cartTotal = parseFloat(document.querySelector('.cart-total').textContent.replace('₹', ''));
-    let shippingCharge = parseFloat(document.querySelector('.shipping-charge').textContent.replace('₹', ''));
+    let shippingCharge = parseFloat(document.querySelector('.shipping-charge').textContent.replace('₹', '')) || 0;
     let total = cartTotal + shippingCharge;
     document.querySelector('.cart-total-with-shipping').textContent = '₹ ' + total.toFixed(2);
 }
@@ -243,7 +242,7 @@ function addCookieItem(productId, action, stock, currentQuantity = 1) {
     updateCartDataForUnauthorizedUser();
     updateCartItemQuantity(productId, cart[productId] ? cart[productId]['quantity'] : 0);
     updateCartTotals();
-    updateShippingCharge();  // Add this line to update shipping charge
+    updateTotalWithShipping(); // Replace updateShippingCharge() with this
     if (Object.keys(cart).length === 0) {
         showEmptyCartMessage();
     }
@@ -252,7 +251,6 @@ function addCookieItem(productId, action, stock, currentQuantity = 1) {
 function updateCartTotals() {
     let cartTotal = 0;
     let totalPriceDifference = 0;
-
     for (let productId in cart) {
         const product = getProductDetails(productId);
         if (product) {
@@ -261,10 +259,9 @@ function updateCartTotals() {
             totalPriceDifference += quantity * (product.old_price - product.new_price);
         }
     }
-
     updateCartTotal(cartTotal);
     updateTotalPriceDifference(totalPriceDifference);
-    updateShippingCharge();  // Add this line to update shipping charge
+    updateTotalWithShipping();
 }
 
 // Make sure to call updateCartDataForUnauthorizedUser on page load for unauthorized users
