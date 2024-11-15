@@ -1,36 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var updateBtns = document.getElementsByClassName('update-cart');
-    for (var i = 0; i < updateBtns.length; i++) {
-        updateBtns[i].addEventListener('click', function() {
-            var productId = this.dataset.product;
-            var action = this.dataset.action;
-            var stock = parseInt(this.dataset.quantity);
-            var currentQuantity = 1;  // Always set to 1 for 'add' and 'remove' actions
-
-            // Only get the actual quantity for 'remove-all' action
-            if (action === 'remove-all') {
-                var quantityInput = this.closest('.card-body') ? 
-                    this.closest('.card-body').querySelector('.cart-quantity') : 
-                    document.getElementById('cart-quantity');
-                
-                if (quantityInput) {
-                    currentQuantity = parseInt(quantityInput.value) || 1;
-                }
-            }
-
-            console.log('productId:', productId, 'Action:', action, 'stock:', stock, 'currentQuantity:', currentQuantity);
-            console.log('USER:', user);
-
-            if (user === 'AnonymousUser') {
-                addCookieItem(productId, action, stock, currentQuantity);
-            } else {
-                updateUserOrder(productId, action, currentQuantity);
-            }
-        });
-    }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
     // Initialize button states based on cart contents
     const cartData = document.getElementById('cart-data');
     if (cartData) {
@@ -39,13 +7,56 @@ document.addEventListener('DOMContentLoaded', function() {
             updateButtonState(productId, true);
         }
     }
+
+    // Add click handlers to all update cart buttons
+    var updateBtns = document.getElementsByClassName('update-cart');
+    for (var i = 0; i < updateBtns.length; i++) {
+        updateBtns[i].addEventListener('click', function() {
+            var productId = this.dataset.product;
+            var action = this.dataset.action;
+            var stock = parseInt(this.dataset.quantity);
+            var currentQuantity = 1;
+
+            if (action === 'remove-all') {
+                var quantityInput = this.closest('.card-body') ? 
+                    this.closest('.card-body').querySelector('.cart-quantity') : 
+                    document.getElementById('cart-quantity');
+                if (quantityInput) {
+                    currentQuantity = parseInt(quantityInput.value) || 1;
+                }
+            }
+
+            if (user === 'AnonymousUser') {
+                addCookieItem(productId, action, stock, currentQuantity);
+            } else {
+                updateUserOrder(productId, action, currentQuantity)
+                    .then(success => {
+                        if (success) {
+                            // Update button states after successful action
+                            if (action === 'add') {
+                                updateButtonState(productId, true);
+                            } else if (action === 'remove-all') {
+                                updateButtonState(productId, false);
+                                // Remove the cart item from display if we're on the cart page
+                                const cartItem = document.querySelector(`[data-product-id="${productId}"]`);
+                                if (cartItem) {
+                                    cartItem.remove();
+                                }
+                            }
+                        }
+                    });
+            }
+        });
+    }
 });
+
+
 
 function updateUserOrder(productId, action, currentQuantity = NaN) {
     console.log('User is authenticated, sending data...');
     var url = '/update_item/';
     
-    fetch(url, {
+    return fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -60,59 +71,81 @@ function updateUserOrder(productId, action, currentQuantity = NaN) {
     .then(response => response.json())
     .then(data => {
         console.log('Data:', data);
-        if (data.added == false) {
-            showWarningAlert(data.message, () => {
-                // Code to execute if the user confirms the alert
-            });
-            return;
-        } else {
-            updateCartCount(data.cartItems);
-            updateCartTotal(data.cartTotal);
-            updateTotalPriceDifference(data.totalPriceDifference);
-            updateTotalWithShipping();
-
-            // Update button state after successful addition
-            if (action === 'add') {
-                updateButtonState(productId, true);
-            } else if (action === 'remove-all') {
-                updateButtonState(productId, false);
-            }
-
-            if (data.itemQuantity <= 0) {
-                removeCartItem(productId);
-            } else {
-                updateCartItemQuantity(productId, data.itemQuantity);
-                updateCartItemTotal(productId, data.itemTotal);
-            }
-
-            if (data.cartItems === 0) {
-                showEmptyCartMessage();
-            }
+        if (data.added === false) {
+            showWarningAlert(data.message);
+            return false;
         }
+
+        updateCartCount(data.cartItems);
+        updateCartTotal(data.cartTotal);
+        updateTotalPriceDifference(data.totalPriceDifference);
+        updateTotalWithShipping();
+
+        if (data.itemQuantity <= 0) {
+            removeCartItem(productId);
+        } else {
+            updateCartItemQuantity(productId, data.itemQuantity);
+            updateCartItemTotal(productId, data.itemTotal);
+        }
+
+        if (data.cartItems === 0) {
+            showEmptyCartMessage();
+        }
+
+        return true;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        return false;
     });
 }
 
 // Add new function to update button state
-function updateButtonState(productId, isInCart) {
-    const buttons = document.querySelectorAll(`button[data-product="${productId}"]`);
-    buttons.forEach(button => {
-        const container = button.parentElement;
-        if (isInCart) {
-            const viewCartBtn = document.createElement('a');
-            viewCartBtn.href = '/cart/';
-            viewCartBtn.className = 'btn btn-success btn-lg btn-block view-cart-btn';
-            viewCartBtn.textContent = 'View on Cart';
-            container.replaceChild(viewCartBtn, button);
-        } else {
-            const addCartBtn = document.createElement('button');
-            addCartBtn.dataset.quantity = button.dataset.quantity;
-            addCartBtn.dataset.product = productId;
-            addCartBtn.dataset.action = 'add';
-            addCartBtn.className = 'btn btn-primary btn-lg btn-block add-to-cart add-btn update-cart';
-            addCartBtn.textContent = 'Add to Cart';
-            container.replaceChild(addCartBtn, button);
-            addCartBtn.addEventListener('click', updateCartHandler);
+function updateUserOrder(productId, action, currentQuantity = NaN) {
+    console.log('User is authenticated, sending data...');
+    var url = '/update_item/';
+    
+    return fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+            'productId': productId,
+            'action': action,
+            'currentQuantity': currentQuantity
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Data:', data);
+        if (data.added === false) {
+            showWarningAlert(data.message);
+            return false;
         }
+
+        updateCartCount(data.cartItems);
+        updateCartTotal(data.cartTotal);
+        updateTotalPriceDifference(data.totalPriceDifference);
+        updateTotalWithShipping();
+
+        if (data.itemQuantity <= 0) {
+            removeCartItem(productId);
+        } else {
+            updateCartItemQuantity(productId, data.itemQuantity);
+            updateCartItemTotal(productId, data.itemTotal);
+        }
+
+        if (data.cartItems === 0) {
+            showEmptyCartMessage();
+        }
+
+        return true;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        return false;
     });
 }
 
@@ -246,6 +279,62 @@ function getProductDetails(productId) {
     return null;
 }
 
+function updateButtonState(productId, isInCart) {
+    const buttons = document.querySelectorAll(`[data-product="${productId}"]`);
+    buttons.forEach(button => {
+        const container = button.closest('div');
+        if (!container) return;
+
+        if (isInCart) {
+            const viewCartBtn = document.createElement('a');
+            viewCartBtn.href = '/cart/';
+            viewCartBtn.className = 'btn btn-success btn-lg btn-block view-cart-btn';
+            viewCartBtn.textContent = 'View on Cart';
+            
+            // Remove any existing update-cart buttons and replace with view cart button
+            const existingBtn = container.querySelector('.update-cart, .view-cart-btn');
+            if (existingBtn) {
+                container.replaceChild(viewCartBtn, existingBtn);
+            } else {
+                container.appendChild(viewCartBtn);
+            }
+        } else {
+            const addCartBtn = document.createElement('button');
+            addCartBtn.dataset.quantity = button.dataset.quantity;
+            addCartBtn.dataset.product = productId;
+            addCartBtn.dataset.action = 'add';
+            addCartBtn.className = 'btn btn-primary btn-lg btn-block add-to-cart add-btn update-cart';
+            addCartBtn.textContent = 'Add to Cart';
+
+            // Remove any existing buttons and replace with add to cart button
+            const existingBtn = container.querySelector('.update-cart, .view-cart-btn');
+            if (existingBtn) {
+                container.replaceChild(addCartBtn, existingBtn);
+            } else {
+                container.appendChild(addCartBtn);
+            }
+
+            // Add click handler to new button
+            addCartBtn.addEventListener('click', function() {
+                var productId = this.dataset.product;
+                var action = this.dataset.action;
+                var stock = parseInt(this.dataset.quantity);
+                
+                if (user === 'AnonymousUser') {
+                    addCookieItem(productId, action, stock, 1);
+                } else {
+                    updateUserOrder(productId, action, 1)
+                        .then(success => {
+                            if (success) {
+                                updateButtonState(productId, true);
+                            }
+                        });
+                }
+            });
+        }
+    });
+}
+
 function addCookieItem(productId, action, stock, currentQuantity = 1) {
     console.log('User is not authenticated');
     console.log('productId:', productId, 'Action:', action, 'stock:', stock, 'currentQuantity:', currentQuantity);
@@ -350,16 +439,12 @@ function getCartItemCount() {
 }
 
 function removeCartItem(productId) {
-    var cartItem = document.querySelector(`[data-product="${productId}"]`).closest('.card');
+    const cartItem = document.querySelector(`[data-product-id="${productId}"]`);
     if (cartItem) {
         cartItem.remove();
     }
-
-    // Check if cart is empty after removing the item
-    const remainingItems = document.querySelectorAll('.card[data-product-id]');
-    if (remainingItems.length === 0) {
-        showEmptyCartMessage();
-    }
+    // Update all related product buttons to show "Add to Cart"
+    updateButtonState(productId, false);
 }
 
 function showEmptyCartMessage() {
