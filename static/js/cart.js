@@ -17,27 +17,21 @@ document.addEventListener('DOMContentLoaded', function() {
             var stock = parseInt(this.dataset.quantity);
             var currentQuantity = 1;
 
-            if (action === 'remove-all') {
-                var quantityInput = this.closest('.card-body') ? 
-                    this.closest('.card-body').querySelector('.cart-quantity') : 
-                    document.getElementById('cart-quantity');
-                if (quantityInput) {
-                    currentQuantity = parseInt(quantityInput.value) || 1;
-                }
-            }
+            // Don't update button state for increment/decrement actions in cart
+            const isCartAction = ['add', 'remove'].includes(action) && 
+                               this.classList.contains('chg-quantity');
 
             if (user === 'AnonymousUser') {
                 addCookieItem(productId, action, stock, currentQuantity);
             } else {
                 updateUserOrder(productId, action, currentQuantity)
                     .then(success => {
-                        if (success) {
-                            // Update button states after successful action
+                        if (success && !isCartAction) {
+                            // Only update button state for non-cart actions
                             if (action === 'add') {
                                 updateButtonState(productId, true);
                             } else if (action === 'remove-all') {
                                 updateButtonState(productId, false);
-                                // Remove the cart item from display if we're on the cart page
                                 const cartItem = document.querySelector(`[data-product-id="${productId}"]`);
                                 if (cartItem) {
                                     cartItem.remove();
@@ -49,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
 
 
 function updateUserOrder(productId, action, currentQuantity = NaN) {
@@ -282,6 +275,11 @@ function getProductDetails(productId) {
 function updateButtonState(productId, isInCart) {
     const buttons = document.querySelectorAll(`[data-product="${productId}"]`);
     buttons.forEach(button => {
+        // Skip updating cart quantity buttons
+        if (button.classList.contains('chg-quantity')) {
+            return;
+        }
+
         const container = button.closest('div');
         if (!container) return;
 
@@ -290,9 +288,9 @@ function updateButtonState(productId, isInCart) {
             viewCartBtn.href = '/cart/';
             viewCartBtn.className = 'btn btn-success btn-lg btn-block view-cart-btn';
             viewCartBtn.textContent = 'View on Cart';
-            
+
             // Remove any existing update-cart buttons and replace with view cart button
-            const existingBtn = container.querySelector('.update-cart, .view-cart-btn');
+            const existingBtn = container.querySelector('.update-cart:not(.chg-quantity), .view-cart-btn');
             if (existingBtn) {
                 container.replaceChild(viewCartBtn, existingBtn);
             } else {
@@ -307,7 +305,7 @@ function updateButtonState(productId, isInCart) {
             addCartBtn.textContent = 'Add to Cart';
 
             // Remove any existing buttons and replace with add to cart button
-            const existingBtn = container.querySelector('.update-cart, .view-cart-btn');
+            const existingBtn = container.querySelector('.update-cart:not(.chg-quantity), .view-cart-btn');
             if (existingBtn) {
                 container.replaceChild(addCartBtn, existingBtn);
             } else {
@@ -319,7 +317,7 @@ function updateButtonState(productId, isInCart) {
                 var productId = this.dataset.product;
                 var action = this.dataset.action;
                 var stock = parseInt(this.dataset.quantity);
-                
+
                 if (user === 'AnonymousUser') {
                     addCookieItem(productId, action, stock, 1);
                 } else {
