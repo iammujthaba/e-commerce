@@ -1,3 +1,4 @@
+import json
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -76,6 +77,21 @@ class Product(models.Model):
             percentage = int(round(discount_percentage))
             return dict(percentage=percentage, diff=diff)
         return None
+
+    def is_in_cart(self, request):
+        """Check if product is in cart for both authenticated and anonymous users"""
+        if request.user.is_authenticated:
+            return OrderItem.objects.filter(
+                order__customer=request.user.customer,
+                order__complete=False,
+                product=self
+            ).exists()
+        else:
+            try:
+                cart = json.loads(request.COOKIES.get('cart', '{}'))
+                return str(self.id) in cart
+            except:
+                return False
     
     def save(self, *args, **kwargs):
         if not self.slug:

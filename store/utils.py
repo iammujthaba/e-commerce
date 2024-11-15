@@ -72,7 +72,7 @@ def cookieWishlist(request):
         wishlist = json.loads(request.COOKIES.get('wishlist', '{}'))
     except json.JSONDecodeError:
         wishlist = {}
-    
+
     items = []
     wishlist_count = len(wishlist)
 
@@ -84,13 +84,13 @@ def cookieWishlist(request):
                 'name': product.name,
                 'stock': product.stock,
                 'image_url': product.imageURL,
-                'new_price': product.new_price,
-                'old_price': product.old_price,
-                'get_url': product.get_url,
+                'new_price': float(product.new_price),  # Convert Decimal to float for JSON
+                'old_price': float(product.old_price) if product.old_price else None,
+                'product': product  # Add the product object for cart_tags
             }
             items.append(item)
         except Product.DoesNotExist:
-            pass
+            continue
 
     return {'wishlist_items': items, 'wishlist_count': wishlist_count}
 

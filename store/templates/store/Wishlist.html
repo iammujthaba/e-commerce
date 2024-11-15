@@ -1,13 +1,14 @@
 {% extends 'store/Base.html' %}
 {% load static %}
+{% load cart_tags %}
+
 {% block content %}
 <link rel="stylesheet" href="{% static 'assets/css/style/wishlist.css' %}">
-
 <div class="wishlist-container container">
     {% if wishlist_items %}
     <aside class="d-md-none d-xl-block">
         <div class="sidebar sidebar-product">
-            <div class="widget widget-products"  style="margin-top:1.5rem;">
+            <div class="widget widget-products" style="margin-top:1.5rem;">
                 <h4 class="widget-title mt-3" style="margin-left: 5px; margin-bottom: 1.3rem;">My Wishlist</h4>
                 <div class="products row">
                     {% for item in wishlist_items %}
@@ -25,25 +26,19 @@
                             <div class="related-product-publisher">DC Books</div>
                             <div class="product-price">
                                 <span class="related-product-price">Rs {{ item.new_price }}</span>
-                                {% if user.is_authenticated and item.discount_percentage %}
-                                    <span class="text-success mb-0 ml-2">{{ item.discount_percentage.percentage }}% off</span>
-                                {% elif not user.is_authenticated and item.discount_percentage %}
-                                    <span class="text-success mb-0 ml-2">{{ item.discount_percentage }}% off</span>
+                                {% if item.discount_percentage %}
+                                    {% if request.user.is_authenticated %}
+                                        <span class="text-success mb-0 ml-2">{{ item.discount_percentage.percentage }}% off</span>
+                                    {% else %}
+                                        <span class="text-success mb-0 ml-2">{{ item.discount_percentage }}% off</span>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                             <div class="product-actions">
                                 <button class="btn btn-outline-danger remove-wishlist-btn" data-product-id="{{ item.id }}" style="margin-left: 0px;">
                                     <i class="fas fa-trash-alt"></i> Remove
                                 </button>
-                                {% if item.status == 'out_of_stock' or item.stock <= 0 %}
-                                <button class="btn btn-secondary add-to-cart update-cart disabled" style="cursor: not-allowed;">
-                                    <i class="fas"></i>Out&nbsp;Of&nbsp;Stock
-                                </button>
-                                {% else %}
-                                <button class="btn btn-primary add-to-cart update-cart" data-quantity="{{ item.stock }}" data-product="{{ item.id }}" data-action="add">
-                                    <i class="fas fa-shopping-cart"></i><span>Add&nbsp;to&nbsp;Cart</span>
-                                </button>
-                                {% endif %}
+                                {% render_cart_button item.product %}
                             </div>
                         </div>
                     </div>
@@ -65,7 +60,7 @@
 
 <script>
 document.querySelectorAll('.remove-wishlist-btn').forEach(button => {
-    button.addEventListener('click', function () {
+    button.addEventListener('click', function() {
         const productId = this.dataset.productId;
         removeFromWishlist(productId, this);
     });
@@ -74,6 +69,7 @@ document.querySelectorAll('.remove-wishlist-btn').forEach(button => {
 function removeFromWishlist(productId, button) {
     const url = '{% url "store_app:remove_from_wishlist" %}';
     const wishlistCountElement = document.getElementById('wishlist-count');
+
     fetch(url, {
         method: 'POST',
         headers: {
@@ -87,25 +83,35 @@ function removeFromWishlist(productId, button) {
         if (data.removed) {
             // Remove the product element from the DOM
             button.closest('.product').remove();
+            
             // Update the wishlist count
-            wishlistCountElement.textContent = data.wishlist_count;
-            // If the wishlist is empty, show a message
-            if (data.wishlist_count == 0) {
-                document.querySelector('.wishlist-container').innerHTML = `    <div>
-        <div class="text-center mb-5 mt-4">
-            <br>
-            <h1>Your wishlist is empty.</h1>
-            <p class="mt-4">Click <a href="{% url 'store_app:allProdCat' %}"><b>here</b></a> to continue shopping.</p>
-        </div>
-    </div>`;
+            if (wishlistCountElement) {
+                wishlistCountElement.textContent = data.wishlist_count;
             }
+
+            // If the wishlist is empty, show a message
+            if (data.wishlist_count === 0) {
+                document.querySelector('.wishlist-container').innerHTML = `
+                    <div>
+                        <div class="text-center mb-5 mt-4">
+                            <br>
+                            <h1>Your wishlist is empty.</h1>
+                            <p class="mt-4">Click <a href="{% url 'store_app:allProdCat' %}"><b>here</b></a> to continue shopping.</p>
+                        </div>
+                    </div>`;
+            }
+
             // Update localStorage for unauthenticated users
             if (!{% if request.user.is_authenticated %}true{% else %}false{% endif %}) {
-                localStorage.setItem('wishlist', JSON.stringify(data.wishlist_items));
+                const wishlist = JSON.parse(localStorage.getItem('wishlist') || '{}');
+                delete wishlist[productId];
+                localStorage.setItem('wishlist', JSON.stringify(wishlist));
             }
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
     });
 }
 </script>
-
 {% endblock %}

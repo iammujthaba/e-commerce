@@ -30,9 +30,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize button states based on cart contents
+    const cartData = document.getElementById('cart-data');
+    if (cartData) {
+        const cartItems = JSON.parse(cartData.dataset.cartItems || '{}');
+        for (const productId in cartItems) {
+            updateButtonState(productId, true);
+        }
+    }
+});
+
 function updateUserOrder(productId, action, currentQuantity = NaN) {
     console.log('User is authenticated, sending data...');
     var url = '/update_item/';
+    
     fetch(url, {
         method: 'POST',
         headers: {
@@ -57,16 +69,49 @@ function updateUserOrder(productId, action, currentQuantity = NaN) {
             updateCartCount(data.cartItems);
             updateCartTotal(data.cartTotal);
             updateTotalPriceDifference(data.totalPriceDifference);
-            updateTotalWithShipping(); // Replace updateShippingCharge() with this
+            updateTotalWithShipping();
+
+            // Update button state after successful addition
+            if (action === 'add') {
+                updateButtonState(productId, true);
+            } else if (action === 'remove-all') {
+                updateButtonState(productId, false);
+            }
+
             if (data.itemQuantity <= 0) {
                 removeCartItem(productId);
             } else {
                 updateCartItemQuantity(productId, data.itemQuantity);
                 updateCartItemTotal(productId, data.itemTotal);
             }
+
             if (data.cartItems === 0) {
                 showEmptyCartMessage();
             }
+        }
+    });
+}
+
+// Add new function to update button state
+function updateButtonState(productId, isInCart) {
+    const buttons = document.querySelectorAll(`button[data-product="${productId}"]`);
+    buttons.forEach(button => {
+        const container = button.parentElement;
+        if (isInCart) {
+            const viewCartBtn = document.createElement('a');
+            viewCartBtn.href = '/cart/';
+            viewCartBtn.className = 'btn btn-success btn-lg btn-block view-cart-btn';
+            viewCartBtn.textContent = 'View on Cart';
+            container.replaceChild(viewCartBtn, button);
+        } else {
+            const addCartBtn = document.createElement('button');
+            addCartBtn.dataset.quantity = button.dataset.quantity;
+            addCartBtn.dataset.product = productId;
+            addCartBtn.dataset.action = 'add';
+            addCartBtn.className = 'btn btn-primary btn-lg btn-block add-to-cart add-btn update-cart';
+            addCartBtn.textContent = 'Add to Cart';
+            container.replaceChild(addCartBtn, button);
+            addCartBtn.addEventListener('click', updateCartHandler);
         }
     });
 }
@@ -211,6 +256,8 @@ function addCookieItem(productId, action, stock, currentQuantity = 1) {
         }
         if (cart[productId]['quantity'] + 1 <= stock) {
             cart[productId]['quantity'] += 1;
+            // Update button state after successful addition
+            updateButtonState(productId, true);
         } else {
             showWarningAlert('There is no more stock available. If you want more, please contact us.', () => {
                 // Code to execute if the user confirms the alert
@@ -238,11 +285,11 @@ function addCookieItem(productId, action, stock, currentQuantity = 1) {
     console.log('CART:', cart);
     document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/";
     
-    // Update cart data without page refresh
     updateCartDataForUnauthorizedUser();
     updateCartItemQuantity(productId, cart[productId] ? cart[productId]['quantity'] : 0);
     updateCartTotals();
-    updateTotalWithShipping(); // Replace updateShippingCharge() with this
+    updateTotalWithShipping();
+
     if (Object.keys(cart).length === 0) {
         showEmptyCartMessage();
     }

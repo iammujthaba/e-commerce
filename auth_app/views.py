@@ -193,7 +193,7 @@ def merge_cookie_wishlist_with_user_wishlist(request, user):
             pass
 
     response = redirect('store_app:allProdCat')
-    response.delete_cookie('wishlist')
+    response.delete_cookie('cookie_wishlist')
     return response
 
 

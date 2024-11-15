@@ -1,6 +1,7 @@
 {% extends 'store/Base.html' %}
 {% load static %}
 {% block content %}
+{% load cart_tags %}
 {% load custom_filters %}
 
 <link rel="stylesheet" href="{% static 'assets/css/style/catogory.css' %}">
@@ -190,7 +191,7 @@
                                         </div>
                                     </div>
                                 </a>
-                                <button data-quantity="{{product.stock}}" data-product="{{product.id}}" data-action="add" class="btn btn-primary btn-lg btn-block add-to-cart add-btn update-cart">Add to Cart</button>
+                                {% render_cart_button product %}
 
                             </div>
                         </div>
@@ -276,7 +277,7 @@
                                         </div>
                                     </a>
                                     {#{% url 'cart_app:add_cart' product.id %}#}
-                                        <button data-quantity="{{product.stock}}" data-product="{{product.id}}" data-action="add" class="btn btn-primary btn-lg btn-block add-btn add-to-cart update-cart">Add to Cart</button>
+                                    {% render_cart_button product %}
 
                                 </div>
                             </div>
@@ -614,7 +615,7 @@
                                     </div>
                                 </div>
                             </a>
-                            <button data-quantity="{{product.stock}}" data-product="{{product.id}}" data-action="add" class="btn btn-primary btn-lg btn-block add-to-cart add-btn update-cart">Add to Cart</button>
+                            {% render_cart_button product %}
     
                         </div>
                     </div>

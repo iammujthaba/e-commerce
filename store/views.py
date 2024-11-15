@@ -160,31 +160,39 @@ def wishlist(request):
 
     if request.user.is_authenticated:
         # Fetch wishlist items for authenticated users
-        wishlist_objects = Wishlist.objects.filter(user=request.user)
+        wishlist_objects = Wishlist.objects.filter(user=request.user).select_related('product')
         for item in wishlist_objects:
+            product = item.product
             wishlist_items.append({
-                'id': item.product.id,
-                'name': item.product.name,
-                'stock': item.product.stock,
-                'image_url': item.product.imageURL,
-                'new_price': item.product.new_price,
-                'old_price': item.product.old_price,
-                'get_url': item.product.get_url(),
-                'discount_percentage': item.product.get_discounted_price if item.product.old_price != None and item.product.old_price != 0 else None,
+                'id': product.id,
+                'name': product.name,
+                'stock': product.stock,
+                'image_url': product.imageURL,
+                'new_price': product.new_price,
+                'old_price': product.old_price,
+                'get_url': product.get_url(),
+                'discount_percentage': product.get_discounted_price() if product.old_price and product.old_price > product.new_price else None,
+                'product': product  # Add the product object for cart_tags
             })
     else:
         # Use cookie data for unauthenticated users
         cookie_data = cookieWishlist(request)
         wishlist_items = cookie_data['wishlist_items']
+        # Process each item to ensure consistent structure
         for item in wishlist_items:
-            item['discount_percentage'] = (
-                int(round(((item['old_price'] - item['new_price']) / item['old_price']) * 100))
-                if item['old_price'] and item['new_price'] < item['old_price']
-                else None
-            )
+            product = Product.objects.get(id=item['id'])
+            item.update({
+                'get_url': product.get_url(),
+                'discount_percentage': (
+                    int(round(((item['old_price'] - item['new_price']) / item['old_price']) * 100))
+                    if item['old_price'] and item['new_price'] < item['old_price'] 
+                    else None
+                ),
+                'product': product  # Add the product object for cart_tags
+            })
 
     wishlist_count = len(wishlist_items)
-
+    
     return render(request, 'store/Wishlist.html', {
         'wishlist_items': wishlist_items,
         'wishlist_count': wishlist_count,
@@ -315,6 +323,19 @@ def cart(request):
     # Get all states for the dropdown
     all_states = ShippingRate.objects.values_list('state', flat=True)
 
+    # Initialize cart_items_data dictionary
+    cart_items_data = {}
+    
+    # Handle both authenticated and unauthenticated users
+    if request.user.is_authenticated:
+        # For authenticated users, items is a QuerySet of OrderItem objects
+        for item in items:
+            cart_items_data[item.product.id] = item.quantity
+    else:
+        # For unauthenticated users, items is a list of dictionaries
+        for item in items:
+            cart_items_data[item['product']['id']] = item['quantity']
+
     # Get the selected state or use the saved state for returning customers
     selected_state = request.GET.get('state')
     if not selected_state and request.user.is_authenticated:
@@ -333,6 +354,7 @@ def cart(request):
         'all_states': all_states,
         'selected_state': selected_state,
         'shipping_charge': shipping_charge,
+        'cart_items_data': json.dumps(cart_items_data),
     }
     return render(request, 'store/Cart.html', context)
 
