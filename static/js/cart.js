@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize button states based on cart contents
-    const cartData = document.getElementById('cart-data');
-    if (cartData) {
-        const cartItems = JSON.parse(cartData.dataset.cartItems || '{}');
-        for (const productId in cartItems) {
-            updateButtonState(productId, true);
+    // Initialize cart count from server-side rendered value
+    const cartCountElement = document.querySelector('.cart-count');
+    if (cartCountElement) {
+        const initialCartCount = cartCountElement.getAttribute('data-cart-items');
+        if (initialCartCount) {
+            updateCartCount(initialCartCount);
         }
     }
 
@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
             var stock = parseInt(this.dataset.quantity);
             var currentQuantity = 1;
 
-            // Don't update button state for increment/decrement actions in cart
-            const isCartAction = ['add', 'remove'].includes(action) && this.classList.contains('chg-quantity');
+            const isCartAction = ['add', 'remove'].includes(action) && 
+                               this.classList.contains('chg-quantity');
 
             if (user === 'AnonymousUser') {
                 addCookieItem(productId, action, stock, currentQuantity);
@@ -32,13 +32,18 @@ document.addEventListener('DOMContentLoaded', function() {
 function handleAuthenticatedUserAction(button, productId, action, currentQuantity, isCartAction) {
     // Disable the button to prevent double clicks
     button.disabled = true;
-    
+
     updateUserOrder(productId, action, currentQuantity)
         .then(response => {
             if (response.added === false) {
                 showWarningAlert(response.message);
                 button.disabled = false;
                 return false;
+            }
+
+            // Update cart count immediately after successful response
+            if (response.cartItems !== undefined) {
+                updateCartCount(response.cartItems);
             }
 
             if (!isCartAction) {
@@ -53,15 +58,17 @@ function handleAuthenticatedUserAction(button, productId, action, currentQuantit
                 }
             }
 
-            // Update cart count and other elements
-            updateCartCount(response.cartItems);
-            updateCartTotal(response.cartTotal);
-            updateTotalPriceDifference(response.totalPriceDifference);
+            // Update other cart elements
+            if (response.cartTotal !== undefined) {
+                updateCartTotal(response.cartTotal);
+            }
+            if (response.totalPriceDifference !== undefined) {
+                updateTotalPriceDifference(response.totalPriceDifference);
+            }
             updateTotalWithShipping();
 
             // Re-enable the button
             button.disabled = false;
-            
             return true;
         })
         .catch(error => {
@@ -70,6 +77,7 @@ function handleAuthenticatedUserAction(button, productId, action, currentQuantit
             return false;
         });
 }
+
 
 // Add new function to update button state
 function updateUserOrder(productId, action, currentQuantity = NaN) {
@@ -388,10 +396,19 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function updateCartCount(cartItems) {
+    // Update all cart count elements
     const cartCountElements = document.querySelectorAll('.cart-count');
     cartCountElements.forEach(el => {
         el.textContent = cartItems;
-        el.dataset.cartItems = cartItems;
+        el.setAttribute('data-cart-items', cartItems);
+    });
+
+    // Update wishlist count elements if they exist
+    const wishlistCountElements = document.querySelectorAll('.wishlist-count');
+    wishlistCountElements.forEach(el => {
+        // Keep existing wishlist count
+        const currentCount = el.textContent;
+        el.textContent = currentCount;
     });
 }
 
