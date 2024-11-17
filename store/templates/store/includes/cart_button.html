@@ -1,19 +1,23 @@
-{% if product.status == 'out_of_stock' or product.stock <= 0 %}
-    <button class="btn btn-secondary btn-lg btn-block add-to-cart add-btn update-cart disabled" 
-            style="cursor: not-allowed;">
-        Out Of Stock
-    </button>
-{% else %}
-    {% if is_in_cart %}
-        <a href="{{ cart_url }}" class="btn btn-success btn-lg btn-block view-cart-btn">
-            View on Cart
-        </a>
-    {% else %}
-        <button data-quantity="{{ product.stock }}" 
-                data-product="{{ product.id }}" 
-                data-action="add"
-                class="btn btn-primary btn-lg btn-block add-to-cart add-btn update-cart">
-            Add to Cart
+<div class="product-actions">
+
+    {% if product.status == 'out_of_stock' or product.stock <= 0 %}
+        <button class="btn btn-secondary btn-lg btn-block add-to-cart add-btn update-cart disabled" 
+                style="cursor: not-allowed;">
+            Out Of Stock
         </button>
+    {% else %}
+        {% if is_in_cart %}
+            <a href="{{ cart_url }}" class="btn btn-success btn-lg btn-block view-cart-btn">
+                View on Cart
+            </a>
+        {% else %}
+            <button data-quantity="{{ product.stock }}" 
+                    data-product="{{ product.id }}" 
+                    data-action="add"
+                    class="btn btn-primary btn-lg btn-block add-to-cart add-btn update-cart">
+                Add to Cart
+            </button>
+        {% endif %}
     {% endif %}
-{% endif %}
+
+</div>

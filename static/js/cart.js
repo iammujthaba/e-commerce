@@ -18,79 +18,57 @@ document.addEventListener('DOMContentLoaded', function() {
             var currentQuantity = 1;
 
             // Don't update button state for increment/decrement actions in cart
-            const isCartAction = ['add', 'remove'].includes(action) && 
-                               this.classList.contains('chg-quantity');
+            const isCartAction = ['add', 'remove'].includes(action) && this.classList.contains('chg-quantity');
 
             if (user === 'AnonymousUser') {
                 addCookieItem(productId, action, stock, currentQuantity);
             } else {
-                updateUserOrder(productId, action, currentQuantity)
-                    .then(success => {
-                        if (success && !isCartAction) {
-                            // Only update button state for non-cart actions
-                            if (action === 'add') {
-                                updateButtonState(productId, true);
-                            } else if (action === 'remove-all') {
-                                updateButtonState(productId, false);
-                                const cartItem = document.querySelector(`[data-product-id="${productId}"]`);
-                                if (cartItem) {
-                                    cartItem.remove();
-                                }
-                            }
-                        }
-                    });
+                handleAuthenticatedUserAction(this, productId, action, currentQuantity, isCartAction);
             }
         });
     }
 });
 
-
-function updateUserOrder(productId, action, currentQuantity = NaN) {
-    console.log('User is authenticated, sending data...');
-    var url = '/update_item/';
+function handleAuthenticatedUserAction(button, productId, action, currentQuantity, isCartAction) {
+    // Disable the button to prevent double clicks
+    button.disabled = true;
     
-    return fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken,
-        },
-        body: JSON.stringify({
-            'productId': productId,
-            'action': action,
-            'currentQuantity': currentQuantity
+    updateUserOrder(productId, action, currentQuantity)
+        .then(response => {
+            if (response.added === false) {
+                showWarningAlert(response.message);
+                button.disabled = false;
+                return false;
+            }
+
+            if (!isCartAction) {
+                if (action === 'add') {
+                    updateButtonState(productId, true);
+                } else if (action === 'remove-all') {
+                    updateButtonState(productId, false);
+                    const cartItem = document.querySelector(`[data-product-id="${productId}"]`);
+                    if (cartItem) {
+                        cartItem.remove();
+                    }
+                }
+            }
+
+            // Update cart count and other elements
+            updateCartCount(response.cartItems);
+            updateCartTotal(response.cartTotal);
+            updateTotalPriceDifference(response.totalPriceDifference);
+            updateTotalWithShipping();
+
+            // Re-enable the button
+            button.disabled = false;
+            
+            return true;
         })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Data:', data);
-        if (data.added === false) {
-            showWarningAlert(data.message);
+        .catch(error => {
+            console.error('Error:', error);
+            button.disabled = false;
             return false;
-        }
-
-        updateCartCount(data.cartItems);
-        updateCartTotal(data.cartTotal);
-        updateTotalPriceDifference(data.totalPriceDifference);
-        updateTotalWithShipping();
-
-        if (data.itemQuantity <= 0) {
-            removeCartItem(productId);
-        } else {
-            updateCartItemQuantity(productId, data.itemQuantity);
-            updateCartItemTotal(productId, data.itemTotal);
-        }
-
-        if (data.cartItems === 0) {
-            showEmptyCartMessage();
-        }
-
-        return true;
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        return false;
-    });
+        });
 }
 
 // Add new function to update button state
@@ -280,7 +258,7 @@ function updateButtonState(productId, isInCart) {
             return;
         }
 
-        const container = button.closest('div');
+        const container = button.closest('.product-actions, .btn-product-details');
         if (!container) return;
 
         if (isInCart) {
@@ -314,19 +292,10 @@ function updateButtonState(productId, isInCart) {
 
             // Add click handler to new button
             addCartBtn.addEventListener('click', function() {
-                var productId = this.dataset.product;
-                var action = this.dataset.action;
-                var stock = parseInt(this.dataset.quantity);
-
                 if (user === 'AnonymousUser') {
-                    addCookieItem(productId, action, stock, 1);
+                    addCookieItem(productId, 'add', parseInt(this.dataset.quantity), 1);
                 } else {
-                    updateUserOrder(productId, action, 1)
-                        .then(success => {
-                            if (success) {
-                                updateButtonState(productId, true);
-                            }
-                        });
+                    handleAuthenticatedUserAction(this, productId, 'add', 1, false);
                 }
             });
         }
