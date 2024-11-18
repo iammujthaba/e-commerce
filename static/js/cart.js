@@ -273,7 +273,16 @@ function updateButtonState(productId, isInCart) {
             const viewCartBtn = document.createElement('a');
             viewCartBtn.href = '/cart/';
             viewCartBtn.className = 'btn btn-success btn-lg btn-block view-cart-btn';
-            viewCartBtn.textContent = 'View on Cart';
+            
+            // Create icon element
+            const cartIcon = document.createElement('i');
+            cartIcon.className = 'fas fa-shopping-cart';
+            cartIcon.style.marginLeft = '0rem';
+            cartIcon.style.marginRight = '.5rem';
+            
+            // Append icon and text
+            viewCartBtn.appendChild(cartIcon);
+            viewCartBtn.appendChild(document.createTextNode('\u00A0View\u00A0in\u00A0Cart')); // \u00A0 adds non-breaking spaces
 
             // Remove any existing update-cart buttons and replace with view cart button
             const existingBtn = container.querySelector('.update-cart:not(.chg-quantity), .view-cart-btn');
@@ -288,7 +297,16 @@ function updateButtonState(productId, isInCart) {
             addCartBtn.dataset.product = productId;
             addCartBtn.dataset.action = 'add';
             addCartBtn.className = 'btn btn-primary btn-lg btn-block add-to-cart add-btn update-cart';
-            addCartBtn.textContent = 'Add to Cart';
+            
+            // Create icon element
+            const plusIcon = document.createElement('i');
+            plusIcon.className = 'fas fa-cart-plus';
+            plusIcon.style.marginLeft = '0rem';
+            cartIcon.style.marginRight = '.5rem';
+            
+            // Append icon and text
+            addCartBtn.appendChild(plusIcon);
+            addCartBtn.appendChild(document.createTextNode('\u00A0Add\u00A0to\u00A0Cart'));
 
             // Remove any existing buttons and replace with add to cart button
             const existingBtn = container.querySelector('.update-cart:not(.chg-quantity), .view-cart-btn');

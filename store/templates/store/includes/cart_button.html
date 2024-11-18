@@ -19,8 +19,9 @@
         {% endif %}
     </div>
 
-{% elif template_name == 'product' %}
-    <div class="product-details-action">
+{% elif template_name == 'proDetail' %}
+<input style="display: none;" type="number" id="cart-quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control">
+    <div class="product-details-action product-actions">
         {% if product.status == 'out_of_stock' or product.stock <= 0 %}
             <a id="add-to-cart-btn" class="btn-product btn-disabled2 update-cart disabled" 
                style="margin-left: 19px; margin-right: 17px; background-color: #6c757d; opacity: .80; cursor: not-allowed;">
@@ -28,18 +29,35 @@
             </a>
         {% else %}
             {% if is_in_cart %}
-                <a href="{{ cart_url }}" class="btn-product btn-cart" 
+                <a href="{{ cart_url }}" class="btn-product btn-cart btn-success" 
                    style="margin-left: 17px; margin-right: 17px;">
                     <span style="color: #fff;font-size: 1.5rem;">
-                        <i class="fas fa-shopping-cart" style="margin-left: 0rem;"></i>view&nbsp;in&nbsp;cart
+                        </i>view&nbsp;in&nbsp;cart
                     </span>
                 </a>
             {% else %}
                 <a data-quantity="{{product.stock}}" data-product="{{product.id}}" data-action="add" 
-                   id="add-to-cart-btn" class="btn-product btn-cart update-cart" 
+                   id="add-to-cart-btn" class="btn-product btn-cart update-cart btn-primary" 
                    style="margin-left: 17px; margin-right: 17px;">
-                   <i class="fas fa-cart-plus" style="margin-left: 0rem;"></i><span style="color: #fff;font-size: 1.5rem;">add&nbsp;to&nbsp;cart</span>
+                   <span style="color: #fff;font-size: 1.5rem;">add&nbsp;to&nbsp;cart</span>
                 </a>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const addToCartBtn = document.getElementById('add-to-cart-btn');
+                        const originalPosition = addToCartBtn.getBoundingClientRect().top + window.scrollY;
+    
+                        function checkSticky() {
+                            if (window.scrollY + window.innerHeight < originalPosition) {
+                                addToCartBtn.classList.add('sticky-btn');
+                            } else {
+                                addToCartBtn.classList.remove('sticky-btn');
+                            }
+                        }
+    
+                        window.addEventListener('scroll', checkSticky);
+                        checkSticky();
+                    });
+                </script>
             {% endif %}
         {% endif %}
     </div>

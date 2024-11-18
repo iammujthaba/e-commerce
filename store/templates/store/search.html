@@ -1,6 +1,7 @@
 {% extends 'store/Base.html' %}
 {% load static %}
 {% load custom_filters %}
+{% load cart_tags %}
 
 <!-- for base.html meta, title -->
 {% block metadescription %}
@@ -88,11 +89,7 @@
                                 </div>
                             </div>
                         </a>
-                        {% if product.status == 'out_of_stock' or product.stock <= 0 %}
-                        <button class="btn btn-secondary btn-lg btn-block add-to-cart add-btn update-cart disabled" style="cursor: not-allowed;">Out Of Stock</button>
-                        {% else %}
-                        <button data-quantity="{{product.stock}}" data-product="{{product.id}}" data-action="add" class="btn btn-primary btn-lg btn-block add-to-cart add-btn update-cart">Add to Cart</button>
-                        {% endif %}
+                        {% render_cart_button product %}
                     </div>
                 </div>
                 {% empty %}

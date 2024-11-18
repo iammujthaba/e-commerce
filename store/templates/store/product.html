@@ -414,8 +414,6 @@
                                         });
                                     </script>
 
-                                    <input style="display: none;" type="number" id="cart-quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control">
-
                                     {% render_cart_button product %}
 
                                 </div>
@@ -528,24 +526,6 @@
                     }
                 }
 
-            </script>
-
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const addToCartBtn = document.getElementById('add-to-cart-btn');
-                    const originalPosition = addToCartBtn.getBoundingClientRect().top + window.scrollY;
-
-                    function checkSticky() {
-                        if (window.scrollY + window.innerHeight < originalPosition) {
-                            addToCartBtn.classList.add('sticky-btn');
-                        } else {
-                            addToCartBtn.classList.remove('sticky-btn');
-                        }
-                    }
-
-                    window.addEventListener('scroll', checkSticky);
-                    checkSticky();
-                });
             </script>
 
 

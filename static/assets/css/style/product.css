@@ -780,7 +780,7 @@ button:focus {
     text-align: center;
     text-decoration: none;
     color: #fff;
-    background-color: #39f;
+    /* background-color: #39f; */
     border: none;
     border-radius: 4px;
     cursor: pointer
