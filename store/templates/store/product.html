@@ -1,6 +1,7 @@
 {% extends 'store/Base.html' %}
 {% load static %}
 {% load video_tags %}
+{% load cart_tags %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'assets/css/style/product.css' %}">
@@ -415,27 +416,7 @@
 
                                     <input style="display: none;" type="number" id="cart-quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control">
 
-
-                                    <div class="product-details-action">
-
-                                        {% if product.status == 'out_of_stock' or product.stock <= 0 %}
-                                            <a id="add-to-cart-btn"
-                                                class="btn-product btn-disabled2 update-cart disabled" style="
-                                                margin-left: 19px;
-                                                margin-right: 17px;
-                                                background-color: #6c757d;
-                                                opacity: .80;
-                                                cursor: not-allowed;
-                                            "><span style="color: #fff;font-size: 1.5rem;">Out Of Stock</span></a>
-                                        {% else %}
-                                            <a data-quantity="{{product.stock}}" data-product="{{product.id}}"
-                                                data-action="add" id="add-to-cart-btn"
-                                                class="btn-product btn-cart update-cart" style="
-                                                margin-left: 17px;
-                                                margin-right: 17px;
-                                            "><span style="color: #fff;font-size: 1.5rem;">add to cart</span></a>
-                                        {% endif %}
-                                    </div>
+                                    {% render_cart_button product %}
 
                                 </div>
                             </div>
