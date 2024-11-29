@@ -1,2 +1,4 @@
 Django>=3.2,<5.0   # Core Django framework
 razorpay>=1.0.0    # Razorpay API for payment processing
+setuptools
+Pillow
