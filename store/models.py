@@ -170,12 +170,13 @@ class Order(models.Model):
     order_id = models.CharField(max_length=100, unique=True, default=uuid.uuid4, editable=False)
     razorpay_order_id = models.CharField(max_length=100, null=True, blank=True)
     razorpay_payment_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
-    razorpay_signature = models.CharField(max_length=256, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Processing')
     processing_time = models.DateTimeField(null=True, blank=True)
     confirmed_time = models.DateTimeField(null=True, blank=True)
     shipped_time = models.DateTimeField(null=True, blank=True)
     delivered_time = models.DateTimeField(null=True, blank=True)
+    total_price = models.DecimalField(max_digits=7, decimal_places=0, null=True, blank=True)
+    Shipping_charge = models.DecimalField(max_digits=7, blank=False, decimal_places=0, default=0.00)
 
     def __str__(self):
         return str(self.id)
@@ -191,6 +192,17 @@ class Order(models.Model):
         orderitems = self.orderitem_set.all()
         total = sum([item.quantity for item in orderitems])
         return total
+    
+    payment_status = models.CharField(
+        max_length=20,
+        choices=[
+            ('Pending', 'Pending'),
+            ('Success', 'Success'),
+            ('Failed', 'Failed')
+        ],
+        default='Pending'
+    )
+    order_created = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if self.status == 'Processing' and not self.processing_time:
@@ -242,7 +254,7 @@ class ShippingAddress(models.Model):
     state = models.CharField(max_length=200, null=False)
     zipcode = models.CharField(max_length=200, null=False)
     date_added = models.DateTimeField(auto_now_add=True)
-    Shipping_cost = models.DecimalField(max_digits=7, blank=False, decimal_places=0)
+    
 
     def __str__(self):
         return self.address

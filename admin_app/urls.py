@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin_app/orders/confirmed/', views.confirmed_orders, name='confirmed_orders'),
     path('admin_app/orders/shipped/', views.shipped_orders, name='shipped_orders'),
     path('admin_app/orders/completed/', views.completed_orders, name='completed_orders'),
+    path('admin/payment-status/',  views.admin_payment_status, name='admin_payment_status'),
 
     path('admin_app/shipping-rates/', views.shipping_rate_list, name='shipping_rate_list'),
     path('admin_app/shipping-rates/create/', views.shipping_rate_create, name='shipping_rate_create'),

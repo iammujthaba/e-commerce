@@ -1,0 +1,37 @@
+{% extends 'admin_app/base_admin.html' %}
+{% block content %}
+<h2>All Payment Statuses</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Order ID by beckend</th>
+            <th>Order ID by Razorpay</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Payment Status</th>
+            <th>Order Created</th>
+            <th>Order Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.order_id }}</td>
+            <td>{{ order.razorpay_order_id }}</td>
+            
+            <td>{{ order.customer.name }}</td>
+            <td>₹{{ order.get_cart_total|floatformat:2 }}</td>
+            <td>{{ order.payment_status }}</td>
+            <td>{{ order.order_created }}</td>
+            <td>
+                {% if order.order_created %}
+                <a href="{% url 'admin_app:order_view' order.id %}">View</a>
+                {% else %}
+                Not Available
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

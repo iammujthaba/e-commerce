@@ -348,6 +348,9 @@
                                 <li class="{% if request.path == '/delivered/' %}active{% endif %}">
                                     <a href="{% url 'store_app:delivered' %}">delivered</a>
                                 </li>
+                                <li class="{% if request.path == '/payment-status/' %}active{% endif %}">
+                                    <a href="{% url 'store_app:payment_status' %}">Payment</a>
+                                </li>
                                 <li class="{% if request.path == '/myorders/' %}active{% endif %}">
                                     <a href="{% url 'store_app:myorders' %}">Orders</a>
                                 </li>
@@ -461,7 +464,7 @@
                                                 <ul class="widget-list">
                                                     <li><a href="{% url 'auth_app:login' %}">Sign In</a></li>
                                                     <li><a href="{% url 'auth_app:register' %}">Sign Up</a></li>
-                                                    <li><a href="{% url 'store_app:cart' %}">Cart</a></li>
+                                                    <li><a href="{% url 'store_app:payment_status' %}">Payment</a></li>
                                                     <li><a href="{% url 'store_app:myorders' %}">Orders</a></li>
                                                     <li><a href="{% url 'store_app:account_info' %}">Account</a></li>
                                                 </ul>
@@ -544,7 +547,7 @@
                                         <ul class="widget-list">
                                             <li><a href="{% url 'auth_app:login' %}">Sign In</a></li>
                                             <li><a href="{% url 'auth_app:register' %}">Sign Up</a></li>
-                                            <li><a href="{% url 'store_app:cart' %}">Cart</a></li>
+                                            <li><a href="{% url 'store_app:payment_status' %}">Payment</a></li>
                                             <li><a href="{% url 'store_app:myorders' %}">Orders</a></li>
                                             <li><a href="{% url 'store_app:account_info' %}">Account</a></li>
                                         </ul>
@@ -622,6 +625,9 @@
                             </li>
                             <li>
                                 <a href="{% url 'store_app:delivered' %}">delivered</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'store_app:payment_status' %}">Payment</a>
                             </li>
                             <li>
                                 <a href="{% url 'store_app:account_info' %}">Account</a>

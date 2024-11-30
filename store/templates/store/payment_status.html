@@ -1,0 +1,36 @@
+{% extends 'store/Base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <h2>My Payment Status</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Amount</th>
+                <th>Payment Status</th>
+                <th>Order Created</th>
+                <th>Order Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.razorpay_order_id }}</td>
+                <td>₹{{ order.total_price|floatformat:2 }}</td>
+                <td>{{ order.payment_status }}</td>
+                <td>{{ order.order_created }}</td>
+                <td>
+                    {% if order.order_created %}
+                        <a href="{% url 'store_app:trackOrder' order.id %}">Track Order</a>
+                    {% else %}
+                        Order failed
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

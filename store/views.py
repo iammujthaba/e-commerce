@@ -468,14 +468,15 @@ def payment(request):
         shipping_charge = calculate_shipping(shipping_info.get('state'), items)
 
         # Calculate total amount
-        total_amount = order.get_cart_total + shipping_charge
+        order.total_price = order.get_cart_total + shipping_charge
+        order.save()
 
         # Create Razorpay order
         razorpay_order = client.order.create({
-            'amount': int(total_amount * 100),
+            'amount': int(order.total_price * 100),
             'currency': 'INR',
             'payment_capture': '1',
-            "receipt": "order_rcptid_11"
+            "receipt": "order_rcptid_1002"
         })
 
         # Update the order with Razorpay order ID
@@ -489,8 +490,8 @@ def payment(request):
             'shipping_info': shipping_info,
             'shipping_charge': shipping_charge,
             'razorpay_key_id': settings.RAZORPAY_KEY_ID,
-            'razorpay_order_id': razorpay_order['id'],
-            'total_amount': total_amount,
+            'razorpay_order_id': order.razorpay_order_id,
+            'total_amount': order.total_price,
             'csrf_token': get_token(request),
         }
 
@@ -499,10 +500,12 @@ def payment(request):
         return redirect('store_app:account_info')
 
 
+# order validation and creation
 @csrf_protect
 def processOrder(request):
     if request.method != 'POST':
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
     if not request.user.is_authenticated:
         return JsonResponse({'success': False, 'message': 'User not authenticated.'})
 
@@ -510,16 +513,24 @@ def processOrder(request):
         data = json.loads(request.body)
         customer = request.user.customer
         order = Order.objects.get(customer=customer, complete=False, razorpay_order_id=data['shipping']['razorpay_order_id'])
-        total = Decimal(data['shipping']['total'])
+        # taking razorpay amount
+        total = Decimal(data['shipping'].get('total','0'))
+
+        razorpay_order_id = data['shipping'].get('razorpay_order_id')
+        razorpay_payment_id = data['shipping'].get('razorpay_payment_id')
+        razorpay_signature = data['shipping'].get('razorpay_signature')
 
         # Calculate shipping
+        # items used for ingrement shipping charge by product quntity
         items = order.orderitem_set.all()
         shipping_state = data['shipping']['state']
-        total_shipping = calculate_shipping(shipping_state, items)
-        
-        razorpay_payment_id = data['shipping'].get('razorpay_payment_id')
-        razorpay_order_id = data['shipping'].get('razorpay_order_id')
-        razorpay_signature = data['shipping'].get('razorpay_signature')
+        order.Shipping_charge = calculate_shipping(shipping_state, items)
+
+        # this function only work after successfull peyment
+        order.payment_status = 'Success'
+        order.complete = False
+        order.order_created = False
+        order.save()
 
         if not all([razorpay_payment_id, razorpay_order_id, razorpay_signature]):
             return JsonResponse({'success': False, 'message': 'Missing Razorpay payment information.'})
@@ -532,21 +543,20 @@ def processOrder(request):
                 'razorpay_signature': razorpay_signature
             })
         except razorpay.errors.SignatureVerificationError:
-            logger.error(f"Invalid Razorpay signature for order {order.id}")
             return JsonResponse({'success': False, 'message': 'Invalid payment signature.'})
 
     
         # Check if the payment ID already exists
         if Order.objects.filter(razorpay_payment_id=razorpay_payment_id).exists():
             return JsonResponse({'success': False, 'message': 'This payment has already been processed.'})
-        
-        if total != Decimal(order.get_cart_total) + total_shipping:
-            logger.warning(f"Total price mismatch for order {order.id}")
-            return JsonResponse({'success': False, 'message': 'Total price mismatch.'})
 
-        # Update order status
-        order.complete = True
+        if total != order.total_price:
+            return JsonResponse({'success': False, 'message': 'payment Total mismatch.'})
+        
+        # Confoirm order / order creation starting
         order.razorpay_payment_id = razorpay_payment_id
+        order.complete = True
+        order.order_created = True
         order.save()
 
         ShippingAddress.objects.create(
@@ -558,7 +568,6 @@ def processOrder(request):
             city=data['shipping']['city'],
             state=shipping_state,
             zipcode=data['shipping']['zipcode'],
-            Shipping_cost=total_shipping,
         )
 
         # Process order items
@@ -566,11 +575,12 @@ def processOrder(request):
             product = item.product
             product.stock -= item.quantity
             product.save()
-            PurchaseHistory.objects.create(
-                customer=customer,
-                product=product,
-                price_at_purchase=item.price_at_purchase
-            )
+
+        PurchaseHistory.objects.create(
+            customer=customer,
+            product=product,
+            price_at_purchase=item.price_at_purchase
+        )
 
         # Clear the cart
         if 'cart' in request.session:
@@ -580,14 +590,22 @@ def processOrder(request):
         # (Chat GPT ofter requsted to make this line under 'if' conditon [i dont know why])
 
         logger.info(f"Order {order.id} placed successfully")
-        return JsonResponse({'success': True, 'message': 'Order placed successfully!'})
-            
-    except Order.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'Order not found.'})
-    except Exception as e:
-        logger.error(f"Error processing order: {str(e)}")
-        return JsonResponse({'success': False, 'message': 'An error occurred while processing the order.'})
+        return JsonResponse({'success': True, 'message': f'{order.razorpay_order_id} \n Order placed successfully!'})
 
+    except Order.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Order not Compleated.'})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'An error occurred: {str(e)}'})
+
+@login_required
+def payment_status(request):
+    if not request.user.is_authenticated:
+        return redirect('auth_app:login')
+    
+    orders = Order.objects.filter(customer=request.user.customer).order_by('-date_ordered')
+    context = {'orders': orders}
+    return render(request, 'store/payment_status.html', context)
 
 def myorders(request):
     if not request.user.is_authenticated:
@@ -603,18 +621,13 @@ def myorders(request):
     orders_with_details = []
     for order in orders:
         total_quantity = OrderItem.objects.filter(order=order).aggregate(Sum('quantity'))['quantity__sum']
-                
-        # Get the shipping address and cost for this order
-        shipping_address = ShippingAddress.objects.filter(order=order).first()
-        shipping_cost = shipping_address.Shipping_cost if shipping_address else 0
 
         orders_with_details.append({
             'order': order,
             'total_quantity': total_quantity or 0,
-            'total_amount': order.get_cart_total,
+            'total_amount': order.total_price,
             'date_ordered': order.date_ordered,
             'status': order.status,
-            'shipping_cost': shipping_cost,
         })
 
     context = {

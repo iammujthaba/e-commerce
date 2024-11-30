@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.db import transaction
 from django.views.decorators.csrf import csrf_exempt
-
+from django.contrib.admin.views.decorators import staff_member_required
 
 def is_admin(user):
     return user.is_superuser
@@ -285,6 +285,11 @@ def render_order_list(request, orders, title, template):
         })
     return render(request, template, {'orders_with_details': orders_with_details, 'title': title})
 
+@staff_member_required
+def admin_payment_status(request):
+    orders = Order.objects.all().order_by('-date_ordered')
+    context = {'orders': orders}
+    return render(request, 'admin_app/payment_status.html', context)
 
 @login_required
 @user_passes_test(is_admin)
