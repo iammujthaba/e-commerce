@@ -476,12 +476,16 @@ def payment(request):
             'amount': int(order.total_price * 100),
             'currency': 'INR',
             'payment_capture': '1',
-            "receipt": "order_rcptid_1002"
+            "receipt": f"order_rcptid_{order.id}"
         })
 
-        # Update the order with Razorpay order ID
-        order.razorpay_order_id = razorpay_order['id']
-        order.save()
+        # Create the PaymentRecord
+        payment_record = PaymentRecord.objects.create(
+            order=order,
+            razorpay_order_id=razorpay_order['id'],
+            payment_status='Incomplete',  # Initial status
+            amount=order.total_price
+        )
 
         context = {
             'items': items,
@@ -490,7 +494,7 @@ def payment(request):
             'shipping_info': shipping_info,
             'shipping_charge': shipping_charge,
             'razorpay_key_id': settings.RAZORPAY_KEY_ID,
-            'razorpay_order_id': order.razorpay_order_id,
+            'razorpay_order_id': payment_record.razorpay_order_id,
             'total_amount': order.total_price,
             'csrf_token': get_token(request),
         }
@@ -501,6 +505,7 @@ def payment(request):
 
 
 # order validation and creation
+# this function only work after successfull peyment
 @csrf_protect
 def processOrder(request):
     if request.method != 'POST':
@@ -512,10 +517,17 @@ def processOrder(request):
     try:
         data = json.loads(request.body)
         customer = request.user.customer
-        order = Order.objects.get(customer=customer, complete=False, razorpay_order_id=data['shipping']['razorpay_order_id'])
-        # taking razorpay amount
-        total = Decimal(data['shipping'].get('total','0'))
+        payment_record = PaymentRecord.objects.get(razorpay_order_id=data['shipping']['razorpay_order_id'])
+        order = payment_record.order  # Access the related order
 
+        payment_record.payment_status = 'Success'
+        payment_record.save()
+
+        order.complete = False
+        order.order_created = False
+        order.save()
+
+        total = Decimal(data['shipping'].get('total', '0'))
         razorpay_order_id = data['shipping'].get('razorpay_order_id')
         razorpay_payment_id = data['shipping'].get('razorpay_payment_id')
         razorpay_signature = data['shipping'].get('razorpay_signature')
@@ -526,13 +538,14 @@ def processOrder(request):
         shipping_state = data['shipping']['state']
         order.Shipping_charge = calculate_shipping(shipping_state, items)
 
-        # this function only work after successfull peyment
-        order.payment_status = 'Success'
-        order.complete = False
-        order.order_created = False
-        order.save()
-
         if not all([razorpay_payment_id, razorpay_order_id, razorpay_signature]):
+            PaymentRecord.objects.create(
+                order=order,
+                razorpay_order_id=razorpay_order_id,
+                payment_status='Success',
+                amount=total,
+                details="Missing payment information."
+            )
             return JsonResponse({'success': False, 'message': 'Missing Razorpay payment information.'})
 
         # Verify the payment signature
@@ -540,24 +553,50 @@ def processOrder(request):
             client.utility.verify_payment_signature({
                 'razorpay_order_id': razorpay_order_id,
                 'razorpay_payment_id': razorpay_payment_id,
-                'razorpay_signature': razorpay_signature
+                'razorpay_signature': razorpay_signature,
             })
         except razorpay.errors.SignatureVerificationError:
+            PaymentRecord.objects.create(
+                order=order,
+                razorpay_order_id=razorpay_order_id,
+                payment_status='Success',
+                amount=total,
+                details="Invalid payment signature."
+            )
             return JsonResponse({'success': False, 'message': 'Invalid payment signature.'})
 
     
-        # Check if the payment ID already exists
-        if Order.objects.filter(razorpay_payment_id=razorpay_payment_id).exists():
+        if PaymentRecord.objects.filter(razorpay_payment_id=razorpay_payment_id).exists():
+            PaymentRecord.objects.create(
+                order=order,
+                razorpay_order_id=razorpay_order_id,
+                payment_status='Success',
+                amount=total,
+                details="razorpay ID already exists."
+            )
             return JsonResponse({'success': False, 'message': 'This payment has already been processed.'})
 
+
         if total != order.total_price:
-            return JsonResponse({'success': False, 'message': 'payment Total mismatch.'})
-        
-        # Confoirm order / order creation starting
-        order.razorpay_payment_id = razorpay_payment_id
+            PaymentRecord.objects.create(
+                order=order,
+                razorpay_order_id=razorpay_order_id,
+                payment_status='Success',
+                amount=total,
+                details="Payment total mismatch."
+            )
+            return JsonResponse({'success': False, 'message': 'Payment total mismatch.'})
+
+        # Payment Success
+        # order.razorpay_payment_id = razorpay_payment_id
         order.complete = True
         order.order_created = True
         order.save()
+
+        payment_record.payment_status = 'Success'
+        payment_record.razorpay_payment_id = data['shipping'].get('razorpay_payment_id')
+        payment_record.details = "Order successful."
+        payment_record.save()
 
         ShippingAddress.objects.create(
             customer=customer,
@@ -590,10 +629,10 @@ def processOrder(request):
         # (Chat GPT ofter requsted to make this line under 'if' conditon [i dont know why])
 
         logger.info(f"Order {order.id} placed successfully")
-        return JsonResponse({'success': True, 'message': f'{order.razorpay_order_id} \n Order placed successfully!'})
+        return JsonResponse({'success': True, 'message': f'{payment_record.razorpay_order_id} \n Order placed successfully!'})
 
-    except Order.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'Order not Compleated.'})
+    except PaymentRecord.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Payment record not found.'})
 
     except Exception as e:
         return JsonResponse({'success': False, 'message': f'An error occurred: {str(e)}'})
@@ -604,7 +643,9 @@ def payment_status(request):
         return redirect('auth_app:login')
     
     orders = Order.objects.filter(customer=request.user.customer).order_by('-date_ordered')
-    context = {'orders': orders}
+    payment_records = PaymentRecord.objects.filter(order__in=orders).order_by('-created_at')
+    
+    context = {'orders': orders, 'payment_records': payment_records}
     return render(request, 'store/payment_status.html', context)
 
 def myorders(request):

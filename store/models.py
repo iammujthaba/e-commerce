@@ -168,8 +168,6 @@ class Order(models.Model):
     date_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False)
     order_id = models.CharField(max_length=100, unique=True, default=uuid.uuid4, editable=False)
-    razorpay_order_id = models.CharField(max_length=100, null=True, blank=True)
-    razorpay_payment_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Processing')
     processing_time = models.DateTimeField(null=True, blank=True)
     confirmed_time = models.DateTimeField(null=True, blank=True)
@@ -177,6 +175,7 @@ class Order(models.Model):
     delivered_time = models.DateTimeField(null=True, blank=True)
     total_price = models.DecimalField(max_digits=7, decimal_places=0, null=True, blank=True)
     Shipping_charge = models.DecimalField(max_digits=7, blank=False, decimal_places=0, default=0.00)
+    order_created = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.id)
@@ -192,17 +191,12 @@ class Order(models.Model):
         orderitems = self.orderitem_set.all()
         total = sum([item.quantity for item in orderitems])
         return total
-    
-    payment_status = models.CharField(
-        max_length=20,
-        choices=[
-            ('Pending', 'Pending'),
-            ('Success', 'Success'),
-            ('Failed', 'Failed')
-        ],
-        default='Pending'
-    )
-    order_created = models.BooleanField(default=False)
+
+    @property
+    def current_payment_status(self):
+        """Get the most recent payment status for this order."""
+        latest_payment = self.payment_records.order_by('-created_at').first()
+        return latest_payment.payment_status if latest_payment else "No Payments"
 
     def save(self, *args, **kwargs):
         if self.status == 'Processing' and not self.processing_time:
@@ -214,6 +208,27 @@ class Order(models.Model):
         elif self.status == 'Delivered' and not self.delivered_time:
             self.delivered_time = timezone.now()
         super().save(*args, **kwargs)
+
+class PaymentRecord(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="payment_records")
+    razorpay_order_id = models.CharField(max_length=100, null=True, blank=True)
+    razorpay_payment_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    payment_status = models.CharField(max_length=20, choices=[
+        ('Success', 'Success'),
+        ('Failed', 'Failed'),
+        ('Incomplete', 'Incomplete'),
+    ])
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    details = models.TextField(null=True, blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['order', 'razorpay_order_id'], name='unique_payment_record_per_order'),
+        ]
+
+    def __str__(self):
+        return f"{self.order} - {self.payment_status}"
 
 
 class ShippingRate(models.Model):

@@ -4,28 +4,28 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Order ID by beckend</th>
-            <th>Order ID by Razorpay</th>
+            <th>Order ID</th>
             <th>Customer</th>
             <th>Amount</th>
             <th>Payment Status</th>
             <th>Order Created</th>
+            <th>Order Status</th>
             <th>Order Details</th>
         </tr>
     </thead>
     <tbody>
-        {% for order in orders %}
+        {% for payment_record in payment_records %}
         <tr>
-            <td>{{ order.order_id }}</td>
-            <td>{{ order.razorpay_order_id }}</td>
+            <td>{{ payment_record.razorpay_order_id }}</td>
             
-            <td>{{ order.customer.name }}</td>
-            <td>₹{{ order.get_cart_total|floatformat:2 }}</td>
-            <td>{{ order.payment_status }}</td>
-            <td>{{ order.order_created }}</td>
+            <td>{{ payment_record.order.customer.name }}</td>
+            <td>₹{{ payment_record.order.total_price|floatformat:2 }}</td>
+            <td>{{ payment_record.payment_status }}</td>
+            <td>{{ payment_record.order.order_created }}</td>
+            <td>{{ payment_record.order.status  }}</td>
             <td>
-                {% if order.order_created %}
-                <a href="{% url 'admin_app:order_view' order.id %}">View</a>
+                {% if payment_record.order.order_created %}
+                <a href="{% url 'admin_app:order_view' payment_record.order.id %}">View</a>
                 {% else %}
                 Not Available
                 {% endif %}

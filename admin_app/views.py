@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import CategoryForm, ProductForm, ShippingRateForm
-from store.models import Category, OrderItem, Product, Order, Customer, ShippingAddress, ShippingRate
+from store.models import Category, OrderItem, PaymentRecord, Product, Order, Customer, ShippingAddress, ShippingRate
 from django.db.models import Count, Q, Sum, F, FloatField
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -287,8 +287,9 @@ def render_order_list(request, orders, title, template):
 
 @staff_member_required
 def admin_payment_status(request):
-    orders = Order.objects.all().order_by('-date_ordered')
-    context = {'orders': orders}
+    # orders = Order.objects.all().order_by('-date_ordered')
+    payment_records = PaymentRecord.objects.all().order_by('-created_at')
+    context = {'payment_records': payment_records}
     return render(request, 'admin_app/payment_status.html', context)
 
 @login_required

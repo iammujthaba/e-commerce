@@ -10,20 +10,23 @@
                 <th>Order ID</th>
                 <th>Amount</th>
                 <th>Payment Status</th>
-                <th>Order Created</th>
+                <th>Order Status</th>
+                <th>Date</th>
+    
                 <th>Order Details</th>
             </tr>
         </thead>
         <tbody>
-            {% for order in orders %}
+            {% for record in payment_records %}
             <tr>
-                <td>{{ order.razorpay_order_id }}</td>
-                <td>₹{{ order.total_price|floatformat:2 }}</td>
-                <td>{{ order.payment_status }}</td>
-                <td>{{ order.order_created }}</td>
+                <td>{{ record.razorpay_order_id }}</td>
+                <td>₹{{ record.amount|floatformat:2 }}</td>
+                <td>{{ record.payment_status }}</td>
+                <td>{{ record.order.status  }}</td>
+                <td>{{ record.created_at }}</td>
                 <td>
-                    {% if order.order_created %}
-                        <a href="{% url 'store_app:trackOrder' order.id %}">Track Order</a>
+                    {% if record.order.complete %}
+                        <a href="{% url 'store_app:trackOrder' record.order.id %}">Track Order</a>
                     {% else %}
                         Order failed
                     {% endif %}
