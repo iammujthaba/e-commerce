@@ -406,14 +406,10 @@ def updateItem(request):
 @csrf_protect
 def checkout(request):
     if request.user.is_authenticated:
-        data = cartData(request)
-        cartItems = data['cartItems']
-        order = data['order']
-        items = data['items']
         customer = request.user.customer
         
         if request.method == 'POST':
-            # Capture the form data
+            # Capture the form data and validate each field
             shipping_info = {
                 'number': request.POST.get('number'),
                 'whatsapp': request.POST.get('whatsapp'),
@@ -422,7 +418,25 @@ def checkout(request):
                 'state': request.POST.get('state'),
                 'zipcode': request.POST.get('zipcode'),
             }
-            
+
+            # Validate that all fields are provided (you can add more validation if needed)
+            if not all(shipping_info.values()):
+                # If any field is empty, redirect with an error message
+                return render(request, 'store/Checkout.html', {
+                    'error_message': 'All fields are required.',
+                    'last_shipping': shipping_info,
+                    
+                    'frequent_customer_areas': ["Kerala", "Karnataka", "Tamil Nadu"],
+                    'other_states': [
+                        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", 
+                        "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh",
+                        "Jharkhand", "Madhya Pradesh", "Maharashtra", "Manipur", 
+                        "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", 
+                        "Rajasthan", "Sikkim", "Telangana", "Tripura", 
+                        "Uttar Pradesh", "Uttarakhand", "West Bengal"
+                    ],
+                })
+
             # Save or update the shipping address
             ShippingAddress.objects.update_or_create(
                 customer=customer,
@@ -436,7 +450,6 @@ def checkout(request):
                     'date_added': timezone.now(),
                 }
             )
-            
             # Redirect to the payment page
             return redirect('store_app:payment')
 
@@ -444,8 +457,7 @@ def checkout(request):
         last_shipping = ShippingAddress.objects.filter(customer=customer).order_by('-date_added').first()
         
         context = {
-            'items': items,
-            'order': order,
+            'last_shipping': last_shipping,
             'frequent_customer_areas': ["Kerala", "Karnataka", "Tamil Nadu"],
             'other_states': [
                 "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", 
@@ -455,8 +467,6 @@ def checkout(request):
                 "Rajasthan", "Sikkim", "Telangana", "Tripura", 
                 "Uttar Pradesh", "Uttarakhand", "West Bengal"
             ],
-            'cartItems': cartItems,
-            'last_shipping': last_shipping,
         }
         return render(request, 'store/Checkout.html', context)
     else:
@@ -467,15 +477,16 @@ def checkout(request):
 def payment(request):
     if request.user.is_authenticated:
         data = cartData(request)
-        cartItems = data['cartItems']
+        # cartItems = data['cartItems']
         order = data['order']
         items = data['items']
 
         # Retrieve shipping info from session
-        shipping_info = request.session.get('shipping_info', {})
+        # shipping_info = request.session.get('shipping_info', {})
+        shipping_addres = ShippingAddress.objects.filter(customer=order.customer).order_by('-date_added').first()
 
         # Calculate shipping charge
-        shipping_charge = calculate_shipping(shipping_info.get('state'), items)
+        shipping_charge = calculate_shipping(shipping_addres.state, items)
 
         # Calculate total amount
         order.total_price = order.get_cart_total + shipping_charge
@@ -500,8 +511,8 @@ def payment(request):
         context = {
             'items': items,
             'order': order,
-            'cartItems': cartItems,
-            'shipping_info': shipping_info,
+            # 'cartItems': cartItems,
+            'shipping_addres': shipping_addres,
             'shipping_charge': shipping_charge,
             'razorpay_key_id': settings.RAZORPAY_KEY_ID,
             'razorpay_order_id': payment_record.razorpay_order_id,
@@ -526,21 +537,22 @@ def processOrder(request):
 
     try:
         data = json.loads(request.body)
+        razorpay_payment_id = data.get('razorpay_payment_id')
+        razorpay_order_id = data.get('razorpay_order_id')
+        razorpay_signature = data.get('razorpay_signature')
+
+        # Fetch order details from the database
         customer = request.user.customer
-        payment_record = PaymentRecord.objects.get(razorpay_order_id=data['shipping']['razorpay_order_id'])
+        payment_record = PaymentRecord.objects.get(razorpay_order_id=razorpay_order_id)
         order = payment_record.order  # Access the related order
 
+        total = payment_record.order.total_price
         payment_record.payment_status = 'Success'
         payment_record.save()
 
         order.complete = False
         order.order_created = False
         order.save()
-
-        total = Decimal(data['shipping'].get('total', '0'))
-        razorpay_order_id = data['shipping'].get('razorpay_order_id')
-        razorpay_payment_id = data['shipping'].get('razorpay_payment_id')
-        razorpay_signature = data['shipping'].get('razorpay_signature')
 
         # Calculate shipping
         # items used for ingrement shipping charge by product quntity
@@ -606,7 +618,7 @@ def processOrder(request):
         order.save()
 
         payment_record.payment_status = 'Success'
-        payment_record.razorpay_payment_id = data['shipping'].get('razorpay_payment_id')
+        payment_record.razorpay_payment_id = razorpay_payment_id
         payment_record.details = "Order successful."
         payment_record.save()
 

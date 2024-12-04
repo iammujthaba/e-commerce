@@ -68,7 +68,7 @@
                         <hr>
                         <dl class="dlist-align total">
                             <dt>Total:</dt>
-                            <dd class="text-end">₹ {{ order.get_cart_total|add:shipping_charge|floatformat:2 }}</dd>
+                            <dd class="text-end">₹ {{ total_amount }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -77,12 +77,12 @@
         <div class="col-lg-4" style="padding-bottom: 1rem; padding-top: 1.5rem;">
             <div class="box-element shipping-info">
                 <h3>Shipping Address</h3>
-                <p><strong>Contact Number:</strong> {{ shipping_info.number }}</p>
-                <p><strong>WhatsApp Number:</strong> {{ shipping_info.whatsapp }}</p>
-                <p><strong>Address:</strong> {{ shipping_info.address }}</p>
-                <p><strong>City:</strong> {{ shipping_info.city }}</p>
-                <p><strong>State:</strong> {{ shipping_info.state }}</p>
-                <p><strong>Zip Code:</strong> {{ shipping_info.zipcode }}</p>
+                <p><strong>Contact Number:</strong> {{ shipping_addres.number }}</p>
+                <p><strong>WhatsApp Number:</strong> {{ shipping_addres.whatsapp }}</p>
+                <p><strong>Address:</strong> {{ shipping_addres.address }}</p>
+                <p><strong>City:</strong> {{ shipping_addres.city }}</p>
+                <p><strong>State:</strong> {{ shipping_addres.state }}</p>
+                <p><strong>Zip Code:</strong> {{ shipping_addres.zipcode }}</p>
                 <div id="payment-info">
                     <button id="rzp-button1" style="background-color: #007BFF;">Proceed to Pay</button>
                     <a href="{% url 'store_app:checkout' %}" class="btn btn-light w-100 mt-4"> Back to Address </a>
@@ -94,7 +94,7 @@
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-var total = '{{order.get_cart_total|add:shipping_charge}}';
+var total = '{{ total_amount }}';
 var options = {
     "key": "{{ razorpay_key_id }}", // Use the key from my backend (settings.py file)
     "amount": total * 100,
@@ -130,13 +130,12 @@ document.getElementById('rzp-button1').onclick = function(e){
 function submitFormData(paymentResponse){
     console.log('Payment successful, starting to processing order...');
 
-    var shippingInfo = {{ shipping_info|safe }};
-
-    // razorpay insight
-    shippingInfo.total = total;
-    shippingInfo.razorpay_payment_id = paymentResponse.razorpay_payment_id;
-    shippingInfo.razorpay_order_id = paymentResponse.razorpay_order_id;
-    shippingInfo.razorpay_signature = paymentResponse.razorpay_signature;
+    // Prepare the payment details
+    var paymentDetails = {
+        razorpay_payment_id: paymentResponse.razorpay_payment_id,
+        razorpay_order_id: paymentResponse.razorpay_order_id,
+        razorpay_signature: paymentResponse.razorpay_signature,
+    };
 
     var url = "{% url 'store_app:process_order' %}";
     fetch(url, {
@@ -145,14 +144,11 @@ function submitFormData(paymentResponse){
             'Content-Type': 'application/json',
             'X-CSRFToken': '{{ csrf_token }}',
         },
-        body: JSON.stringify({
-            'shipping': shippingInfo,
-            'csrfmiddlewaretoken': '{{ csrf_token }}'
-        }),
+        body: JSON.stringify(paymentDetails),
     })
     .then((response) => response.json())
     .then((data) => {
-        console.log(data.message);
+        // console.log(data.message);
         if (data.success) {
             Swal.fire({
                 icon: "success",

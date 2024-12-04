@@ -94,14 +94,19 @@
     </style>
 </head>
 <body>
-    <div class="container" style="    padding-right: 2px;
-    padding-left: 2px;">
+    <div class="container" style="padding-right: 2px; padding-left: 2px;">
         <div class="checkout-container">
             <div class="checkout-header">
                 <h2 class="mb-0">Shipping Information</h2>
             </div>
             <form id="checkout-form" method="POST" action="{% url 'store_app:checkout' %}">
                 {% csrf_token %}
+                
+                <!-- Display error message if fields are empty -->
+                {% if error_message %}
+                    <div class="alert alert-danger">{{ error_message }}</div>
+                {% endif %}
+                
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="contact-number" class="form-label">Contact Number</label>
@@ -147,8 +152,7 @@
                 <div class="d-grid gap-2 mt-4">
 
                     <input id="form-button" class="btn btn-success btn-block" type="submit" value="Continue">
-
-                    <a href="{% url 'store_app:cart' %}" class="btn btn-light w-100 mt-4"> Back to Cart </a>
+                    <a href="{% url 'store_app:cart' %}" class="btn btn-light w-100 mt-4">Back to Cart</a>
                 </div>
             </form>
         </div>
