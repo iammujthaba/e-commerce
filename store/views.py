@@ -600,8 +600,11 @@ def processOrder(request):
             )
             return JsonResponse({'success': False, 'message': 'This payment has already been processed.'})
 
+        # Fetch payment details to verify amount
+        payment_details = client.payment.fetch(razorpay_payment_id)
+        paid_amount = Decimal(payment_details['amount']) / 100  # Convert paise to INR
 
-        if total != order.total_price:
+        if paid_amount != Decimal(order.total_price):
             PaymentRecord.objects.create(
                 order=order,
                 razorpay_order_id=razorpay_order_id,
@@ -609,7 +612,7 @@ def processOrder(request):
                 amount=total,
                 details="Payment total mismatch."
             )
-            return JsonResponse({'success': False, 'message': 'Payment total mismatch.'})
+            return JsonResponse({'success': False, 'message': 'Payment amount mismatch'})
 
         # Payment Success
         # order.razorpay_payment_id = razorpay_payment_id
