@@ -261,7 +261,7 @@ class OrderItem(models.Model):
 
 class ShippingAddress(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
     number = models.CharField(max_length=12, null=False, blank=False)
     whatsapp = models.CharField(max_length=12, null=False, blank=False)
     address = models.CharField(max_length=200, null=False)

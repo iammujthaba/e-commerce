@@ -403,7 +403,7 @@ def updateItem(request):
     }, safe=False)
 
 
-@ensure_csrf_cookie
+@csrf_protect
 def checkout(request):
     if request.user.is_authenticated:
         data = cartData(request)
@@ -411,10 +411,9 @@ def checkout(request):
         order = data['order']
         items = data['items']
         customer = request.user.customer
-        last_shipping = ShippingAddress.objects.filter(customer=customer).order_by('-date_added').first()
-
+        
         if request.method == 'POST':
-            # Process the form data
+            # Capture the form data
             shipping_info = {
                 'number': request.POST.get('number'),
                 'whatsapp': request.POST.get('whatsapp'),
@@ -423,28 +422,39 @@ def checkout(request):
                 'state': request.POST.get('state'),
                 'zipcode': request.POST.get('zipcode'),
             }
-            # Store shipping info in session
-            request.session['shipping_info'] = shipping_info
-            return redirect('store_app:payment')  # Redirect to the new payment page
+            
+            # Save or update the shipping address
+            ShippingAddress.objects.update_or_create(
+                customer=customer,
+                defaults={
+                    'number': shipping_info['number'],
+                    'whatsapp': shipping_info['whatsapp'],
+                    'address': shipping_info['address'],
+                    'city': shipping_info['city'],
+                    'state': shipping_info['state'],
+                    'zipcode': shipping_info['zipcode'],
+                    'date_added': timezone.now(),
+                }
+            )
+            
+            # Redirect to the payment page
+            return redirect('store_app:payment')
 
-
-        # Get the last shipping information
-
-        # customer = request.user.customer
-        # last_shipping = ShippingAddress.objects.filter(customer=customer).order_by('-date_added').first()
-
-        frequent_customer_areas = ["Kerala", "Karnataka", "Tamil Nadu"]
-        other_states = ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", 
-                "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", 
-                "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", 
-                "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", 
-                "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"]
-
+        # Fetch the last saved address for pre-filling
+        last_shipping = ShippingAddress.objects.filter(customer=customer).order_by('-date_added').first()
+        
         context = {
             'items': items,
             'order': order,
-            'frequent_customer_areas': frequent_customer_areas,
-            'other_states': other_states,
+            'frequent_customer_areas': ["Kerala", "Karnataka", "Tamil Nadu"],
+            'other_states': [
+                "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", 
+                "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh",
+                "Jharkhand", "Madhya Pradesh", "Maharashtra", "Manipur", 
+                "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", 
+                "Rajasthan", "Sikkim", "Telangana", "Tripura", 
+                "Uttar Pradesh", "Uttarakhand", "West Bengal"
+            ],
             'cartItems': cartItems,
             'last_shipping': last_shipping,
         }
@@ -534,8 +544,10 @@ def processOrder(request):
 
         # Calculate shipping
         # items used for ingrement shipping charge by product quntity
+        shipping_addres = ShippingAddress.objects.filter(customer=customer).order_by('-date_added').first()
+
         items = order.orderitem_set.all()
-        shipping_state = data['shipping']['state']
+        shipping_state = shipping_addres.state
         order.Shipping_charge = calculate_shipping(shipping_state, items)
 
         if not all([razorpay_payment_id, razorpay_order_id, razorpay_signature]):
@@ -598,16 +610,8 @@ def processOrder(request):
         payment_record.details = "Order successful."
         payment_record.save()
 
-        ShippingAddress.objects.create(
-            customer=customer,
-            order=order,
-            number=data['shipping']['number'],
-            whatsapp=data['shipping']['whatsapp'],
-            address=data['shipping']['address'],
-            city=data['shipping']['city'],
-            state=shipping_state,
-            zipcode=data['shipping']['zipcode'],
-        )
+        shipping_addres.order = order
+        shipping_addres.save()
 
         # Process order items
         for item in items:
