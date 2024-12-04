@@ -437,19 +437,9 @@ def checkout(request):
                     ],
                 })
 
-            # Save or update the shipping address
-            ShippingAddress.objects.update_or_create(
-                customer=customer,
-                defaults={
-                    'number': shipping_info['number'],
-                    'whatsapp': shipping_info['whatsapp'],
-                    'address': shipping_info['address'],
-                    'city': shipping_info['city'],
-                    'state': shipping_info['state'],
-                    'zipcode': shipping_info['zipcode'],
-                    'date_added': timezone.now(),
-                }
-            )
+            # Store shipping info in session
+            request.session['shipping_info'] = shipping_info
+            
             # Redirect to the payment page
             return redirect('store_app:payment')
 
@@ -482,14 +472,15 @@ def payment(request):
         items = data['items']
 
         # Retrieve shipping info from session
-        # shipping_info = request.session.get('shipping_info', {})
-        shipping_addres = ShippingAddress.objects.filter(customer=order.customer).order_by('-date_added').first()
+        shipping_addres = request.session.get('shipping_info', {})
+        # shipping_addres = ShippingAddress.objects.filter(customer=order.customer).order_by('-date_added').first()
 
         # Calculate shipping charge
-        shipping_charge = calculate_shipping(shipping_addres.state, items)
+        shipping_charge = calculate_shipping(data.get('state'), items)
 
         # Calculate total amount
         order.total_price = order.get_cart_total + shipping_charge
+        order.Shipping_charge
         order.save()
 
         # Create Razorpay order
@@ -545,6 +536,7 @@ def processOrder(request):
         customer = request.user.customer
         payment_record = PaymentRecord.objects.get(razorpay_order_id=razorpay_order_id)
         order = payment_record.order  # Access the related order
+        # order = Order.objects.get(customer=customer, complete=False, razorpay_order_id=razorpay_order_id)
 
         total = payment_record.order.total_price
         payment_record.payment_status = 'Success'
@@ -553,14 +545,6 @@ def processOrder(request):
         order.complete = False
         order.order_created = False
         order.save()
-
-        # Calculate shipping
-        # items used for ingrement shipping charge by product quntity
-        shipping_addres = ShippingAddress.objects.filter(customer=customer).order_by('-date_added').first()
-
-        items = order.orderitem_set.all()
-        shipping_state = shipping_addres.state
-        order.Shipping_charge = calculate_shipping(shipping_state, items)
 
         if not all([razorpay_payment_id, razorpay_order_id, razorpay_signature]):
             PaymentRecord.objects.create(
@@ -625,10 +609,20 @@ def processOrder(request):
         payment_record.details = "Order successful."
         payment_record.save()
 
-        shipping_addres.order = order
-        shipping_addres.save()
+        # saving shipping address
+        ShippingAddress.objects.create(
+            customer=customer,
+            order=order,
+            number=data.get('number'),
+            whatsapp=data.get('whatsapp'),
+            address=data.get('address'),
+            city=data.get('city'),
+            state=data.get('state'),
+            zipcode=data.get('zipcode'),
+        )
 
-        # Process order items
+        # substracting order items from product quntity
+        items = order.orderitem_set.all()
         for item in items:
             product = item.product
             product.stock -= item.quantity

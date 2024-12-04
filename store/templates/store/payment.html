@@ -130,12 +130,10 @@ document.getElementById('rzp-button1').onclick = function(e){
 function submitFormData(paymentResponse){
     console.log('Payment successful, starting to processing order...');
 
-    // Prepare the payment details
-    var paymentDetails = {
-        razorpay_payment_id: paymentResponse.razorpay_payment_id,
-        razorpay_order_id: paymentResponse.razorpay_order_id,
-        razorpay_signature: paymentResponse.razorpay_signature,
-    };
+    var addressAndPayment = {{ shipping_addres|safe }};
+    addressAndPayment.razorpay_payment_id = paymentResponse.razorpay_payment_id;
+    addressAndPayment.razorpay_order_id = paymentResponse.razorpay_order_id;
+    addressAndPayment.razorpay_signature = paymentResponse.razorpay_signature;
 
     var url = "{% url 'store_app:process_order' %}";
     fetch(url, {
@@ -144,7 +142,7 @@ function submitFormData(paymentResponse){
             'Content-Type': 'application/json',
             'X-CSRFToken': '{{ csrf_token }}',
         },
-        body: JSON.stringify(paymentDetails),
+        body: JSON.stringify(addressAndPayment),
     })
     .then((response) => response.json())
     .then((data) => {
