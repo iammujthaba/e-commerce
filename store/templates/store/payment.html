@@ -4,6 +4,15 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'assets/css/style/payment.css' %}">
 
+{% if messages %}
+<div class="alert alert-danger">
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+
 <div class="container">
     <div class="row">
         <div class="col-lg-6 mt-4">

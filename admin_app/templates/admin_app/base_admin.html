@@ -27,8 +27,8 @@
             <li style="padding: 0px;" class="{% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
                 <a style="padding: 20px;" href="{% url 'admin_app:product_list' %}">Products Manage</a>
             </li>
-            <li style="padding: 0px;" class="{% if request.resolver_match.url_name == 'processing_orders' %}active{% endif %}">
-                <a style="padding: 20px;" href="{% url 'admin_app:processing_orders' %}">New Orders</a>
+            <li style="padding: 0px;" class="{% if request.resolver_match.url_name == 'placed_orders' %}active{% endif %}">
+                <a style="padding: 20px;" href="{% url 'admin_app:placed_orders' %}">New Orders</a>
             </li>
             <li style="padding: 0px;" class="{% if request.resolver_match.url_name == 'admin_payment_status' %}active{% endif %}">
                 <a style="padding: 20px;" href="{% url 'admin_app:admin_payment_status' %}">payment status</a>

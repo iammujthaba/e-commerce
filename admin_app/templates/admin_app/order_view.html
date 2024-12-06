@@ -69,6 +69,45 @@
         font-weight: bold;
         color: #555;
     }
+        /* The modal's background */
+        .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Modal content styling */
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        width: 300px;
+    }
+
+    .modal button {
+        margin: 10px;
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+    }
+
+    /* Optional: Styling for the buttons */
+    #confirm-action {
+        background-color: rgb(68, 245, 83);
+    }
+
+    #cancel-action {
+        background-color: rgb(245, 68, 68);
+    }
+
 </style>
 
 <div class="order-details">
@@ -117,7 +156,7 @@
                     <td style=" text-align: center; border: none;">{{ order.Shipping_charge }}</td>
                 </tr>
                 <tr>
-                    <td><strong>Status: </strong><span style="color: red;">{{ order.status }}</span></td>
+                    <td><strong>Status: </strong><span style="color: rgb(245, 91, 91);">{{ order.status }}</span></td>
                     <td><strong>Quantity: </strong> {{ order.get_cart_items }}</td>
                     <td><strong>SubTotal: </strong> {{ order.get_cart_total }}</td>
                     <td><strong>Total: </strong> {{ order.total_price }}</td>
@@ -153,20 +192,20 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>Date Ordered</td>
-                    <td>{{ order.date_ordered|date:"F d, Y" }}</td>
-                    <td>{{ order.date_ordered|date:"h:i A" }}</td>
+                    <td>Order Created at</td>
+                    <td>{{ order.placed_time|date:"F d, Y" }}</td>
+                    <td>{{ order.placed_time|date:"h:i A" }}</td>
                 </tr>
-                {% if order.status == 'Shipped' %}
+                {% if order.status == 'Product Shipped' %}
                 <tr>
-                    <td>Shipped Date</td>
+                    <td>Product Shipped at</td>
                     <td>{{ order.shipped_time|date:"F d, Y" }}</td>
                     <td>{{ order.shipped_time|date:"h:i A" }}</td>
                 </tr>
                 {% endif %}
-                {% if order.status == 'Delivered' %}
+                {% if order.status == 'Product Delivered' %}
                 <tr>
-                    <td>Delivered Date</td>
+                    <td>Product Delivered at</td>
                     <td>{{ order.delivered_time|date:"F d, Y" }}</td>
                     <td>{{ order.delivered_time|date:"h:i A" }}</td>
                 </tr>
@@ -175,20 +214,73 @@
         </table>
     </div>
 
-    {% if order.status != 'Delivered' %}
-    <div class="section">
-        <h2>Update Order Status</h2>
-        <!-- <p>{{ next_status }}</p> -->
-        <form method="post" class="update-form">
-            {% csrf_token %}
-            <label for="status">Click The Button to Update Status:</label>
-            <button type="submit" class="btn" style="background-color: rgb(245, 68, 68);">Update Status to <span style="font-weight: bold;">"{{ next_status }}"</span></button>
-        </form>
-    </div>
+    {% if order.status != 'Product Delivered' %}
+        <div class="section">
+            <h2>Update Order Status</h2>
+            <form method="post" class="update-form" id="update-order-form">
+                {% csrf_token %}
+                <label for="status">Click The Button to Update Status:</label>
+                <select id="status" name="status">
+                    <option value="{{ next_status }}">{{ next_status }}</option>
+                </select>
+
+                <!-- Button to trigger confirmation -->
+                <button type="button" class="btn" id="confirm-btn" style="background-color: rgb(68, 245, 83);">Update Status to <span style="font-weight: bold;">"{{ next_status }}"</span></button>
+                
+                {% if order.status == 'Order Placed' %}
+                    <button type="button" class="btn" id="cancel-btn" style="background-color: rgb(245, 68, 68);"> <span style="font-weight: bold;">"Cancel" this Order</span></button>
+                {% endif %}
+            </form>
+        </div>
+
+        <!-- Confirmation modal -->
+        <div id="confirmation-alert" class="modal" style="display: none;">
+            <div class="modal-content">
+                <p>Are you sure you want to update the order to "<span style="font-weight: bold;">{{ next_status }}</span>"?</p>
+                <button type="button" id="confirm-action" style="background-color: rgb(68, 245, 83);">Confirm</button>
+                <button type="button" id="cancel-action" style="background-color: rgb(245, 68, 68);">Cancel</button>
+            </div>
+        </div>
     {% else %}
-    <div class="section">
-        <h2>Order Completed</h2>
-    </div>
+        <div class="section">
+            <h2 style="text-align: center;">Order Successfully Completed</h2>
+        </div>
     {% endif %}
 </div>
+
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function () {
+    // Handle the "Update Status" button click
+    document.getElementById('confirm-btn')?.addEventListener('click', function() {
+        // Show confirmation modal
+        document.getElementById('confirmation-alert').style.display = 'flex';
+    });
+
+    // Handle the "Cancel" button click (outside the modal)
+    document.getElementById('cancel-btn')?.addEventListener('click', function() {
+        // Show confirmation modal
+        document.getElementById('confirmation-alert').style.display = 'flex';
+    });
+
+    // Handle "Confirm" action from the modal
+    document.getElementById('confirm-action')?.addEventListener('click', function() {
+        // Get the selected status from the dropdown
+        var selectedStatus = document.getElementById('status').value;
+
+        // Set the selected status to the hidden input field in the form
+        document.getElementById('status').value = selectedStatus;
+
+        // Submit the form
+        document.getElementById('update-order-form').submit();
+    });
+
+    // Close the modal without submitting
+    document.getElementById('cancel-action')?.addEventListener('click', function() {
+        // Close the confirmation modal
+        document.getElementById('confirmation-alert').style.display = 'none';
+    });
+});
+
+</script>
+
 {% endblock %}

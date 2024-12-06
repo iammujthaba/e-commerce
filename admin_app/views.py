@@ -9,6 +9,7 @@ from django.views.decorators.http import require_POST
 from django.db import transaction
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
 
 def is_admin(user):
     return user.is_superuser
@@ -20,7 +21,7 @@ def dashboard(request):
     total_categories = Category.objects.count()
     total_products = Product.objects.count()
     total_customers = Customer.objects.count()
-    processing_orders_count = Order.objects.filter(status='Order Placed').count()
+    placed_orders_count = Order.objects.filter(status='Order Placed').count()
     confirmed_orders_count = Order.objects.filter(status='Order Confirmed').count()
     shipped_orders_count = Order.objects.filter(status='Product Shipped').count()
     delivered_orders_count = Order.objects.filter(status='Product Delivered').count()
@@ -31,7 +32,7 @@ def dashboard(request):
     context = {
         'total_categories': total_categories,
         'total_products': total_products,
-        'processing_orders_count': processing_orders_count,
+        'placed_orders_count': placed_orders_count,
         'confirmed_orders_count': confirmed_orders_count,
         'shipped_orders_count': shipped_orders_count,
         'delivered_orders_count': delivered_orders_count,
@@ -225,18 +226,32 @@ def order_view(request, pk):
 
     if request.method == 'POST':
         new_status = request.POST.get('status')
-        if new_status and new_status == status_progression[order.status]:
+        if new_status and new_status == status_progression.get(order.status):
             order.status = new_status
             order.save()
-            if new_status == 'Product Shipped':
+
+            if new_status == 'Order Confirmed':
+                order.confirmed_time = timezone.now()
+                order.save()
+                messages.success(request, f"Order {order.id} status updated to 'Order Confirmed' Successfully.")
+                return redirect('admin_app:placed_orders')
+            
+            elif new_status == 'Product Shipped':
                 order.shipped_time = timezone.now()
+                order.save()
+                messages.success(request, f"Order {order.id} status updated to 'Product Shipped' Successfully.")
+                return redirect('admin_app:confirmed_orders')
+            
             elif new_status == 'Product Delivered':
                 order.delivered_time = timezone.now()
-            order.save()
-            return redirect('admin_app:order_view', pk=pk)
+                order.save()
+                messages.success(request, f"Order {order.id} status updated to 'Product Delivered' Successfully.")
+                return redirect('admin_app:shipped_orders')
+            
+                
 
     # Get the next possible status
-    next_status = status_progression[order.status]
+    next_status = status_progression.get(order.status)
 
     return render(request, 'admin_app/order_view.html', {
         'order': order,
@@ -247,7 +262,7 @@ def order_view(request, pk):
 
 @login_required
 @user_passes_test(is_admin)
-def processing_orders(request):
+def placed_orders(request):
     orders = Order.objects.filter(complete=True, status='Order Placed')
     return render_order_list(request, orders, 'New Orders', 'admin_app/order_list.html')
 

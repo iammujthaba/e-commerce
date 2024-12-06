@@ -166,11 +166,12 @@ class Order(models.Model):
     ]
 
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
-    date_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False)
     order_id = models.CharField(max_length=100, unique=True, default=uuid.uuid4, editable=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Order Abandoned')
-    received_time = models.DateTimeField(null=True, blank=True)
+    # automaticaly add order creation time if its abandoned or placed order
+    date_ordered = models.DateTimeField(auto_now_add=True)
+    placed_time = models.DateTimeField(null=True, blank=True)
     confirmed_time = models.DateTimeField(null=True, blank=True)
     shipped_time = models.DateTimeField(null=True, blank=True)
     delivered_time = models.DateTimeField(null=True, blank=True)
@@ -200,8 +201,8 @@ class Order(models.Model):
         return latest_payment.payment_status if latest_payment else "No Payments"
 
     def save(self, *args, **kwargs):
-        if self.status == 'Order Placed' and not self.received_time:
-            self.received_time = timezone.now()
+        if self.status == 'Order Placed' and not self.placed_time:
+            self.placed_time = timezone.now()
         elif self.status == 'Order Confirmed' and not self.confirmed_time:
             self.confirmed_time = timezone.now()
         elif self.status == 'Product Shipped' and not self.shipped_time:

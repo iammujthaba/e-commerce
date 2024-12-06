@@ -137,11 +137,11 @@
             <div class="progress-step" data-step="Product Shipped"></div>
             <div class="progress-step" data-step="Product Delivered"></div>
         </div>
-        <div class="progress-labels">
-            <span>Order Placed</span>
-            <span>Order Confirmed</span>
-            <span>Product Shipped</span>
-            <span>Product Delivered</span>
+        <div class="progress-labels" style="text-align: center;">
+            <span>Ordered</span>
+            <span>Confirmed</span>
+            <span>Shipped</span>
+            <span>Delivered</span>
         </div>
         <div class="track-order">
             <a href="{% url 'store_app:trackOrder' order.order.id %}" style="display: flex;">Track Your Order

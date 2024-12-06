@@ -1,7 +1,8 @@
 {% extends 'admin_app/base_admin.html' %}
 {% block content %}
+{% load static %}
 <style>
-    .status-processing { color: red; }
+    .status-Placed { color: red; }
     .status-confirmed { color: orange; }
     .status-shipped { color: blue; }
     .status-delivered { color: green; }
@@ -9,7 +10,27 @@
         font-size: 1.2em;
         font-family: cursive;
     }
+    .alert-container {
+            margin-bottom: 20px;
+        }
+    .alert {
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
 </style>
+<!-- Display messages -->
+{% if messages %}
+<div class="alert alert-danger">
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+
 <h1>{{ title }}</h1>
 <table>
     <thead>
@@ -28,20 +49,20 @@
     <tbody>
         {% for order_detail in orders_with_details %}
         <tr>
-            <td>{{ forloop.counter }}</td>
+            <td>{{ order_detail.order.id }}</td>
             <td>{{ order_detail.order.customer.name }}</td>
-            <td>{{ order_detail.order.date_ordered|date:"Y-m-d" }}</td>
+            <td>{{ order_detail.order.placed_time|date:"Y-m-d" }}</td>
             <td>{{ order_detail.total_quantity }}</td>
             <td>{{ order_detail.order.get_cart_total }}</td>
             <td>{{ order_detail.order.total_price }}</td>
             <!-- <td>{{ order_detail.state }}</td> -->
-            <td class="{% if order_detail.order.status == 'Processing' %}
-                            status-processing
-                        {% elif order_detail.order.status == 'Confirmed' %}
+            <td class="{% if order_detail.order.status == 'Order Placed' %}
+                            status-Placed
+                        {% elif order_detail.order.status == 'Order Confirmed' %}
                             status-confirmed
-                        {% elif order_detail.order.status == 'Shipped' %}
+                        {% elif order_detail.order.status == 'Product Shipped' %}
                             status-shipped
-                        {% elif order_detail.order.status == 'Delivered' %}
+                        {% elif order_detail.order.status == 'Product Delivered' %}
                             status-delivered
                         {% endif %} status">
                 {{ order_detail.order.status }}

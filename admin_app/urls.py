@@ -17,7 +17,7 @@ urlpatterns = [
     path('products/products/update-priority/', views.update_product_priority, name='update_product_priority'),
 
     path('admin_app/orders/pending/<int:pk>/', views.order_view, name='order_view'),
-    path('admin_app/orders/processing/', views.processing_orders, name='processing_orders'),
+    path('admin_app/orders/placed/', views.placed_orders, name='placed_orders'),
     path('admin_app/orders/confirmed/', views.confirmed_orders, name='confirmed_orders'),
     path('admin_app/orders/shipped/', views.shipped_orders, name='shipped_orders'),
     path('admin_app/orders/completed/', views.completed_orders, name='completed_orders'),

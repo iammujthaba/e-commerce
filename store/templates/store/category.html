@@ -5,13 +5,14 @@
 {% load custom_filters %}
 
 <link rel="stylesheet" href="{% static 'assets/css/style/catogory.css' %}">
+{% if messages %}
+    <div id="popup-message-container" class="popup-message-container"></div>
 
-<div id="popup-message-container" class="popup-message-container"></div>
-
-<script src="{% static 'js/popup_message.js' %}"></script>
-<script>
-    var messagesData = {{ messages|safe }};
-</script>
+    <script src="{% static 'js/popup_message.js' %}"></script>
+    <script>
+        var messagesData = {{ messages|safe }};
+    </script>
+{% endif %}
 
     <div>
 

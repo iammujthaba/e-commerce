@@ -465,7 +465,11 @@ def checkout(request):
 
 @csrf_protect
 def payment(request):
-    if request.user.is_authenticated:
+    if not request.user.is_authenticated:
+        return redirect('store_app:account_info')
+
+    try:
+        # Fetch cart and order data
         data = cartData(request)
         order = data['order']
         items = data['items']
@@ -481,13 +485,13 @@ def payment(request):
 
         # Create a Razorpay order
         razorpay_order = client.order.create({
-            'amount': int(order.total_price * 100),
+            'amount': int(order.total_price * 100),  # Amount in paise
             'currency': 'INR',
             'payment_capture': '1',
             "receipt": f"order_rcptid_{order.id}"
         })
 
-        # Create a new PaymentRecord for this specific order
+        # Create a new PaymentRecord
         payment_record = PaymentRecord.objects.create(
             order=order,
             razorpay_order_id=razorpay_order['id'],
@@ -527,9 +531,19 @@ def payment(request):
         }
 
         return render(request, 'store/payment.html', context)
-    else:
-        return redirect('store_app:account_info')
 
+    except razorpay.errors.BadRequestError as e:
+        logger.error(f"Razorpay BadRequestError: {str(e)}")
+        messages.error(request, "There was an issue with the payment request. Please try again.")
+    except razorpay.errors.ServerError as e:
+        logger.error(f"Razorpay ServerError: {str(e)}")
+        messages.error(request, "The payment gateway is currently experiencing issues. Please try again later.")
+    except Exception as e:
+        logger.exception("Unexpected error during payment processing")
+        messages.error(request, "An unexpected error occurred. Please Check Your internet connection Or Please try again later.")
+
+    # Redirect back to the checkout page if any error occurs
+    return redirect('store_app:payment')
 
 # order validation and creation
 # this function only work after successfull peyment
@@ -619,6 +633,7 @@ def processOrder(request):
         order.complete = True
         order.order_created = True
         order.status = 'Order Placed'
+        order.placed_time = timezone.now()
         order.save()
 
         # payment_record.payment_status = 'Success'
