@@ -315,7 +315,7 @@ def calculate_shipping_ajax(request):
 @ensure_csrf_cookie
 def cart(request):
     data = cartData(request)
-    cartItems = data['cartItems']
+    # cartItems = data['cartItems']
     order = data['order']
     items = data['items']
     total_price_difference = data['total_price_difference']
@@ -349,7 +349,7 @@ def cart(request):
     context = {
         'items': items,
         'order': order,
-        'cartItems': cartItems,
+        # 'cartItems': cartItems,
         'total_price_difference': total_price_difference,
         'all_states': all_states,
         'selected_state': selected_state,
@@ -467,23 +467,19 @@ def checkout(request):
 def payment(request):
     if request.user.is_authenticated:
         data = cartData(request)
-        # cartItems = data['cartItems']
         order = data['order']
         items = data['items']
 
         # Retrieve shipping info from session
         shipping_addres = request.session.get('shipping_info', {})
-        # shipping_addres = ShippingAddress.objects.filter(customer=order.customer).order_by('-date_added').first()
 
-        # Calculate shipping charge
-        shipping_charge = calculate_shipping(data.get('state'), items)
-
-        # Calculate total amount
+        # Calculate shipping charge and total price
+        shipping_charge = calculate_shipping(shipping_addres.get('state'), items)
         order.total_price = order.get_cart_total + shipping_charge
-        order.Shipping_charge
+        order.Shipping_charge = shipping_charge
         order.save()
 
-        # Create Razorpay order
+        # Create a Razorpay order
         razorpay_order = client.order.create({
             'amount': int(order.total_price * 100),
             'currency': 'INR',
@@ -491,18 +487,37 @@ def payment(request):
             "receipt": f"order_rcptid_{order.id}"
         })
 
-        # Create the PaymentRecord
+        # Create a new PaymentRecord for this specific order
         payment_record = PaymentRecord.objects.create(
             order=order,
             razorpay_order_id=razorpay_order['id'],
-            payment_status='Incomplete',  # Initial status
+            payment_status='Incomplete',
             amount=order.total_price
         )
+
+
+        print('................first.Order.................')
+        print('order_id: ',order.order_id)
+        print('order_created: ',order.order_created)
+        print('complete: ',order.complete)
+        print('total_price: ',order.total_price)
+        print('Shipping_charge: ',order.Shipping_charge)
+        print('status: ',order.status)
+        print('date_ordered: ',order.date_ordered)
+        print()
+        print('................first.PaymentRecord.................')
+        print('razorpay_order_id: ',payment_record.razorpay_order_id)
+        print('razorpay_payment_id: ',payment_record.razorpay_payment_id)
+        print('payment_status: ',payment_record.payment_status)
+        print('amount: ',payment_record.amount)
+        print('created_at: ',payment_record.created_at)
+        print('details: ',payment_record.details)
+        print('.....................................')
+
 
         context = {
             'items': items,
             'order': order,
-            # 'cartItems': cartItems,
             'shipping_addres': shipping_addres,
             'shipping_charge': shipping_charge,
             'razorpay_key_id': settings.RAZORPAY_KEY_ID,
@@ -525,21 +540,22 @@ def processOrder(request):
 
     if not request.user.is_authenticated:
         return JsonResponse({'success': False, 'message': 'User not authenticated.'})
+    
+    data = json.loads(request.body)
+    razorpay_payment_id = data.get('razorpay_payment_id')
+    razorpay_order_id = data.get('razorpay_order_id')
+    razorpay_signature = data.get('razorpay_signature')
+
+    # Fetch order details from the database
+    customer = request.user.customer
+    payment_record = PaymentRecord.objects.get(razorpay_order_id=razorpay_order_id)
+    payment_record.payment_status = 'Success'
+    order = payment_record.order  # Access the related order
+    # order = Order.objects.get(customer=customer, complete=False, razorpay_order_id=razorpay_order_id)
 
     try:
-        data = json.loads(request.body)
-        razorpay_payment_id = data.get('razorpay_payment_id')
-        razorpay_order_id = data.get('razorpay_order_id')
-        razorpay_signature = data.get('razorpay_signature')
-
-        # Fetch order details from the database
-        customer = request.user.customer
-        payment_record = PaymentRecord.objects.get(razorpay_order_id=razorpay_order_id)
-        order = payment_record.order  # Access the related order
-        # order = Order.objects.get(customer=customer, complete=False, razorpay_order_id=razorpay_order_id)
-
         total = payment_record.order.total_price
-        payment_record.payment_status = 'Success'
+        # payment_record.payment_status = 'Success'
         payment_record.save()
 
         order.complete = False
@@ -602,9 +618,10 @@ def processOrder(request):
         # order.razorpay_payment_id = razorpay_payment_id
         order.complete = True
         order.order_created = True
+        order.status = 'Order Placed'
         order.save()
 
-        payment_record.payment_status = 'Success'
+        # payment_record.payment_status = 'Success'
         payment_record.razorpay_payment_id = razorpay_payment_id
         payment_record.details = "Order successful."
         payment_record.save()
@@ -633,6 +650,24 @@ def processOrder(request):
             product=product,
             price_at_purchase=item.price_at_purchase
         )
+
+        print('................last.Order.................')
+        print('order_id: ',order.order_id)
+        print('order_created: ',order.order_created)
+        print('complete: ',order.complete)
+        print('total_price: ',order.total_price)
+        print('Shipping_charge: ',order.Shipping_charge)
+        print('status: ',order.status)
+        print('date_ordered: ',order.date_ordered)
+        print()
+        print('................last.PaymentRecord.................')
+        print('razorpay_order_id: ',payment_record.razorpay_order_id)
+        print('razorpay_payment_id: ',payment_record.razorpay_payment_id)
+        print('payment_status: ',payment_record.payment_status)
+        print('amount: ',payment_record.amount)
+        print('created_at: ',payment_record.created_at)
+        print('details: ',payment_record.details)
+        print('.....................................')
 
         # Clear the cart
         if 'cart' in request.session:
@@ -668,9 +703,9 @@ def myorders(request):
     customer = request.user.customer
 
     if request.path == '/delivered/':
-        orders = Order.objects.filter(customer=customer, complete=True, status='Delivered').order_by('-date_ordered')
+        orders = Order.objects.filter(customer=customer, complete=True, status='Product Delivered').order_by('-date_ordered')
     else:
-        orders = Order.objects.filter(customer=customer, complete=True).exclude(status='Delivered').order_by('-date_ordered')
+        orders = Order.objects.filter(customer=customer, complete=True).exclude(status='Product Delivered').order_by('-date_ordered')
 
     orders_with_details = []
     for order in orders:

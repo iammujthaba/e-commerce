@@ -74,7 +74,7 @@
 <div class="order-details">
     {% if shipping_address %}
     <section class="section">
-        <h1>Order Detail - {{ order.customer.name }}</h1>
+        <h1>Order Details of - {{ order.customer.name }}</h1>
         <div class="grid">
             <div>
                 <h2>Contact Details</h2>
@@ -103,7 +103,8 @@
                 <tr>
                     <th>Product</th>
                     <th>Quantity</th>
-                    <th>Total</th>
+                    <th>Price</th>
+                    <th>Delivery</th>
                 </tr>
             </thead>
             <tbody>
@@ -112,12 +113,14 @@
                     <td><a href="{{ item.product.get_url }}">{{ item.product.name }}</a></td>
                     <td>{{ item.quantity }}</td>
                     <td>{{ item.get_total }}</td>
-                </tr>
                 {% endfor %}
+                    <td style=" text-align: center; border: none;">{{ order.Shipping_charge }}</td>
+                </tr>
                 <tr>
                     <td><strong>Status: </strong><span style="color: red;">{{ order.status }}</span></td>
                     <td><strong>Quantity: </strong> {{ order.get_cart_items }}</td>
-                    <td><strong>Total: </strong> {{ order.get_cart_total }}</td>
+                    <td><strong>SubTotal: </strong> {{ order.get_cart_total }}</td>
+                    <td><strong>Total: </strong> {{ order.total_price }}</td>
                 </tr>
             </tbody>
         </table>
@@ -175,13 +178,11 @@
     {% if order.status != 'Delivered' %}
     <div class="section">
         <h2>Update Order Status</h2>
+        <!-- <p>{{ next_status }}</p> -->
         <form method="post" class="update-form">
             {% csrf_token %}
-            <label for="status">Status:</label>
-            <select id="status" name="status">
-                <option value="{{ next_status }}">{{ next_status }}</option>
-            </select>
-            <button type="submit" class="btn btn-success">Update to {{ next_status }}</button>
+            <label for="status">Click The Button to Update Status:</label>
+            <button type="submit" class="btn" style="background-color: rgb(245, 68, 68);">Update Status to <span style="font-weight: bold;">"{{ next_status }}"</span></button>
         </form>
     </div>
     {% else %}

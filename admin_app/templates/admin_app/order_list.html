@@ -19,7 +19,8 @@
             <th>Ordered</th>
             <th>Quantity</th>
             <th>Price</th>
-            <th>State</th>
+            <th>Total</th>
+            <!-- <th>State</th> -->
             <th>Status</th>
             <th>Actions</th>
         </tr>
@@ -32,7 +33,8 @@
             <td>{{ order_detail.order.date_ordered|date:"Y-m-d" }}</td>
             <td>{{ order_detail.total_quantity }}</td>
             <td>{{ order_detail.order.get_cart_total }}</td>
-            <td>{{ order_detail.state }}</td>
+            <td>{{ order_detail.order.total_price }}</td>
+            <!-- <td>{{ order_detail.state }}</td> -->
             <td class="{% if order_detail.order.status == 'Processing' %}
                             status-processing
                         {% elif order_detail.order.status == 'Confirmed' %}

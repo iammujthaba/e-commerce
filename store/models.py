@@ -158,18 +158,19 @@ class Customer(models.Model):
 
 class Order(models.Model):
     STATUS_CHOICES = [
-        ('Processing', 'Processing'),
-        ('Confirmed', 'Confirmed'),
-        ('Shipped', 'Shipped'),
-        ('Delivered', 'Delivered')
+        ('Order Abandoned', 'Order Abandoned'),  # New status for abandoned orders
+        ('Order Placed', 'Order Placed'),
+        ('Order Confirmed', 'Order Confirmed'),
+        ('Product Shipped', 'Product Shipped'),
+        ('Product Delivered', 'Product Delivered'),
     ]
 
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False)
     order_id = models.CharField(max_length=100, unique=True, default=uuid.uuid4, editable=False)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Processing')
-    processing_time = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Order Abandoned')
+    received_time = models.DateTimeField(null=True, blank=True)
     confirmed_time = models.DateTimeField(null=True, blank=True)
     shipped_time = models.DateTimeField(null=True, blank=True)
     delivered_time = models.DateTimeField(null=True, blank=True)
@@ -199,13 +200,13 @@ class Order(models.Model):
         return latest_payment.payment_status if latest_payment else "No Payments"
 
     def save(self, *args, **kwargs):
-        if self.status == 'Processing' and not self.processing_time:
-            self.processing_time = timezone.now()
-        elif self.status == 'Confirmed' and not self.confirmed_time:
+        if self.status == 'Order Placed' and not self.received_time:
+            self.received_time = timezone.now()
+        elif self.status == 'Order Confirmed' and not self.confirmed_time:
             self.confirmed_time = timezone.now()
-        elif self.status == 'Shipped' and not self.shipped_time:
+        elif self.status == 'Product Shipped' and not self.shipped_time:
             self.shipped_time = timezone.now()
-        elif self.status == 'Delivered' and not self.delivered_time:
+        elif self.status == 'Product Delivered' and not self.delivered_time:
             self.delivered_time = timezone.now()
         super().save(*args, **kwargs)
 

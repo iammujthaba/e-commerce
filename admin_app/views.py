@@ -20,10 +20,10 @@ def dashboard(request):
     total_categories = Category.objects.count()
     total_products = Product.objects.count()
     total_customers = Customer.objects.count()
-    processing_orders_count = Order.objects.filter(status='Processing').count()
-    confirmed_orders_count = Order.objects.filter(status='Confirmed').count()
-    shipped_orders_count = Order.objects.filter(status='Shipped').count()
-    delivered_orders_count = Order.objects.filter(status='Delivered').count()
+    processing_orders_count = Order.objects.filter(status='Order Placed').count()
+    confirmed_orders_count = Order.objects.filter(status='Order Confirmed').count()
+    shipped_orders_count = Order.objects.filter(status='Product Shipped').count()
+    delivered_orders_count = Order.objects.filter(status='Product Delivered').count()
     total_revenue = OrderItem.objects.filter(order__complete=True).aggregate(
         total_revenue=Sum(F('price_at_purchase') * F('quantity'), output_field=FloatField())
     )['total_revenue'] or 0
@@ -217,10 +217,10 @@ def order_view(request, pk):
 
     # Define the order status progression
     status_progression = {
-        'Processing': 'Confirmed',
-        'Confirmed': 'Shipped',
-        'Shipped': 'Delivered',
-        'Delivered': 'Delivered'  # No further status change possible
+        'Order Placed': 'Order Confirmed',
+        'Order Confirmed': 'Product Shipped',
+        'Product Shipped': 'Product Delivered',
+        'Product Delivered': 'Product Delivered'  # No further status change possible
     }
 
     if request.method == 'POST':
@@ -228,9 +228,9 @@ def order_view(request, pk):
         if new_status and new_status == status_progression[order.status]:
             order.status = new_status
             order.save()
-            if new_status == 'Shipped':
+            if new_status == 'Product Shipped':
                 order.shipped_time = timezone.now()
-            elif new_status == 'Delivered':
+            elif new_status == 'Product Delivered':
                 order.delivered_time = timezone.now()
             order.save()
             return redirect('admin_app:order_view', pk=pk)
@@ -248,28 +248,28 @@ def order_view(request, pk):
 @login_required
 @user_passes_test(is_admin)
 def processing_orders(request):
-    orders = Order.objects.filter(complete=True, status='Processing')
-    return render_order_list(request, orders, 'Processing Orders', 'admin_app/order_list.html')
+    orders = Order.objects.filter(complete=True, status='Order Placed')
+    return render_order_list(request, orders, 'New Orders', 'admin_app/order_list.html')
 
 
 @login_required
 @user_passes_test(is_admin)
 def confirmed_orders(request):
-    orders = Order.objects.filter(complete=True, status='Confirmed')
+    orders = Order.objects.filter(complete=True, status='Order Confirmed')
     return render_order_list(request, orders, 'Confirmed Orders', 'admin_app/order_list.html')
 
 
 @login_required
 @user_passes_test(is_admin)
 def shipped_orders(request):
-    orders = Order.objects.filter(complete=True, status='Shipped')
+    orders = Order.objects.filter(complete=True, status='Product Shipped')
     return render_order_list(request, orders, 'Shipped Orders', 'admin_app/order_list.html')
 
 
 @login_required
 @user_passes_test(is_admin)
 def completed_orders(request):
-    orders = Order.objects.filter(complete=True, status='Delivered')
+    orders = Order.objects.filter(complete=True, status='Product Delivered')
     return render_order_list(request, orders, 'Completed Orders', 'admin_app/order_list.html')
 
 
@@ -288,7 +288,8 @@ def render_order_list(request, orders, title, template):
 @staff_member_required
 def admin_payment_status(request):
     # orders = Order.objects.all().order_by('-date_ordered')
-    payment_records = PaymentRecord.objects.all().order_by('-created_at')
+    # payment_records = PaymentRecord.objects.all().order_by('-created_at')
+    payment_records = PaymentRecord.objects.select_related('order').order_by('-created_at')
     context = {'payment_records': payment_records}
     return render(request, 'admin_app/payment_status.html', context)
 

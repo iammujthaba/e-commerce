@@ -23,7 +23,7 @@ urlpatterns = [
     path('myorders/', views.myorders, name='myorders'),
     path('order/track/<int:order_id>/', views.trackOrder, name='trackOrder'),
     path('delivered/',views.myorders,name='delivered'),
-    path('payment-status/', views.payment_status, name='payment_status'),
+    path('payment_status/', views.payment_status, name='payment_status'),
 
     path('about/',views.about,name='about'),
     path('gallery/',views.gallery,name='gallery'),

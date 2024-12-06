@@ -132,16 +132,16 @@
         <div class="progress-bar" data-status="{{ order.status }}">
             <div class="progress-line-background"></div>
             <div class="progress-line"></div>
-            <div class="progress-step" data-step="Processing"></div>
-            <div class="progress-step" data-step="Confirmed"></div>
-            <div class="progress-step" data-step="Shipped"></div>
-            <div class="progress-step" data-step="Delivered"></div>
+            <div class="progress-step" data-step="Order Placed"></div>
+            <div class="progress-step" data-step="Order Confirmed"></div>
+            <div class="progress-step" data-step="Product Shipped"></div>
+            <div class="progress-step" data-step="Product Delivered"></div>
         </div>
         <div class="progress-labels">
-            <span>Processing</span>
-            <span>Confirmed</span>
-            <span>Shipped</span>
-            <span>Delivered</span>
+            <span>Order Placed</span>
+            <span>Order Confirmed</span>
+            <span>Product Shipped</span>
+            <span>Product Delivered</span>
         </div>
         <div class="track-order">
             <a href="{% url 'store_app:trackOrder' order.order.id %}" style="display: flex;">Track Your Order
@@ -175,7 +175,7 @@
                 const steps = bar.querySelectorAll('.progress-step');
                 const line = bar.querySelector('.progress-line');
                 
-                const statusIndex = ['Processing', 'Confirmed', 'Shipped', 'Delivered'].indexOf(status);
+                const statusIndex = ['Order Placed', 'Order Confirmed', 'Product Shipped', 'Product Delivered'].indexOf(status);
                 
                 steps.forEach(function(step, index) {
                     if (index <= statusIndex) {
