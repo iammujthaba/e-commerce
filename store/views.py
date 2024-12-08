@@ -312,6 +312,50 @@ def calculate_shipping_ajax(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
+@csrf_protect
+def updateItem(request):
+    data = json.loads(request.body)
+    productId = data['productId']
+    action = data['action']
+    customer = request.user.customer if request.user.is_authenticated else None
+    product = Product.objects.get(id=productId)
+    order, created = Order.objects.get_or_create(customer=customer, complete=False)
+    orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
+
+    added = True
+    message = ""
+
+    if action == 'add':
+        if orderItem.quantity + 1 <= product.stock:
+            orderItem.quantity += 1
+            orderItem.save()
+        else:
+            added = False
+            message = "There is no more stock available. If you want more, please contact us."
+    elif action == 'remove':
+        orderItem.quantity -= 1
+        if orderItem.quantity <= 0:
+            orderItem.delete()
+        else:
+            orderItem.save()
+    elif action == 'remove-all':
+        orderItem.delete()
+
+    cart_total = order.get_cart_total
+    cart_items = order.get_cart_items
+    total_price_difference = sum((item.product.old_price - item.product.new_price if item.product.old_price else 0) * item.quantity for item in order.orderitem_set.all())
+
+    return JsonResponse({
+        'added': added,
+        'message': message,
+        'cartItems': cart_items,
+        'cartTotal': cart_total,
+        'totalPriceDifference': total_price_difference,
+        'itemQuantity': orderItem.quantity if orderItem.id else 0,
+        'itemTotal': orderItem.get_total if orderItem.id else 0,
+    }, safe=False)
+
+
 @ensure_csrf_cookie
 def cart(request):
     data = cartData(request)
@@ -356,51 +400,18 @@ def cart(request):
         'shipping_charge': shipping_charge,
         'cart_items_data': json.dumps(cart_items_data),
     }
+
+    print('................first Order.................')
+    print('order_id: ',order.order_id)
+    print('order_created: ',order.order_created)
+    print('complete: ',order.complete)
+    print('total_price: ',order.total_price)
+    print('Shipping_charge: ',order.Shipping_charge)
+    print('status: ',order.status)
+    print('date_ordered: ',order.date_ordered)
+    print()
+
     return render(request, 'store/Cart.html', context)
-
-
-@csrf_protect
-def updateItem(request):
-    data = json.loads(request.body)
-    productId = data['productId']
-    action = data['action']
-    customer = request.user.customer if request.user.is_authenticated else None
-    product = Product.objects.get(id=productId)
-    order, created = Order.objects.get_or_create(customer=customer, complete=False)
-    orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
-
-    added = True
-    message = ""
-
-    if action == 'add':
-        if orderItem.quantity + 1 <= product.stock:
-            orderItem.quantity += 1
-            orderItem.save()
-        else:
-            added = False
-            message = "There is no more stock available. If you want more, please contact us."
-    elif action == 'remove':
-        orderItem.quantity -= 1
-        if orderItem.quantity <= 0:
-            orderItem.delete()
-        else:
-            orderItem.save()
-    elif action == 'remove-all':
-        orderItem.delete()
-
-    cart_total = order.get_cart_total
-    cart_items = order.get_cart_items
-    total_price_difference = sum((item.product.old_price - item.product.new_price if item.product.old_price else 0) * item.quantity for item in order.orderitem_set.all())
-
-    return JsonResponse({
-        'added': added,
-        'message': message,
-        'cartItems': cart_items,
-        'cartTotal': cart_total,
-        'totalPriceDifference': total_price_difference,
-        'itemQuantity': orderItem.quantity if orderItem.id else 0,
-        'itemTotal': orderItem.get_total if orderItem.id else 0,
-    }, safe=False)
 
 
 @csrf_protect
@@ -500,7 +511,7 @@ def payment(request):
         )
 
 
-        print('................first.Order.................')
+        print('................second Order.................')
         print('order_id: ',order.order_id)
         print('order_created: ',order.order_created)
         print('complete: ',order.complete)
@@ -509,7 +520,7 @@ def payment(request):
         print('status: ',order.status)
         print('date_ordered: ',order.date_ordered)
         print()
-        print('................first.PaymentRecord.................')
+        print('................first PaymentRecord.................')
         print('razorpay_order_id: ',payment_record.razorpay_order_id)
         print('razorpay_payment_id: ',payment_record.razorpay_payment_id)
         print('payment_status: ',payment_record.payment_status)
@@ -666,7 +677,7 @@ def processOrder(request):
             price_at_purchase=item.price_at_purchase
         )
 
-        print('................last.Order.................')
+        print('................last Order.................')
         print('order_id: ',order.order_id)
         print('order_created: ',order.order_created)
         print('complete: ',order.complete)
@@ -675,7 +686,7 @@ def processOrder(request):
         print('status: ',order.status)
         print('date_ordered: ',order.date_ordered)
         print()
-        print('................last.PaymentRecord.................')
+        print('................last PaymentRecord.................')
         print('razorpay_order_id: ',payment_record.razorpay_order_id)
         print('razorpay_payment_id: ',payment_record.razorpay_payment_id)
         print('payment_status: ',payment_record.payment_status)
