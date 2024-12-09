@@ -345,6 +345,16 @@ def updateItem(request):
     cart_items = order.get_cart_items
     total_price_difference = sum((item.product.old_price - item.product.new_price if item.product.old_price else 0) * item.quantity for item in order.orderitem_set.all())
 
+    print('................first Order.................')
+    print('order_id: ',order.order_id)
+    print('order_created: ',order.order_created)
+    print('complete: ',order.complete)
+    print('total_price: ',order.total_price)
+    print('Shipping_charge: ',order.Shipping_charge)
+    print('status: ',order.status)
+    print('date_ordered: ',order.date_ordered)
+    print()
+
     return JsonResponse({
         'added': added,
         'message': message,
@@ -401,7 +411,7 @@ def cart(request):
         'cart_items_data': json.dumps(cart_items_data),
     }
 
-    print('................first Order.................')
+    print('................second Order.................')
     print('order_id: ',order.order_id)
     print('order_created: ',order.order_created)
     print('complete: ',order.complete)
@@ -511,7 +521,7 @@ def payment(request):
         )
 
 
-        print('................second Order.................')
+        print('................thired Order.................')
         print('order_id: ',order.order_id)
         print('order_created: ',order.order_created)
         print('complete: ',order.complete)
