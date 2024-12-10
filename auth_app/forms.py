@@ -33,6 +33,12 @@ class RegistrationForm(forms.Form):
         ]
     )
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).exists():
+            raise ValidationError(f'The username "{username}" is already taken.')
+        return username
+
     def clean_contact_number(self):
         contact_number = self.cleaned_data.get('contact_number')
         if Customer.objects.filter(contact_number=contact_number).exists():

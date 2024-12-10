@@ -25,6 +25,7 @@ def register(request):
                 user = User.objects.create_user(username=username)
                 Customer.objects.create(user=user, name=username, contact_number=contact_number)
                 auth_login(request, user)
+
                 # Merge cookies cart with user cart
                 cart_response = merge_cookie_cart_with_user_cart(request, user)
                 # Merge cookies wishlist with user wishlist
@@ -33,9 +34,10 @@ def register(request):
                     return cart_response
                 elif wishlist_response:
                     return wishlist_response
+                
                 return redirect('auth_app:login')
             except Exception as e:
-                messages.error(request, f"An error occurred: {str(e)}")
+                messages.error(request, f"An unexpected error occurred: {str(e)}")
         else:
             for field, errors in form.errors.items():
                 for error in errors:
