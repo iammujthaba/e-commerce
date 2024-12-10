@@ -25,7 +25,7 @@ def dashboard(request):
     confirmed_orders_count = Order.objects.filter(status='Order Confirmed').count()
     shipped_orders_count = Order.objects.filter(status='Product Shipped').count()
     delivered_orders_count = Order.objects.filter(status='Product Delivered').count()
-    total_revenue = OrderItem.objects.filter(order__complete=True).aggregate(
+    total_revenue = OrderItem.objects.filter(order__order_created=True).aggregate(
         total_revenue=Sum(F('price_at_purchase') * F('quantity'), output_field=FloatField())
     )['total_revenue'] or 0
     
@@ -263,28 +263,28 @@ def order_view(request, pk):
 @login_required
 @user_passes_test(is_admin)
 def placed_orders(request):
-    orders = Order.objects.filter(complete=True, status='Order Placed')
+    orders = Order.objects.filter(status='Order Placed')
     return render_order_list(request, orders, 'New Orders', 'admin_app/order_list.html')
 
 
 @login_required
 @user_passes_test(is_admin)
 def confirmed_orders(request):
-    orders = Order.objects.filter(complete=True, status='Order Confirmed')
+    orders = Order.objects.filter(status='Order Confirmed')
     return render_order_list(request, orders, 'Confirmed Orders', 'admin_app/order_list.html')
 
 
 @login_required
 @user_passes_test(is_admin)
 def shipped_orders(request):
-    orders = Order.objects.filter(complete=True, status='Product Shipped')
+    orders = Order.objects.filter(status='Product Shipped')
     return render_order_list(request, orders, 'Shipped Orders', 'admin_app/order_list.html')
 
 
 @login_required
 @user_passes_test(is_admin)
 def completed_orders(request):
-    orders = Order.objects.filter(complete=True, status='Product Delivered')
+    orders = Order.objects.filter(status='Product Delivered')
     return render_order_list(request, orders, 'Completed Orders', 'admin_app/order_list.html')
 
 
@@ -312,7 +312,7 @@ def admin_payment_status(request):
 @user_passes_test(is_admin)
 def users_list(request):
     total_users = Customer.objects.all()
-    complete_orders = Order.objects.filter(complete=True)
+    complete_orders = Order.objects.filter(order_created=True)
     customer_ids_with_complete_orders = set(complete_orders.values_list('customer_id', flat=True))
     customers_with_complete_orders = Customer.objects.filter(id__in=customer_ids_with_complete_orders)
     only_users = total_users.exclude(id__in=customer_ids_with_complete_orders)

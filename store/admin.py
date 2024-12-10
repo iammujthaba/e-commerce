@@ -3,7 +3,7 @@ from .models import *
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'customer', 'date_ordered', 'complete', 'status', 'placed_time', 'shipped_time', 'delivered_time')
+    list_display = ('id', 'customer', 'date_ordered', 'payment_success', 'order_created', 'status', 'placed_time', 'shipped_time', 'delivered_time')
     list_editable = ('status',)
 
 

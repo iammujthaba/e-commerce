@@ -115,7 +115,7 @@ def merge_cookie_cart_with_user_cart(request, user):
 
     if cart:
         customer = user.customer
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        order, created = Order.objects.get_or_create(customer=customer, order_created=False, payment_success = False)
 
         success_messages = set()
         info_messages = set()
@@ -167,7 +167,7 @@ def merge_cookie_cart_with_user_cart(request, user):
     else:
         customer = user.customer
         try:
-            order = Order.objects.get(customer=customer, complete=False)
+            order = Order.objects.get(customer=customer, order_created=False, payment_success = False)
             order_items = OrderItem.objects.filter(order=order)
             if order_items.exists():
                 total_quantity = sum(item.quantity for item in order_items)

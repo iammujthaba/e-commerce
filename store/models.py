@@ -83,7 +83,7 @@ class Product(models.Model):
         if request.user.is_authenticated:
             return OrderItem.objects.filter(
                 order__customer=request.user.customer,
-                order__complete=False,
+                order__order_created=False,
                 product=self
             ).exists()
         else:
@@ -166,7 +166,6 @@ class Order(models.Model):
     ]
 
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
-    complete = models.BooleanField(default=False)
     order_id = models.CharField(max_length=100, unique=True, default=uuid.uuid4, editable=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Order Abandoned')
     # automaticaly add order creation time if its abandoned or placed order
@@ -177,6 +176,7 @@ class Order(models.Model):
     delivered_time = models.DateTimeField(null=True, blank=True)
     total_price = models.DecimalField(max_digits=7, decimal_places=0, null=True, blank=True)
     Shipping_charge = models.DecimalField(max_digits=7, blank=False, decimal_places=0, default=0.00)
+    payment_success = models.BooleanField(default=False)
     order_created = models.BooleanField(default=False)
 
     def __str__(self):
@@ -212,14 +212,16 @@ class Order(models.Model):
         super().save(*args, **kwargs)
 
 class PaymentRecord(models.Model):
+    STATUS_CHOICES = [
+        ('Payment Successful', 'Payment Successful'),
+        ('Failed', 'Failed'),
+        ('Incomplete', 'Incomplete'),
+    ]
+        
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="payment_records")
     razorpay_order_id = models.CharField(max_length=100, null=True, blank=True)
     razorpay_payment_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
-    payment_status = models.CharField(max_length=20, choices=[
-        ('Success', 'Success'),
-        ('Failed', 'Failed'),
-        ('Incomplete', 'Incomplete'),
-    ])
+    payment_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Incomplete')
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     details = models.TextField(null=True, blank=True)
