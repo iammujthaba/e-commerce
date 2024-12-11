@@ -10,7 +10,7 @@
 <body>
     <div class="container">
         <h2>Registration</h2>
-        <form action="" method="post" id="registration-form">
+        <form id="registration-form">
             {% csrf_token %}
             <div class="form-group">
                 <label for="id_username">Username:</label>
@@ -22,48 +22,71 @@
                 {{ form.contact_number }}
                 <span class="error-message" id="contact-number-error"></span>
             </div>
-            <input type="submit" value="Register">
+            <button type="button" id="register-btn">Register</button>
         </form>
         <p class="login-link">Already have an account? <a href="{% url 'auth_app:login' %}">Login here</a></p>
         <p class="login-link explore-link" style="margin-bottom: 5px;">Explore Website <a href="{% url 'store_app:allProdCat' %}">Explore here</a></p>
     </div>
-    
-    {% if form.errors %}
-    <script>
-        alert("{{ form.errors.as_text|escapejs }}");
-    </script>
-    {% endif %}
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="modal hidden">
+        <div class="modal-content">
+            <p>Please confirm your contact number.</p>
+            <button id="confirm-btn">Confirm</button>
+            <button id="cancel-btn">Cancel</button>
+        </div>
+    </div>
 
     <script>
-    document.getElementById('registration-form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        let isValid = true;
-        const username = document.getElementById('id_username').value;
-        const contactNumber = document.getElementById('id_contact_number').value;
+        document.getElementById('register-btn').addEventListener('click', async function () {
+            const form = document.getElementById('registration-form');
+            const formData = new FormData(form);
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-        // Validate username
-        if (!/^[a-zA-Z]{3,}$/.test(username)) {
-            document.getElementById('username-error').textContent = 'Username must be at least 3 characters long and contain only letters.';
-            isValid = false;
-        } else {
+            // Reset error messages
             document.getElementById('username-error').textContent = '';
-        }
-
-        // Validate contact number
-        if (!/^[0-9]{10,12}$/.test(contactNumber)) {
-            document.getElementById('contact-number-error').textContent = 'Contact number must be 10 or 12 digits.';
-            isValid = false;
-        } else {
             document.getElementById('contact-number-error').textContent = '';
-        }
 
-        if (isValid) {
-            const confirmation = confirm(`Please confirm your contact number: ${contactNumber}`);
-            if (confirmation) {
-                this.submit();
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                    },
+                    body: formData,
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = data.redirect_url;
+                } else if (data.errors) {
+                    if (data.errors.username) {
+                        document.getElementById('username-error').textContent = data.errors.username;
+                    }
+                    if (data.errors.contact_number) {
+                        document.getElementById('contact-number-error').textContent = data.errors.contact_number;
+                    }
+                } else if (data.error) {
+                    alert(`An unexpected error occurred: ${data.error}`);
+                }
+            } catch (error) {
+                alert('An unexpected error occurred. Please try again later.');
             }
-        }
-    });
+        });
+
+        // Modal logic
+        const modal = document.getElementById('confirmation-modal');
+        const confirmBtn = document.getElementById('confirm-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+
+        confirmBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            document.getElementById('registration-form').submit();
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
     </script>
 </body>
 </html>

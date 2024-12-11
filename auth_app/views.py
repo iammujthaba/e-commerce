@@ -15,6 +15,10 @@ SUPERUSER_CONTACT_NUMBER = '1234567890'
 PREDEFINED_SUPERUSER_PASSWORD = '1234'
 
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
@@ -25,23 +29,16 @@ def register(request):
                 user = User.objects.create_user(username=username)
                 Customer.objects.create(user=user, name=username, contact_number=contact_number)
                 auth_login(request, user)
-
-                # Merge cookies cart with user cart
-                cart_response = merge_cookie_cart_with_user_cart(request, user)
-                # Merge cookies wishlist with user wishlist
-                wishlist_response = merge_cookie_wishlist_with_user_wishlist(request, user)
-                if cart_response:
-                    return cart_response
-                elif wishlist_response:
-                    return wishlist_response
-                
-                return redirect('auth_app:login')
+                # Merge cookies cart and wishlist with user cart and wishlist
+                merge_cookie_cart_with_user_cart(request, user)
+                merge_cookie_wishlist_with_user_wishlist(request, user)
+                # return JsonResponse({'success': True, 'redirect_url': '/auth_app/login/'})
+                return JsonResponse({"success": True, "redirect_url": "/"})
             except Exception as e:
-                messages.error(request, f"An unexpected error occurred: {str(e)}")
+                return JsonResponse({'success': False, 'error': str(e)})
         else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{error}")
+            errors = {field: error[0] for field, error in form.errors.items()}
+            return JsonResponse({'success': False, 'errors': errors})
     else:
         form = RegistrationForm()
     
