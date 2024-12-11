@@ -7,6 +7,8 @@ from .forms import RegistrationForm, LoginForm, SuperuserPasswordForm
 from django.contrib.auth import authenticate, login as auth_login
 import json
 from django.contrib.messages import get_messages
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 # chnage it into (os.environ.get) Importend
 
@@ -14,9 +16,6 @@ SUPERUSER_CONTACT_NUMBER = '1234567890'
 # RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID')
 PREDEFINED_SUPERUSER_PASSWORD = '1234'
 
-
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def register(request):
@@ -32,8 +31,11 @@ def register(request):
                 # Merge cookies cart and wishlist with user cart and wishlist
                 merge_cookie_cart_with_user_cart(request, user)
                 merge_cookie_wishlist_with_user_wishlist(request, user)
-                # return JsonResponse({'success': True, 'redirect_url': '/auth_app/login/'})
-                return JsonResponse({"success": True, "redirect_url": "/"})
+                
+                # Clear the cookie cart
+                response = JsonResponse({"success": True, "redirect_url": "/"})
+                response.delete_cookie('cart')
+                return response
             except Exception as e:
                 return JsonResponse({'success': False, 'error': str(e)})
         else:

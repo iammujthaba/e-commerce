@@ -29,13 +29,13 @@
     </div>
 
     <!-- Confirmation Modal -->
-    <div id="confirmation-modal" class="modal hidden">
+    <!-- <div id="confirmation-modal" class="modal hidden">
         <div class="modal-content">
             <p>Please confirm your contact number.</p>
             <button id="confirm-btn">Confirm</button>
             <button id="cancel-btn">Cancel</button>
         </div>
-    </div>
+    </div> -->
 
     <script>
         document.getElementById('register-btn').addEventListener('click', async function () {
@@ -75,18 +75,18 @@
         });
 
         // Modal logic
-        const modal = document.getElementById('confirmation-modal');
-        const confirmBtn = document.getElementById('confirm-btn');
-        const cancelBtn = document.getElementById('cancel-btn');
+        // const modal = document.getElementById('confirmation-modal');
+        // const confirmBtn = document.getElementById('confirm-btn');
+        // const cancelBtn = document.getElementById('cancel-btn');
 
-        confirmBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
-            document.getElementById('registration-form').submit();
-        });
+        // confirmBtn.addEventListener('click', () => {
+        //     modal.classList.add('hidden');
+        //     document.getElementById('registration-form').submit();
+        // });
 
-        cancelBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
-        });
+        // cancelBtn.addEventListener('click', () => {
+        //     modal.classList.add('hidden');
+        // });
     </script>
 </body>
 </html>
