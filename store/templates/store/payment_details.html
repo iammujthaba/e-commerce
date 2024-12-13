@@ -1,46 +1,56 @@
 {% extends 'store/base.html' %}
 {% block content %}
 <div class="container mt-5">
-    <h2>Payment Details</h2>
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Order ID</th>
-                <td>{{ payment_record.order.order_id }}</td>
-            </tr>
-            <tr>
-                <th>Amount</th>
-                <td>₹{{ payment_record.amount }}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td>{{ payment_record.payment_status }}</td>
-            </tr>
-            <tr>
-                <th>Razorpay Order ID</th>
-                <td>{{ payment_record.razorpay_order_id }}</td>
-            </tr>
-            <tr>
-                <th>Razorpay Payment ID</th>
-                <td>{{ payment_record.razorpay_payment_id }}</td>
-            </tr>
-            <tr>
-                <th>Details</th>
-                <td>{{ payment_record.details }}</td>
-            </tr>
-            <tr>
-                <th>Created At</th>
-                <td>{{ payment_record.created_at|date:"d M Y, H:i" }}</td>
-            </tr>
-        </tbody>
-    </table>
-    {% if payment_record.order.order_created == True %}
-        <a href="{% url 'store_app:trackOrder' payment_record.order.id %}" class="btn btn-secondary">Track Order</a>
-    {% else %}
-        <span style="color: rgb(255, 0, 0);">Order not Created</span>
-        <p>Don't worry our customer care team will contact you within 24 hours</p>
-    {% endif %}
+    <h2 class="text-center mb-4">Payment Details</h2>
 
+    <div class="card shadow-sm p-3 mb-3 bg-white rounded">
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <th scope="row">Order ID</th>
+                    <td>{{ payment_record.razorpay_order_id }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Payment ID</th>
+                    <td>{{ payment_record.razorpay_payment_id }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Payment Status</th>
+                    <td class="{% if payment_record.payment_status == 'Payment Successful' %}text-success{% else %}text-danger{% endif %}">
+                        {{ payment_record.payment_status }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Amount</th>
+                    <td>₹{{ payment_record.amount }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Order Status</th>
+                    <td class="{% if payment_record.details == 'Order successful.' %}text-success{% else %}text-danger{% endif %}">
+                        {{ payment_record.details }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Payment At</th>
+                    <td>{{ payment_record.created_at|date:"d M Y" }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Time At</th>
+                    <td>{{ payment_record.created_at|date:"H:i" }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
+    <div class="text-center">
+        {% if payment_record.order.order_created %}
+            <a href="{% url 'store_app:trackOrder' payment_record.order.id %}" class="btn btn-primary btn-block">
+                Track Order
+            </a>
+        {% else %}
+            <p class="text-danger"><strong>Order not Created</strong></p>
+            <p>Don't worry, our customer care team will contact you within 24 hours.</p>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}
