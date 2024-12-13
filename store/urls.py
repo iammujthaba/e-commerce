@@ -11,6 +11,9 @@ urlpatterns = [
     path('update_item/', views.updateItem, name="update_item"),
 	path('process_order/', views.processOrder, name="process_order"),
     path('calculate-shipping/', views.calculate_shipping_ajax, name='calculate_shipping_ajax'),
+
+    path('payment_cards/', views.payment_cards, name='payment_cards'),
+    path('payment_details/<int:payment_id>/', views.payment_details, name='payment_details'),
     
 	path('<slug:c_slug>/slug',views.allProdCat,name='product_by_category'), #called form models.py
     path('<slug:c_slug>/<slug:product_slug>/',views.proDetail,name='proDetail'), #called form models.py
@@ -23,7 +26,6 @@ urlpatterns = [
     path('myorders/', views.myorders, name='myorders'),
     path('order/track/<int:order_id>/', views.trackOrder, name='trackOrder'),
     path('delivered/',views.myorders,name='delivered'),
-    path('payment_status/', views.payment_status, name='payment_status'),
 
     path('about/',views.about,name='about'),
     path('gallery/',views.gallery,name='gallery'),

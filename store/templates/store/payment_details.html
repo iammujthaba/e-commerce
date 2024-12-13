@@ -1,0 +1,46 @@
+{% extends 'store/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Payment Details</h2>
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Order ID</th>
+                <td>{{ payment_record.order.order_id }}</td>
+            </tr>
+            <tr>
+                <th>Amount</th>
+                <td>₹{{ payment_record.amount }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ payment_record.payment_status }}</td>
+            </tr>
+            <tr>
+                <th>Razorpay Order ID</th>
+                <td>{{ payment_record.razorpay_order_id }}</td>
+            </tr>
+            <tr>
+                <th>Razorpay Payment ID</th>
+                <td>{{ payment_record.razorpay_payment_id }}</td>
+            </tr>
+            <tr>
+                <th>Details</th>
+                <td>{{ payment_record.details }}</td>
+            </tr>
+            <tr>
+                <th>Created At</th>
+                <td>{{ payment_record.created_at|date:"d M Y, H:i" }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% if payment_record.order.order_created == True %}
+        <a href="{% url 'store_app:trackOrder' payment_record.order.id %}" class="btn btn-secondary">Track Order</a>
+    {% else %}
+        <span style="color: rgb(255, 0, 0);">Order not Created</span>
+        <p>Don't worry our customer care team will contact you within 24 hours</p>
+    {% endif %}
+
+
+</div>
+{% endblock %}

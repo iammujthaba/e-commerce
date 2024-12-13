@@ -345,16 +345,6 @@ def updateItem(request):
     cart_items = order.get_cart_items
     total_price_difference = sum((item.product.old_price - item.product.new_price if item.product.old_price else 0) * item.quantity for item in order.orderitem_set.all())
 
-    print('................first Order.................')
-    print('order_id: ',order.order_id)
-    print('order_created: ',order.order_created)
-    print('payment_success: ',order.payment_success)
-    print('total_price: ',order.total_price)
-    print('Shipping_charge: ',order.Shipping_charge)
-    print('status: ',order.status)
-    print('date_ordered: ',order.date_ordered)
-    print()
-
     return JsonResponse({
         'added': added,
         'message': message,
@@ -526,50 +516,6 @@ def payment(request):
                 payment_record.details = "Waiting for payment."
                 payment_record.save()
         
-        # if not payment_record:
-        #     # Create a Razorpay order for new payment
-        #     razorpay_order = client.order.create({
-        #         'amount': int(order.total_price * 100),  # Amount in paise
-        #         'currency': 'INR',
-        #         'payment_capture': '1',
-        #         "receipt": f"order_rcptid_{order.id}"
-        #     })
-        #     print('razorpay_order[\'id\']', razorpay_order['id'])
-
-        #     # Create a new PaymentRecord
-        #     payment_record = PaymentRecord.objects.create(
-        #         order=order,
-        #         razorpay_order_id=razorpay_order['id'],
-        #         payment_status='Incomplete',
-        #         amount=order.total_price,
-        #         details="waiting for payment."
-        #     )
-        # else:
-        #     # Update existing record
-        #     payment_record.amount = order.total_price
-        #     payment_record.details = "stil waiting for payment."
-        #     payment_record.save()
-
-
-        print('................thired Order.................')
-        print('order_id: ',order.order_id)
-        print('order_created: ',order.order_created)
-        print('payment_success: ',order.payment_success)
-        print('total_price: ',order.total_price)
-        print('Shipping_charge: ',order.Shipping_charge)
-        print('status: ',order.status)
-        print('date_ordered: ',order.date_ordered)
-        print()
-        print('................first PaymentRecord.................')
-        print('razorpay_order_id: ',payment_record.razorpay_order_id)
-        print('razorpay_payment_id: ',payment_record.razorpay_payment_id)
-        print('payment_status: ',payment_record.payment_status)
-        print('amount: ',payment_record.amount)
-        print('created_at: ',payment_record.created_at)
-        print('details: ',payment_record.details)
-        print('.....................................')
-
-
         context = {
             'items': items,
             'order': order,
@@ -722,24 +668,6 @@ def processOrder(request):
             price_at_purchase=item.price_at_purchase
         )
 
-        print('................last Order.................')
-        print('order_id: ',order.order_id)
-        print('order_created: ',order.order_created)
-        print('payment_success: ',order.payment_success)
-        print('total_price: ',order.total_price)
-        print('Shipping_charge: ',order.Shipping_charge)
-        print('status: ',order.status)
-        print('date_ordered: ',order.date_ordered)
-        print()
-        print('................last PaymentRecord.................')
-        print('razorpay_order_id: ',payment_record.razorpay_order_id)
-        print('razorpay_payment_id: ',payment_record.razorpay_payment_id)
-        print('payment_status: ',payment_record.payment_status)
-        print('amount: ',payment_record.amount)
-        print('created_at: ',payment_record.created_at)
-        print('details: ',payment_record.details)
-        print('.....................................')
-
         # Clear the cart
         if 'cart' in request.session:
             del request.session['cart']
@@ -756,16 +684,16 @@ def processOrder(request):
     except Exception as e:
         return JsonResponse({'success': False, 'message': f'An error occurred: {str(e)}'})
 
+
 @login_required
-def payment_status(request):
-    if not request.user.is_authenticated:
-        return redirect('auth_app:login')
-    
-    orders = Order.objects.filter(customer=request.user.customer).order_by('-date_ordered')
-    payment_records = PaymentRecord.objects.filter(order__in=orders).order_by('-created_at')
-    
-    context = {'orders': orders, 'payment_records': payment_records}
-    return render(request, 'store/payment_status.html', context)
+def payment_cards(request):
+    payment_records = PaymentRecord.objects.filter(order__customer=request.user.customer).order_by('-created_at')
+    return render(request, 'store/payment_cards.html', {'payment_records': payment_records})
+
+def payment_details(request, payment_id):
+    payment_record = get_object_or_404(PaymentRecord, id=payment_id, order__customer=request.user.customer)
+    return render(request, 'store/payment_details.html', {'payment_record': payment_record})
+
 
 def myorders(request):
     if not request.user.is_authenticated:

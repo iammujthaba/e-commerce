@@ -8,7 +8,7 @@
 <div class="container">
 
     {% if messages %}
-    <div class="alert alert-danger">
+    <div class="alert alert-danger mt-3">
         {% for message in messages %}
             <p>{{ message }}</p>
         {% endfor %}
@@ -180,7 +180,7 @@ function submitFormData(paymentResponse){
                 if (result.isConfirmed) {
                     
                     // Redirect to the home page
-                    window.location.href = "{% url 'store_app:payment_status' %}";
+                    window.location.href = "{% url 'store_app:payment_cards' %}";
                 }
             });
         }
