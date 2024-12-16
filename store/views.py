@@ -700,11 +700,7 @@ def myorders(request):
         return redirect('auth_app:login')
 
     customer = request.user.customer
-
-    if request.path == '/delivered/':
-        orders = Order.objects.filter(customer=customer, order_created=True, status='Product Delivered').order_by('-date_ordered')
-    else:
-        orders = Order.objects.filter(customer=customer, order_created=True).exclude(status='Product Delivered').order_by('-date_ordered')
+    orders = Order.objects.filter(customer=customer, order_created=True, payment_success=True).order_by('-date_ordered')
 
     orders_with_details = []
     for order in orders:

@@ -345,9 +345,6 @@
                                 <li class="{% if request.path == '/cart/' %}active{% endif %}">
                                     <a href="{% url 'store_app:cart' %}">Cart</a>
                                 </li>
-                                <li class="{% if request.path == '/delivered/' %}active{% endif %}">
-                                    <a href="{% url 'store_app:delivered' %}">delivered</a>
-                                </li>
                                 <li class="{% if request.path == '/payment_cards/' %}active{% endif %}">
                                     <a href="{% url 'store_app:payment_cards' %}">Payment</a>
                                 </li>
@@ -622,9 +619,6 @@
                             </li>
                             <li>
                                 <a href="{% url 'store_app:myorders' %}">Orders</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'store_app:delivered' %}">delivered</a>
                             </li>
                             <li>
                                 <a href="{% url 'store_app:payment_cards' %}">Payment</a>

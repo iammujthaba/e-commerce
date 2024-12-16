@@ -25,7 +25,7 @@ urlpatterns = [
     # path('orders/',views.orders,name='orders'),
     path('myorders/', views.myorders, name='myorders'),
     path('order/track/<int:order_id>/', views.trackOrder, name='trackOrder'),
-    path('delivered/',views.myorders,name='delivered'),
+    # path('delivered/',views.myorders,name='delivered'),
 
     path('about/',views.about,name='about'),
     path('gallery/',views.gallery,name='gallery'),
