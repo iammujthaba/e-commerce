@@ -19,7 +19,7 @@
         .form-label {
             font-weight: 600;
             color: #495057;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0rem;
         }
         .form-control, .form-select {
             border-radius: 8px;
@@ -66,7 +66,7 @@
                 margin: 1rem;
             }
         }
-        .form-control{
+        .margin_bott{
             margin-bottom: 1rem;
         }
         .btn {
@@ -110,45 +110,58 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="contact-number" class="form-label">Contact Number</label>
-                        <input type="tel" class="form-control" id="contact-number" name="number" value="{{ last_shipping.number|default:'' }}" required>
+                        <div class="margin_bott">
+                            <input type="tel" class="form-control" id="contact-number" name="number" style="margin-bottom: 0rem;" value="{{ last_shipping.number|default:'' }}" required>
+                            <span class="text-danger small" id="contact-number-error"></span> 
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label for="whatsapp-number" class="form-label">WhatsApp Number</label>
-                        <input type="tel" class="form-control" id="whatsapp-number" name="whatsapp" value="{{ last_shipping.whatsapp|default:'' }}" required>
+                        <div class="margin_bott">                            
+                            <input type="tel" class="form-control" id="whatsapp-number" name="whatsapp" style="margin-bottom: 0rem;" value="{{ last_shipping.whatsapp|default:'' }}" required>
+                            <span class="text-danger small" id="whatsapp-number-error"></span>
+                        </div>
                     </div>
                     <div class="col-12">
                         <label for="address" class="form-label">Address</label>
-                        <input type="text" class="form-control" id="address" name="address" value="{{ last_shipping.address|default:'' }}" required>
+                        <div class="margin_bott">                            
+                            <input type="text" class="form-control" id="address" name="address" style="margin-bottom: 0rem;" value="{{ last_shipping.address|default:'' }}" required>
+                            <span class="text-danger small" id="address-error"></span>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label for="city" class="form-label">City</label>
-                        <input type="text" class="form-control" id="city" name="city" value="{{ last_shipping.city|default:'' }}" required>
+                        <div class="margin_bott">
+                            <input type="text" class="form-control" id="city" name="city" style="margin-bottom: 0rem;" value="{{ last_shipping.city|default:'' }}" required>
+                            <span class="text-danger small" id="city-error"></span>
+                        </div>
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <label for="state" style="margin: 0 0 .5rem;">State</label>
-                        <select class="form-control" id="state" name="state" required>
-                            <option value="" disabled selected>Select your state</option>
-                            
-                            <!-- Frequent Customer Areas -->
-                            <optgroup label="High-Demand Areas">
-                                {% for state in frequent_customer_areas %}
-                                <option value="{{ state }}" {% if last_shipping.state == state %}selected{% endif %}>{{ state }}</option>
-                                {% endfor %}
-                            </optgroup>
-                    
-                            <!-- Other States -->
-                            <optgroup label="Other">
-                                {% for state in other_states %}
-                                <option value="{{ state }}" {% if last_shipping.state == state %}selected{% endif %}>{{ state }}</option>
-                                {% endfor %}
-                            </optgroup>
-                        </select>
+                        <div class="margin_bott">
+                            <select class="form-control" id="state" name="state" style="margin-bottom: 0rem;" required>
+                                <option value="" disabled selected>Select your state</option>
+                                <optgroup label="High-Demand Areas">
+                                    {% for state in frequent_customer_areas %}
+                                    <option value="{{ state }}" {% if last_shipping.state == state %}selected{% endif %}>{{ state }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                                <optgroup label="Other">
+                                    {% for state in other_states %}
+                                    <option value="{{ state }}" {% if last_shipping.state == state %}selected{% endif %}>{{ state }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                            </select>
+                            <span class="text-danger small" id="state-error"></span>
+                        </div>
                     </div>
                     <div class="col-md-2">
                         <label for="zipcode" class="form-label">Zip Code</label>
-                        <input type="text" class="form-control" id="zipcode" name="zipcode" value="{{ last_shipping.zipcode|default:'' }}" required>
-                    </div>
-                </div>
+                        <div class="margin_bott">
+                            <input type="text" class="form-control" id="zipcode" name="zipcode"  style="margin-bottom: 0rem;" value="{{ last_shipping.zipcode|default:'' }}" required>
+                            <span class="text-danger small" id="zipcode-error"></span>
+                        </div>
+                    </div>                    
                 <div class="d-grid gap-2 mt-4">
 
                     <input id="form-button" class="btn btn-success btn-block" type="submit" value="Continue">
@@ -157,6 +170,70 @@
             </form>
         </div>
     </div>
+    <script>
+        document.getElementById('checkout-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+        
+            // Clear existing error messages
+            document.querySelectorAll('.text-danger').forEach(el => el.textContent = '');
+        
+            // Retrieve input values
+            const contactNumber = document.getElementById('contact-number').value.trim();
+            const whatsappNumber = document.getElementById('whatsapp-number').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const state = document.getElementById('state').value;
+            const zipcode = document.getElementById('zipcode').value.trim();
+        
+            // Validation patterns
+            const phoneRegex = /^[0-9]{10,15}$/; // Phone number: 10-15 digits
+            const zipcodeRegex = /^[0-9]{5,10}$/; // Zipcode: 5-10 digits
+        
+            // Track form validity
+            let isValid = true;
+        
+            // Contact Number Validation
+            if (!phoneRegex.test(contactNumber)) {
+                document.getElementById('contact-number-error').textContent = "Contact number must be 10-15 digits.";
+                isValid = false;
+            }
+        
+            // WhatsApp Number Validation
+            if (!phoneRegex.test(whatsappNumber)) {
+                document.getElementById('whatsapp-number-error').textContent = "WhatsApp number must be 10-15 digits.";
+                isValid = false;
+            }
+        
+            // Address Validation
+            if (address.length < 5) {
+                document.getElementById('address-error').textContent = "Address must be at least 8 characters.";
+                isValid = false;
+            }
+        
+            // City Validation
+            if (city.length < 2) {
+                document.getElementById('city-error').textContent = "City must be at least 2 characters.";
+                isValid = false;
+            }
+        
+            // State Validation
+            if (!state) {
+                document.getElementById('state-error').textContent = "Please select a state.";
+                isValid = false;
+            }
+        
+            // Zip Code Validation
+            if (!zipcodeRegex.test(zipcode)) {
+                document.getElementById('zipcode-error').textContent = "Zipcode must be 5-10 digits.";
+                isValid = false;
+            }
+        
+            // Submit the form if all inputs are valid
+            if (isValid) {
+                this.submit();
+            }
+        });
+        </script>           
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 </body>
 
