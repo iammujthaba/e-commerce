@@ -83,7 +83,7 @@ class Product(models.Model):
         if request.user.is_authenticated:
             return OrderItem.objects.filter(
                 order__customer=request.user.customer,
-                order__order_created=False,
+                order__payment_success=False,
                 product=self
             ).exists()
         else:
