@@ -536,7 +536,7 @@ def payment(request):
         messages.error(request, "The payment gateway is currently experiencing issues. Please try again later.")
     except Exception as e:
         logger.exception(f"Unexpected error during payment processing: {str(e)}")
-        messages.error(request, "An unexpected error occurred. Please Check Your internet connection Or Please try again later.")
+        messages.error(request, "An unexpected error occurred!, Please Check Your internet connection and Please try again.")
 
     # Redirect back to the checkout page if any error occurs
     return redirect('store_app:payment')
@@ -568,7 +568,6 @@ def processOrder(request):
 
     try:
         total = payment_record.order.total_price
-
 
         if not all([razorpay_payment_id, razorpay_order_id, razorpay_signature]):
             payment_record = PaymentRecord.objects.get(
