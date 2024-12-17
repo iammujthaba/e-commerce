@@ -3,7 +3,7 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">Payment Details</h2>
 
-    <div class="card shadow-sm p-3 mb-3 bg-white rounded">
+    <div class="card shadow-sm p-3 mb-4 bg-white rounded">
         <table class="table table-striped">
             <tbody>
                 <tr>
@@ -21,7 +21,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row">Amount</th>
+                    <th scope="row">Paid Amount</th>
                     <td>₹{{ payment_record.amount }}</td>
                 </tr>
                 <tr>
@@ -42,15 +42,17 @@
         </table>
     </div>
 
-    <div class="text-center">
+    <div class="card-footer text-center" style="padding: 0rem 0rem; margin-bottom: 12px;">
         {% if payment_record.order.order_created %}
-            <a href="{% url 'store_app:trackOrder' payment_record.order.id %}" class="btn btn-primary btn-block">
-                Track Order
+            <a href="{% url 'store_app:trackOrder' payment_record.order.id %}" class="btn btn-success w-100" style="border-radius: 6px;">
+                <i class="fas fa-truck"></i> Track Order
             </a>
         {% else %}
-            <p class="text-danger"><strong>Order not Created</strong></p>
-            <p>Don't worry, our customer care team will contact you within 24 hours.</p>
+            <p class="text-danger"><strong>"Order not Created"</strong></p>
+            <small class="text-muted p-3">Our customer care team will contact you within 24 hours. <br>Don't worry; we will manually complete your order.</small>
         {% endif %}
     </div>
+    <!-- Include FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </div>
 {% endblock %}
