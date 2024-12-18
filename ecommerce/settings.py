@@ -100,6 +100,7 @@ TEMPLATES = [
                 'store.context_processors.wishlist_count',
                 'store.context_processors.menu_link',
                 'store.context_processors.cart_data',
+                'admin_app.context_processors.order_counts_context',
             ],
         },
     },

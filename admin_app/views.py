@@ -259,6 +259,15 @@ def order_view(request, pk):
         'next_status': next_status
     })
 
+@login_required
+@user_passes_test(is_admin)
+def get_order_counts(request):
+    return {
+        "new_orders": Order.objects.filter(status="Order Placed").count(),
+        "confirmed_orders": Order.objects.filter(status="Order Confirmed").count(),
+        "shipped_orders": Order.objects.filter(status="Product Shipped").count(),
+        "delivered_orders": Order.objects.filter(status="Product Delivered").count(),
+    }
 
 @login_required
 @user_passes_test(is_admin)
@@ -288,7 +297,7 @@ def completed_orders(request):
     return render_order_list(request, orders, 'Completed Orders', 'admin_app/order_list.html')
 
 
-def render_order_list(request, orders, title, template):
+def render_order_list(request, orders, title, template, additional_context=None):
     orders_with_details = []
     for order in orders:
         shipping_address = ShippingAddress.objects.filter(order=order).first()
@@ -298,7 +307,13 @@ def render_order_list(request, orders, title, template):
             'state': shipping_address.state if shipping_address else 'N/A',
             'total_quantity': total_quantity or 0
         })
-    return render(request, template, {'orders_with_details': orders_with_details, 'title': title})
+
+    # Merge additional context into the default context
+    context = {'orders_with_details': orders_with_details, 'title': title}
+    if additional_context:
+        context.update(additional_context)
+
+    return render(request, template, context)
 
 @staff_member_required
 def admin_payment_status(request):

@@ -14,7 +14,7 @@
             color: white;
         }
         .dropdown-content {
-            display: none; /* Dropdown is hidden by default */
+            display: none;
             list-style: none;
             padding-left: 0;
         }
@@ -24,6 +24,38 @@
         .dropdown-btn {
             cursor: pointer;
         }
+
+        .sidebar li {
+            display: flex; 
+            align-items: center; 
+            padding: 0;
+        }
+
+        .sidebar a {
+            display: flex; 
+            align-items: center;
+            justify-content: space-between; 
+            width: 100%; 
+            padding: 10px 20px; 
+            text-decoration: none; 
+            color: white;; 
+        }
+
+        .notification-bubble {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color: red;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            height: 20px; 
+            width: 20px; 
+            border-radius: 50%;
+            margin-left: 10px; 
+        }
+
+        
     </style>
 </head>
 <body>
@@ -44,24 +76,36 @@
                         <a style="padding: 20px;" href="{% url 'admin_app:product_list' %}">Products Manage</a>
                     </li>
                     <li class="{% if request.resolver_match.url_name == 'shipping_rate_list' %}active{% endif %}">
-                        <a style="padding: 20px;" href="{% url 'admin_app:shipping_rate_list' %}">Shipping Cost Manage</a>
+                        <a style="padding: 20px;" href="{% url 'admin_app:shipping_rate_list' %}">Shipping Cost</a>
                     </li>
                 </ul>
             </li>
 
             <!-- Other Links -->
             <li style="padding: 0px;" class="{% if request.resolver_match.url_name == 'placed_orders' %}active{% endif %}">
-                <a style="padding: 20px;" href="{% url 'admin_app:placed_orders' %}">New Orders</a>
+                <a style="padding: 20px;" href="{% url 'admin_app:placed_orders' %}">
+                    New Orders
+                    <span class="notification-bubble">{{ order_counts.new_orders }}</span>
+                </a>
             </li>
             <li style="padding: 0px;" class="{% if request.resolver_match.url_name == 'confirmed_orders' %}active{% endif %}">
-                <a style="padding: 20px;" href="{% url 'admin_app:confirmed_orders' %}">Confirmed Orders</a>
+                <a style="padding: 20px;" href="{% url 'admin_app:confirmed_orders' %}">
+                    Confirmed Orders
+                    <span class="notification-bubble">{{ order_counts.confirmed_orders }}</span>
+                </a>
             </li>
             <li style="padding: 0px;" class="{% if request.resolver_match.url_name == 'shipped_orders' %}active{% endif %}">
-                <a style="padding: 20px;" href="{% url 'admin_app:shipped_orders' %}">Shipped Orders</a>
+                <a style="padding: 20px;" href="{% url 'admin_app:shipped_orders' %}">
+                    Shipped Orders
+                    <span class="notification-bubble">{{ order_counts.shipped_orders }}</span>
+                </a>
             </li>
             <li style="padding: 0px;" class="{% if request.resolver_match.url_name == 'completed_orders' %}active{% endif %}">
-                <a style="padding: 20px;" href="{% url 'admin_app:completed_orders' %}">Completed Orders</a>
-            </li>
+                <a style="padding: 20px;" href="{% url 'admin_app:completed_orders' %}">
+                    Completed Orders
+                    <span class="notification-bubble">{{ order_counts.delivered_orders }}</span>
+                </a>
+            </li>            
             <li style="padding: 0px;" class="{% if request.resolver_match.url_name == 'admin_payment_status' %}active{% endif %}">
                 <a style="padding: 20px;" href="{% url 'admin_app:admin_payment_status' %}">payment status</a>
             </li>
@@ -84,15 +128,14 @@
             const dropdownBtn = document.querySelector(".dropdown-btn");
             const dropdownContent = document.querySelector(".dropdown-content");
 
-            dropdownBtn.addEventListener("click", function() {
-                if (dropdownContent.style.display === "none" || dropdownContent.style.display === "") {
-                    dropdownContent.style.display = "block";
-                    dropdownBtn.innerHTML = "Manage &#9652;"; // Change arrow to up
-                } else {
-                    dropdownContent.style.display = "none";
-                    dropdownBtn.innerHTML = "Manage &#9662;"; // Change arrow to down
-                }
-            });
+            if (dropdownBtn && dropdownContent) {
+                dropdownBtn.addEventListener("click", function() {
+                    dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+                    dropdownBtn.innerHTML = dropdownContent.style.display === "block"
+                        ? "Manage &#9652;" // Up arrow
+                        : "Manage &#9662;"; // Down arrow
+                });
+            }
         });
     </script>
 </body>
