@@ -251,51 +251,70 @@
 
 
                 <style>
+                   .mobile-search-container {
+                    width: 100%;
+                    padding: 10px;
+                    box-sizing: border-box;
+                    display: block;
+                }
+
+                @media screen and (min-width: 992px) {
                     .mobile-search-container {
-                        width: 100%;
-                        padding: 10px;
-                        padding-top: 0px;
-                        padding-bottom: 0px;
+                        display: none;
                     }
+                }
 
-                    .mobile-search-form {
-                        display: flex;
-                        align-items: center;
-                    }
+                .mobile-search-form {
+                    display: flex;
+                    width: 100%;
+                    justify-content: center;
+                }
 
-                    .search-input-wrapper {
-                        display: flex;
-                        width: 100%;
-                        border: 1px solid #ccc;
-                        border-radius: 8px;
-                        overflow: hidden;
-                        background-color: white;
+                .search-input-wrapper {
+                    display: flex;
+                    width: 100%;
+                    max-width: 100%; /* Prevent overflow */
+                    border: 1px solid #ccc;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    background-color: white;
+                }
+
+                .mobile-search-input {
+                    flex: 1;
+                    border: none;
+                    padding: 10px 15px;
+                    font-size: 16px;
+                    min-height: 40px;
+                    box-sizing: border-box;
+                }
+
+                .mobile-search-button {
+                    background: #3498db;
+                    width: 50px;
+                    height: 50px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    border: none;
+                    color: #fff;
+                    font-size: 16px;
+                    cursor: pointer;
+                    box-sizing: border-box;
+                }
+
+                /* Optional for very small screens */
+                @media screen and (max-width: 340px) {
+                    .mobile-search-button {
+                        width: 40px;
+                        height: 40px;
                     }
 
                     .mobile-search-input {
-                        flex-grow: 1;
-                        border: none;
-                        padding: 10px 15px;
-                        font-size: 16px;
+                        font-size: 14px;
                     }
+                }
 
-                    .mobile-search-button {
-                        background: #3498db;
-                        width: 50px;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        border-radius: 4px;
-
-                        border: 0;
-
-                        color: #fff;
-                    }
-
-                    .search-icon {
-                        width: 20px;
-                        height: 20px;
-                    }
                 </style>
 
                 <style>
@@ -317,11 +336,9 @@
                             <label for="mobile-search" class="sr-only">Search</label>
                             <input type="search" name="q" id="q" placeholder="Search..." class="mobile-search-input"
                                 autocomplete="off" required>
-                            <a href="{% url 'search_app:SearchResult' %}"></a>
                             <button type="submit" class="mobile-search-button">
                                 <i class="fas fa-search"></i>
                             </button>
-                            </a>
                         </div>
                         <input type="hidden" name="post_type" value="product">
                     </form>
