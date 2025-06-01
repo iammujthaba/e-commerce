@@ -145,35 +145,34 @@
                 {% endfor %}
             </div>
 
-            <div class="item-summary">
+           <div class="item-summary" style="padding: 0 10px;">
                 <h2 style="display: flex; align-items: center; margin-bottom: 20px; margin-top: 20px;">
                     <img src="https://cdn-icons-png.flaticon.com/128/2533/2533936.png" alt="Summary Icon" style="width: 24px; height: 24px; margin-right: 10px;">
                     Order Summary
                 </h2>
-                <div class="container">
-                    <p style="display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 10px;">
-                        <strong>Total Quantity:</strong>
-                        <span style="color: #2c3e50;">{{ order.get_cart_items }} items</span>
+                <div class="container" style="max-width: min(400px, 100vw - 20px); width: 100%;">
+                    <p style="display: flex; justify-content: space-between; align-items: flex-start; font-size: 14px; margin-bottom: 10px; min-height: 20px;">
+                        <strong style="flex: 1; margin-right: 10px;">Total Quantity:</strong>
+                        <span style="color: #2c3e50; text-align: right;">{{ order.get_cart_items }} items</span>
                     </p>
-                    <p style="display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 10px;">
-                        <strong>Subtotal:</strong>
-                        <span style="color: #34495e;">₹{{ order.get_cart_total }}</span>
+                    <p style="display: flex; justify-content: space-between; align-items: flex-start; font-size: 14px; margin-bottom: 10px; min-height: 20px;">
+                        <strong style="flex: 1; margin-right: 10px;">Subtotal:</strong>
+                        <span style="color: #34495e; text-align: right;">₹{{ order.get_cart_total }}</span>
                     </p>
-                    <p style="display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 10px;">
-                        <strong>Shipping:</strong>
-                        
+                    <p style="display: flex; justify-content: space-between; align-items: flex-start; font-size: 14px; margin-bottom: 10px; min-height: 20px;">
+                        <strong style="flex: 1; margin-right: 10px;">Shipping:</strong>
                         {% if order.Shipping_charge != 0 %}
-                            <span>{{ order.Shipping_charge }}</span>
-						{% else %}
-                            <span  style="color: #27ae60;">Free Delivery</span>
-						{% endif %}
+                            <span style="color: #34495e; text-align: right;">₹{{ order.Shipping_charge }}</span>
+                        {% else %}
+                            <span style="color: #27ae60; text-align: right;">Free Delivery</span>
+                        {% endif %}
                     </p>
-                    <p style="display: flex; justify-content: space-between; font-size: 18px; margin-top: 10px; font-weight: bold; color: #34495e; border-top: 1px solid #eceff1;">
-                        <strong>Total:</strong>
-                        <span>₹{{ order.total_price|default:"0" }}</span>
+                    <p style="display: flex; justify-content: space-between; align-items: flex-start; font-size: 16px; margin-top: 10px; font-weight: bold; color: #34495e; border-top: 1px solid #eceff1; padding-top: 10px; min-height: 24px;">
+                        <strong style="flex: 1; margin-right: 10px;">Total:</strong>
+                        <span style="text-align: right;">₹{{ order.total_price|default:"0" }}</span>
                     </p>
                 </div>
-            </div>
+            </div> 
             
             
         </div>
