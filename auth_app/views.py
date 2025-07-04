@@ -12,8 +12,9 @@ from django.views.decorators.csrf import csrf_exempt
 
 # chnage it into (os.environ.get) Importend
 
-SUPERUSER_CONTACT_NUMBER = '1234567890'
 # RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID')
+
+SUPERUSER_CONTACT_NUMBER = '1234567890'
 PREDEFINED_SUPERUSER_PASSWORD = '1234'
 
 
