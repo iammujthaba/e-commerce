@@ -69,8 +69,8 @@
         font-weight: bold;
         color: #555;
     }
-        /* The modal's background */
-        .modal {
+    /* The modal's background */
+    .modal {
         position: fixed;
         top: 0;
         left: 0;
@@ -219,14 +219,12 @@
             <h2>Update Order Status</h2>
             <form method="post" class="update-form" id="update-order-form">
                 {% csrf_token %}
-                <label for="status">Click The Button to Update Status:</label>
-                <select id="status" name="status">
-                    <option value="{{ next_status }}">{{ next_status }}</option>
-                </select>
+                <label for="status">Click The Button to Update Status: <span style="color: rgb(245, 91, 91);">{{ next_status }}</span></label>
 
+                <!-- Hidden input to store the next status -->
+                <input type="hidden" id="status" name="status" value="{{ next_status }}">
 
-
-                {% comment %} {% if order.status == 'Product Shipped' %}
+                {% if order.status == 'Order Confirmed' %}
                 <div class="courier-section" style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
                     <h3>Shipping Information</h3>
                     <div style="margin-bottom: 15px;">
@@ -236,6 +234,7 @@
                             <option value="delhivery" {% if order.courier_partner == 'delhivery' %}selected{% endif %}>Delhivery</option>
                             <option value="dtdc" {% if order.courier_partner == 'dtdc' %}selected{% endif %}>DTDC</option>
                             <option value="india_post" {% if order.courier_partner == 'india_post' %}selected{% endif %}>India Post</option>
+                            <option value="other" {% if order.courier_partner == 'other' %}selected{% endif %}>Other</option>
                         </select>
                     </div>
                     <div style="margin-bottom: 15px;">
@@ -248,13 +247,8 @@
                         <span style="font-weight: bold;">Update Shipping Info</span>
                     </button>
                 </div>
-                <button type="button" class="btn" id="cancel-btn" style="background-color: rgb(245, 68, 68);"> 
-                    <span style="font-weight: bold;">"Cancel" this Order</span>
-                </button>
                 {% endif %}
- {% endcomment %}
 
-                
                 <!-- Button to trigger confirmation -->
                 <button type="button" class="btn" id="confirm-btn" style="background-color: rgb(68, 245, 83);">Update Status to <span style="font-weight: bold;">"{{ next_status }}"</span></button>
                 
@@ -272,6 +266,15 @@
                 <button type="button" id="cancel-action" style="background-color: rgb(245, 68, 68);">Cancel</button>
             </div>
         </div>
+
+        <!-- work on progress modal -->
+        <div id="work-on-progress-alert" class="modal" style="display: none;">
+            <div class="modal-content">
+                <p>Sorry, the feature is not available at the moment, but it will be accessible soon...</p>
+                <button type="button" id="work-progress-cancel" style="background-color: rgb(245, 68, 68);">Cancel</button>
+            </div>
+        </div>
+
     {% else %}
         <div class="section">
             <h2 style="text-align: center;">Order Successfully Completed</h2>
@@ -289,29 +292,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Handle the "Cancel" button click (outside the modal)
     document.getElementById('cancel-btn')?.addEventListener('click', function() {
-        // Show confirmation modal
-        document.getElementById('confirmation-alert').style.display = 'flex';
+        // Show work on progress modal
+        document.getElementById('work-on-progress-alert').style.display = 'flex';
     });
 
     // Handle "Confirm" action from the modal
     document.getElementById('confirm-action')?.addEventListener('click', function() {
-        // Get the selected status from the dropdown
-        var selectedStatus = document.getElementById('status').value;
-
-        // Set the selected status to the hidden input field in the form
-        document.getElementById('status').value = selectedStatus;
-
-        // Submit the form
+        // Submit the form directly - the hidden input already has the correct value
         document.getElementById('update-order-form').submit();
     });
 
-    // Close the modal without submitting
+    // Close the confirmation modal without submitting
     document.getElementById('cancel-action')?.addEventListener('click', function() {
         // Close the confirmation modal
         document.getElementById('confirmation-alert').style.display = 'none';
     });
-});
 
+    // Close the work on progress modal
+    document.getElementById('work-progress-cancel')?.addEventListener('click', function() {
+        // Close the work on progress modal
+        document.getElementById('work-on-progress-alert').style.display = 'none';
+    });
+});
 </script>
 
 {% endblock %}
