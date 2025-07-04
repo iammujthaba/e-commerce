@@ -357,7 +357,7 @@
                                     <div class="col-md-8">
                                     
                                         <h3 class="mb-1">{{product.name}}</h3>
-                                        <h5 class="text-muted">JEE Exam preprestion book</h5>
+                                        {% comment %} <h5 class="text-muted">{{product.category.name}}</h5> {% endcomment %}
                                     
                                         <div class="d-flex align-items-center">
                                             <h3 class=" mb-0">₹{{product.new_price}}</h3>
@@ -374,20 +374,20 @@
                                         </div>
                                     
                                         <hr style="font-weight: 800px;" class="separator">
-                                        <h6 style="margin-top: 20px;">Book Details</h6>
+                                        <h6 style="margin-top: 20px;">Guppy's Details</h6>
                                     
                                         <table class="table ">
                                             <tr>
-                                                <th>Publisher</th>
+                                                <th>Size</th>
                                                 <td>DC Books</td>
                                             </tr>
                                             <tr>
-                                                <th>Author</th>
+                                                <th>Color</th>
                                                 <td>Bittu Kumar</td>
                                             </tr>
                                             <tr>
-                                                <th>Language</th>
-                                                <td>Malayalam</td>
+                                                <th>category</th>
+                                                <td>{{product.category.name}}</td>
                                             </tr>
                                             
                                             <tr>
@@ -442,9 +442,9 @@
 
                                     <div class="product-body">
                                         <h3 class="product-title cart-heading"><a href="{{product.get_url}}">{{ product.name }}</a></h3>
-                                        <h6 class="text-muted mb-0 cart-heading">JEE Exam preprestion book</h6>
+                                        <h6 class="text-muted mb-0 cart-heading">{{product.category.name}}</h6>
 
-                                        <div class="related-product-publisher cart-heading">DC Books</div>
+                                        {% comment %} <div class="related-product-publisher cart-heading">DC Books</div> {% endcomment %}
                                         <!-- New arriwel / best seller /  -->
                                         <!-- <div>New arriwel</div> -->
                                         

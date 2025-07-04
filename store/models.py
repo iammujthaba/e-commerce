@@ -52,8 +52,8 @@ class Product(models.Model):
     name = models.CharField(max_length=250, unique=True)
     slug = models.SlugField(max_length=250, unique=True, blank=True)  # Make blank=True
     description = models.TextField(blank=True)
-    old_price = models.DecimalField(max_digits=7, blank=True, null=True, decimal_places=0)
-    new_price = models.DecimalField(max_digits=7, blank=False, decimal_places=0)
+    old_price = models.DecimalField(max_digits=7, blank=True, null=True, decimal_places=0) # change model name to MRP
+    new_price = models.DecimalField(max_digits=7, blank=False, decimal_places=0) # change model name to MOP
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     image_1 = models.ImageField(upload_to='product')
     image_2 = models.ImageField(upload_to='product', blank=True)
@@ -61,11 +61,11 @@ class Product(models.Model):
     video_url = models.URLField(max_length=200, blank=True)
     stock = models.IntegerField()
     status = models.CharField(max_length=20, choices=PRODUCT_STATUS_CHOICES, default='in_stock')
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(default=True) # change model name to active (activate or deactivate)
     new = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     update = models.DateField(auto_now=True)
-    priority = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+    priority = models.IntegerField(default=0, validators=[MinValueValidator(0)])    
     
     def get_url(self):
         return reverse('store_app:proDetail', args=[self.category.slug, self.slug])
