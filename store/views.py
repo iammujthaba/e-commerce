@@ -675,7 +675,7 @@ def processOrder(request):
         # (Chat GPT ofter requsted to make this line under 'if' conditon [i dont know why])
 
         logger.info(f"Order {order.id} placed successfully")
-        return JsonResponse({'success': True, 'message': f'{payment_record.razorpay_order_id} \n Order placed successfully!'})
+        return JsonResponse({'success': True, 'message': f'Your Order placed successfully!'})
 
     except PaymentRecord.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Payment record not found.'})

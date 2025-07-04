@@ -94,8 +94,12 @@
                 <p><strong>State:</strong> {{ shipping_addres.state }}</p>
                 <p><strong>Zip Code:</strong> {{ shipping_addres.zipcode }}</p>
                 <div id="payment-info">
-                    <button id="rzp-button1" style="background-color: #007BFF;">Proceed to Pay</button>
-                    <a href="{% url 'store_app:checkout' %}" class="btn btn-light w-100 mt-4"> Back to Address </a>
+                    {% if not order.get_cart_items %}
+                        <a href="{% url 'store_app:allProdCat' %}" class="btn btn-danger w-100 mt-4">No item find!</a>
+                    {% else %}
+                        <button id="rzp-button1" style="background-color: #007BFF;">Proceed to Pay</button>
+                        <a href="{% url 'store_app:checkout' %}" class="btn btn-light w-100 mt-4">Back to Address</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
