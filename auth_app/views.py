@@ -9,13 +9,12 @@ import json
 from django.contrib.messages import get_messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import os
+from decouple import config
 
-# chnage it into (os.environ.get) Importend
-
-# RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID')
-
-SUPERUSER_CONTACT_NUMBER = '1234567890'
-PREDEFINED_SUPERUSER_PASSWORD = '1234'
+# RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID')
+SUPERUSER_CONTACT_NUMBER = config('SUPERUSER_CONTACT_NUMBER')
+PREDEFINED_SUPERUSER_PASSWORD = config('PREDEFINED_SUPERUSER_PASSWORD')
 
 
 @csrf_exempt
@@ -93,7 +92,12 @@ def superuser_password(request):
 
             if password == PREDEFINED_SUPERUSER_PASSWORD:
                 # Authenticate superuser
-                superuser = Customer.objects.get(contact_number=SUPERUSER_CONTACT_NUMBER).user
+                try:
+                    superuser = Customer.objects.get(contact_number=SUPERUSER_CONTACT_NUMBER).user
+                except Customer.DoesNotExist:
+                    messages.error(request, "Superuser not found. Please contact support.")
+                    return render(request, 'store/error.html')
+
                 auth_login(request, superuser)
                 return redirect('/')
             else:

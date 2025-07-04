@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,22 +26,8 @@ SECRET_KEY = 'django-insecure-cqy2xox0h^0fyi*!i5@s#7c=pai7xt1r*t3^fup*n3(-jmg$p2
 
 
 
-
-
-
-
-# chnage it into (os.environ.get) Importend
-
-
-# RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID')
-RAZORPAY_KEY_ID = 'rzp_test_WaaFJgcdXqK4uD'
-# RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET')
-RAZORPAY_KEY_SECRET = 'Abl0wyNsd0DOLR8nX3xuIh3I'
-
-
-
-
-
+RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID')
+RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!

@@ -33,6 +33,7 @@
         }
         .error-message {
             margin-bottom: 1.5rem;
+            color: #e74c3c;
         }
         .button {
             display: inline-block;
@@ -51,32 +52,17 @@
 <body>
     <div class="error-container">
         <h1>Oops! An Error Occurred</h1>
-        <div class="error-code">Error Code: <span id="errorCode">Unknown</span></div>
-        <div class="error-message" id="errorMessage">We're sorry, but something went wrong.</div>
+        <div class="error-code">Error Code: 500</div>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="error-message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% else %}
+            <div class="error-message">We're sorry, but something went wrong.</div>
+        {% endif %}
+
         <a href="/" class="button">Go Back to Homepage</a>
     </div>
-
-    <script>
-        // Function to get URL parameters
-        function getUrlParameter(name) {
-            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            var results = regex.exec(location.search);
-            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-        }
-
-        // Set error code and message from URL parameters
-        window.onload = function() {
-            var errorCode = getUrlParameter('code');
-            var errorMessage = getUrlParameter('message');
-
-            if (errorCode) {
-                document.getElementById('errorCode').textContent = errorCode;
-            }
-            if (errorMessage) {
-                document.getElementById('errorMessage').textContent = errorMessage;
-            }
-        }
-    </script>
 </body>
 </html>
