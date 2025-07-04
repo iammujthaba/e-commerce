@@ -52,6 +52,8 @@ class Product(models.Model):
     name = models.CharField(max_length=250, unique=True)
     slug = models.SlugField(max_length=250, unique=True, blank=True)  # Make blank=True
     description = models.TextField(blank=True)
+    size = models.CharField(max_length=200, null=True, default='not mentioned.')
+    age = models.CharField(max_length=200, null=True, default='not mentioned.')
     old_price = models.DecimalField(max_digits=7, blank=True, null=True, decimal_places=0) # change model name to MRP
     new_price = models.DecimalField(max_digits=7, blank=False, decimal_places=0) # change model name to MOP
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
