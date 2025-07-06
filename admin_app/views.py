@@ -238,6 +238,8 @@ def order_view(request, pk):
             
             elif new_status == 'Product Shipped':
                 order.shipped_time = timezone.now()
+                order.courier_partner = request.POST.get('courier_partner')
+                order.tracking_id = request.POST.get('tracking_id')
                 order.save()
                 messages.success(request, f"Order {order.id} status updated to 'Product Shipped' Successfully.")
                 return redirect('admin_app:confirmed_orders')

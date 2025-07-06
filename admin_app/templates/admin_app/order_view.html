@@ -231,10 +231,10 @@
                         <label for="courier_partner" style="display: block; margin-bottom: 5px; font-weight: bold;">Select Courier Partner:</label>
                         <select id="courier_partner" name="courier_partner" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" required>
                             <option value="">Select Courier Partner</option>
-                            <option value="delhivery" {% if order.courier_partner == 'delhivery' %}selected{% endif %}>Delhivery</option>
-                            <option value="dtdc" {% if order.courier_partner == 'dtdc' %}selected{% endif %}>DTDC</option>
-                            <option value="india_post" {% if order.courier_partner == 'india_post' %}selected{% endif %}>India Post</option>
-                            <option value="other" {% if order.courier_partner == 'other' %}selected{% endif %}>Other</option>
+                            <option value="Delhivery" {% if order.courier_partner == 'delhivery' %}selected{% endif %}>Delhivery</option>
+                            <option value="DTDC" {% if order.courier_partner == 'dtdc' %}selected{% endif %}>DTDC</option>
+                            <option value="India Post" {% if order.courier_partner == 'india_post' %}selected{% endif %}>India Post</option>
+                            <option value="Other" {% if order.courier_partner == 'other' %}selected{% endif %}>Other</option>
                         </select>
                     </div>
                     <div style="margin-bottom: 15px;">
@@ -243,9 +243,6 @@
                                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" 
                                placeholder="Enter tracking ID" required>
                     </div>
-                    <button type="submit" name="update_shipping" class="btn" style="background-color: rgb(68, 150, 245); margin-bottom: 10px;">
-                        <span style="font-weight: bold;">Update Shipping Info</span>
-                    </button>
                 </div>
                 {% endif %}
 

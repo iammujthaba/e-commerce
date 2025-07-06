@@ -177,6 +177,10 @@ class Order(models.Model):
     shipped_time = models.DateTimeField(null=True, blank=True)
     delivered_time = models.DateTimeField(null=True, blank=True)
     total_price = models.DecimalField(max_digits=7, decimal_places=0, null=True, blank=True)
+
+    courier_partner = models.CharField(max_length=100, null=True, blank=True)
+    tracking_id = models.CharField(max_length=100, null=True, blank=True)
+    
     Shipping_charge = models.DecimalField(max_digits=7, blank=False, decimal_places=0, default=0.00)
     payment_success = models.BooleanField(default=False)
     order_created = models.BooleanField(default=False)

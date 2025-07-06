@@ -98,7 +98,7 @@
                     <div class="timeline-content">
                         <p><strong>Product Shipped</strong></p>
                         <p>Your order has been shipped and is on its way.</p>
-                        <button class="btn">Track Shipping</button>
+                        <button class="btn" onclick="openModal()" style="background-color: #1abc9c;">Track Shipping</button>
                     </div>
                 </div>
                 <div class="timeline-item" data-status="Product Delivered">
@@ -217,6 +217,40 @@
             </div>
         </div>
     </div>
+
+    <!-- Shipping Tracking Pop-up Modal -->
+<div id="shippingModal" class="modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+  <div class="modal-content" style="background-color: #fff; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 400px; border-radius: 8px; text-align: center; position: relative;">
+    <h3>Track Your Shipment</h3>
+    
+    <div style="margin: 20px 0; display: flex; align-items: center; justify-content: space-between; background: #f5f5f5; padding: 10px; border-radius: 5px;">
+      <input type="text" id="trackingInput" value="{{ order.tracking_id }}" readonly style="flex: 1; border: none; background: transparent; font-size: 16px;">
+      <button onclick="copyTrackingID()" title="Copy to clipboard" style="margin-left: 10px; border: none; background: none; cursor: pointer;">
+        📋
+      </button>
+    </div>
+
+    {% if order.courier_partner and order.tracking_id %}
+    <a id="courierLink" href="#" target="_blank" class="btn" style="margin-bottom: 15px; background-color: #1abc9c;">
+      Track via {{ order.courier_partner }}
+    </a>
+    {% endif %}
+
+    <hr style="width:100%;text-align:left;margin-left:0">
+    <button onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+  </div>
+</div>
+
+<!-- Modal for Missing Courier Info -->
+<div id="missingCourierModal" class="modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+  <div class="modal-content" style="background-color: #fff; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 400px; border-radius: 8px; text-align: center; position: relative;">
+    <h3>Tracking Information Missing</h3>
+    <p>The courier partner or tracking ID has not been provided yet. Please Contact to admin.</p>
+    <button onclick="closeMissingCourierModal()" class="btn btn-secondary">Close</button>
+  </div>
+</div>
+
+
 </div>
 
 <script>
@@ -310,4 +344,65 @@
 
     });
     </script>
+    <script>
+function openModal() {
+    const modal = document.getElementById("shippingModal");
+    const missingModal = document.getElementById("missingCourierModal");
+    const courier = "{{ order.courier_partner|default:''|lower }}";
+    const trackingID = "{{ order.tracking_id|default:'' }}";
+    const linkBtn = document.getElementById("courierLink");
+
+    // Show missing info modal if courier or tracking ID is missing
+    if (!courier || !trackingID) {
+        missingModal.style.display = "block";
+        return;
+    }
+
+    // Setup the correct tracking link
+    let baseURL = "#";
+    if (courier.includes("dtdc")) {
+        baseURL = `https://www.dtdc.in/tracking/tracking_results.asp?Ttype=awbno&strCnno=${trackingID}`;
+    } else if (courier.includes("delhivery")) {
+        baseURL = `https://www.delhivery.com/tracking?waybill=${trackingID}`;
+    } else if (courier.includes("other")) {
+        baseURL = `/`;
+    } else if (courier.includes("india post")) {
+        baseURL = `https://www.indiapost.gov.in/_layouts/15/dop.portal.tracking/trackconsignment.aspx`;
+    }
+
+    linkBtn.href = baseURL;
+    modal.style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("shippingModal").style.display = "none";
+}
+
+function copyTrackingID() {
+    const input = document.getElementById("trackingInput");
+    input.select();
+    input.setSelectionRange(0, 99999); // For mobile
+    navigator.clipboard.writeText(input.value).then(() => {
+        alert("Tracking ID copied to clipboard!");
+    });
+}
+
+function closeMissingCourierModal() {
+    document.getElementById("missingCourierModal").style.display = "none";
+}
+
+window.onclick = function(event) {
+    const shippingModal = document.getElementById("shippingModal");
+    const missingModal = document.getElementById("missingCourierModal");
+
+    if (event.target === shippingModal) {
+        shippingModal.style.display = "none";
+    }
+    if (event.target === missingModal) {
+        missingModal.style.display = "none";
+    }
+}
+
+</script>
+
 {% endblock %}
