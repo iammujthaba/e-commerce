@@ -27,6 +27,10 @@ urlpatterns = [
     path('order/track/<int:order_id>/', views.trackOrder, name='trackOrder'),
     # path('delivered/',views.myorders,name='delivered'),
 
+    path('terms_and_conditions/',views.terms_and_conditions,name='terms_and_conditions'),
+    path('refund_policy/', views.refund_policy, name='refund_policy'),
+    path('shipping_info/', views.shipping_info, name='shipping_info'),
+    path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
     path('about/',views.about,name='about'),
     path('gallery/',views.gallery,name='gallery'),
     path('contact/',views.contact,name='contact'),

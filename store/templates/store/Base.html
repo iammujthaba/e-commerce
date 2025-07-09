@@ -159,7 +159,7 @@
                         </button>
                         <a href="{% url 'store_app:allProdCat' %}" class="logo">
                             <!-- logo -->
-                            <img src="{% static 'assets/images/demos/demo-4/logo 19a.png' %}" alt="Logo"
+                            <img src="{% static 'assets/images/demos/demo-4/logo.png' %}" alt="Logo"
                                 width="150" height="25">
                         </a>
 
@@ -417,7 +417,7 @@
                         <div class="row">
                             <div class="col-sm-6 col-lg-3">
                                 <div class="widget widget-about">
-                                    <img src="{% static 'assets/images/demos/demo-4/logo 19a.png' %}"
+                                    <img src="{% static 'assets/images/demos/demo-4/logo.png' %}"
                                         class="footer-logo" alt="Footer Logo" width="105" height="25">
                                     <p>Welcome to our online store, where we offer a wide variety of guppies and bettas
                                         for your aquarium. Enjoy your shopping experience!</p>
@@ -462,10 +462,10 @@
                                             <div class="widget">
                                                 <h4 class="widget-title">Terms & Policys</h4>
                                                 <ul class="widget-list">
-                                                    <li><a href="#">T&C</a></li>
-                                                    <!-- <li><a href="#">Shipping</a></li> -->
-                                                    <li><a href="#">Refunds</a></li>
-                                                    <li><a href="#">privacy brpolicy</a></li>
+                                                    <li><a href="{% url 'store_app:terms_and_conditions' %}">T&C</a></li>
+                                                    <li><a href="{% url 'store_app:refund_policy' %}">Refunds</a></li>
+                                                    <li><a href="{% url 'store_app:shipping_info' %}">shipment</a></li>
+                                                    <li><a href="{% url 'store_app:privacy_policy' %}">policy</a></li>
                                                     <li><a href="{% url 'store_app:faq' %}">Questions</a></li>
                                                 </ul>
                                             </div>
@@ -546,10 +546,10 @@
                                     <div class="widget text-center">
                                         <h4 class="widget-title">Terms & Policys</h4>
                                         <ul class="widget-list">
-                                            <li><a href="#">T&C</a></li>
-                                            <li><a href="#">Refunds</a></li>
-                                            <li><a href="#">Shipping</a></li>
-                                            <li><a href="#">Privacy Policy</a></li>
+                                            <li><a href="{% url 'store_app:terms_and_conditions' %}">T&C</a></li>
+                                            <li><a href="{% url 'store_app:refund_policy' %}">Refunds</a></li>
+                                            <li><a href="{% url 'store_app:shipping_info' %}">shipment</a></li>
+                                            <li><a href="{% url 'store_app:privacy_policy' %}">Privacy Policy</a></li>
                                             <li><a href="{% url 'store_app:faq' %}">Questions</a></li>
                                         </ul>
                                     </div>

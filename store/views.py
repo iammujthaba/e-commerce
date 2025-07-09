@@ -759,6 +759,17 @@ def account_info(request):
     }
     return render(request, 'store/account_info.html', context)
 
+def terms_and_conditions(request):
+    return render(request, 'resources/terms_and_conditions.html')
+
+def refund_policy(request):
+    return render(request, 'resources/refunds.html')
+
+def shipping_info(request):
+    return render(request, 'resources/shipment.html')
+
+def privacy_policy(request):
+    return render(request, 'resources/privacy.html')
 
 def about(request):
     return render(request, 'resources/about.html')
