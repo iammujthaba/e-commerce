@@ -893,8 +893,7 @@ button:focus {
 .cat-block img {
     max-width: 100%;
     height: auto;
-    display: block;
-    border-radius: 10px;
+    display: block
 }
 
 .cat-block-title {
@@ -911,11 +910,11 @@ button:focus {
     object-fit: cover
 }
 
-/* .home-product {
+.home-product {
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 20px
-} */
+}
 
 .product-2 {
     display: flex;
@@ -928,12 +927,11 @@ button:focus {
 }
 
 .image-wrapper {
-    /* height: 200px; */
+    height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f8f8f8;
-    border-radius: 3px;
+    background-color: #f8f8f8
 }
 
 .image-wrapper img {
