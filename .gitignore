@@ -1,0 +1,50 @@
+# Byte-compiled files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Virtual environment
+env/
+venv/
+ENV/
+.venv/
+
+# Cache and logs
+*.log
+*.cache
+*.bak
+*.swp
+
+# Test results
+coverage/
+*.cover
+*.py,cover
+*.pytest_cache/
+.tox/
+
+# IDE or editor configurations
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Python environment variables
+.env
+*.env
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Lock files or dependency archives
+*.lock
+*.tar.gz
+*.zip
