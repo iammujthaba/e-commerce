@@ -1,0 +1,72 @@
+{% extends 'store/Base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'assets/css/style/about.css' %}">
+
+<main class="main">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'store_app:allProdCat' %}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Shipping Information</li>
+            </ol>
+        </div>
+    </nav>
+
+    <div class="page-content pb-0">
+        <div class="container pt-3 pb-5">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="title">Shipping & Delivery</h2>
+                    <p>We ship live guppies with the utmost care across India. Our packaging and shipping methods ensure that your fish arrive healthy and stress-free.</p>
+
+                    <h4 class="pt-4">1. Delivery Coverage</h4>
+                    <ul>
+                        <li>✅ We ship to all major cities, towns, and even remote areas across India</li>
+                        <li>✅ North & North-Eastern states are also covered, but with special refund terms</li>
+                        <li>🚫 International shipping is currently not available</li>
+                    </ul>
+
+                    <h4 class="pt-4">2. Packaging Details</h4>
+                    <ul>
+                        <li>📦 Fish are packed individually in <strong>airtight bags</strong></li>
+                        <li>📦 Securely placed in <strong>thermocol boxes</strong> to maintain temperature</li>
+                        <li>📦 Marked with <strong>“Live Fish”</strong> stickers for careful handling by couriers</li>
+                        <li>🧊 Ice gel packs included during hotter months to ensure safety</li>
+                    </ul>
+
+                    <h4 class="pt-4">3. Shipping Partners & Timeline</h4>
+                    <ul>
+                        <li>🚚 We use reliable third-party couriers (DTDC, speed post, delhivery, etc.)</li>
+                        <li>📍 Estimated delivery: <strong>24–72 hours</strong> from dispatch depending on your location</li>
+                        <li>📲 Tracking details will be shared via order tracking page after dispatch</li>
+                    </ul>
+
+                    <h4 class="pt-4">4. Customer Responsibilities</h4>
+                    <ul>
+                        <li>📬 Provide accurate delivery address and phone number at checkout</li>
+                        <li>📦 Be available to collect the parcel <strong>as soon as it arrives</strong></li>
+                        <li>📹 Record an <strong>unboxing video</strong> immediately after receiving the shipment (required for claims)</li>
+                    </ul>
+
+                    <h4 class="pt-4">5. Important Notes</h4>
+                    <ul>
+                        <li>❌ We do <strong>not offer COD</strong> – all shipments are prepaid only</li>
+                        <li>✅ We aim to dispatch orders within 1–2 business days after payment and order confirmation</li>
+                        <li>⚠️ Delays due to weather, lockdowns, or courier issues are outside our control</li>
+                    </ul>
+
+                    <h4 class="pt-4">Need Help?</h4>
+                    <p>For any shipping-related queries or delivery support, feel free to reach us:</p>
+                    <ul>
+                        <li>📱 WhatsApp: <strong>+91 9747377338</strong></li>
+                        <li>📧 Email: <strong>ckguppiesandbettas@gmail.com</strong></li>
+                    </ul>
+                    <p>We’re happy to assist you and ensure a smooth, stress-free shipping experience for your aquatic order!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}
