@@ -1,5 +1,18 @@
 {% extends 'admin_app/base_admin.html' %}
 {% block content %}
+<style>
+    .errorlist {
+        color: red;
+        list-style-type: none;
+        padding: 0;
+    }
+    .errorlist li {
+        margin-bottom: 5px;
+    }
+    .btn {
+        margin-top: 10px;
+    }
+</style>
 <h1>{% if form.instance.pk %}Edit{% else %}Create{% endif %} Product</h1>
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}

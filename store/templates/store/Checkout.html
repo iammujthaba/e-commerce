@@ -140,18 +140,22 @@
                         <label for="state" style="margin: 0 0 .5rem;">State</label>
                         <div class="margin_bott">
                             <select class="form-control" id="state" name="state" style="margin-bottom: 0rem;" required>
-                                <option value="" disabled selected>Select your state</option>
-                                <optgroup label="High-Demand Areas">
-                                    {% for state in frequent_customer_areas %}
-                                    <option value="{{ state }}" {% if last_shipping.state == state %}selected{% endif %}>{{ state }}</option>
+                                {% if last_shipping.state and last_shipping.state != 'Other' %}
+                                    <option value="{{ last_shipping.state }}" selected>{{ last_shipping.state }}</option>
+                                    {% for state in all_states %}
+                                        {% if state != last_shipping.state %}
+                                            <option value="{{ state }}" {% if state == selected_state %}selected{% endif %}>{{ state }}</option>
+                                        {% endif %}
                                     {% endfor %}
-                                </optgroup>
-                                <optgroup label="Other">
-                                    {% for state in other_states %}
-                                    <option value="{{ state }}" {% if last_shipping.state == state %}selected{% endif %}>{{ state }}</option>
-                                    {% endfor %}
-                                </optgroup>
-                            </select>
+                                    <option value="Other" {% if selected_state == 'Other' %}selected{% endif %}>Other</option>
+                                {% else %}
+                                    <option value="" disabled selected style="background-color: rgb(223, 223, 223);">Select a state</option>
+                                        {% for state in all_states %}
+                                            <option value="{{ state }}" {% if state == selected_state %}selected{% endif %}>{{ state }}</option>
+                                        {% endfor %}
+                                    <option value="Other" {% if selected_state == 'Other' %}selected{% endif %}>Other</option>
+                                {% endif %}
+                                </select>
                             <span class="text-danger small" id="state-error"></span>
                         </div>
                     </div>
