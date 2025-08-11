@@ -132,7 +132,7 @@
                                 <p id="account-toggle">Account</p>
                                 <ul id="account-menu">
                                     {% if user.is_authenticated %}
-                                    <li><a href="{% url 'store_app:account_info' %}">{{user.username}}</a></li>
+                                    <li><a href="{% url 'store_app:account_info' %}">{{user.customer.name|default:user.username}}</a></li>
                                     {% if user.is_superuser %}
                                     <li><a href="{% url 'admin_app:dashboard' %}" id="signin-button">Admin panel</a>
                                     </li>
