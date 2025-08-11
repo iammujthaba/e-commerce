@@ -1,7 +1,7 @@
 {# templates/store/includes/cart_button.html #}
 {% if template_name == 'wishlist' %}
     <div class="product-actions" style="display: contents;">
-        {% if product.status == 'out_of_stock' or product.stock <= 0 %}
+        {% if product.status == 'out_of_stock' or product.stock <= 0 or not product.active %}
             <button class="btn btn-secondary add-to-cart update-cart disabled" style="cursor: not-allowed;">
                 Out&nbsp;Of&nbsp;Stock
             </button>
@@ -22,7 +22,7 @@
 {% elif template_name == 'proDetail' %}
 <input style="display: none;" type="number" id="cart-quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control">
     <div class="product-details-action product-actions">
-        {% if product.status == 'out_of_stock' or product.stock <= 0 %}
+        {% if product.status == 'out_of_stock' or product.stock <= 0 or not product.active %}
             <a id="add-to-cart-btn" class="btn-product btn-disabled2 update-cart disabled" 
                style="margin-left: 19px; margin-right: 17px; background-color: #6c757d; opacity: .80; cursor: not-allowed;">
                 <span style="color: #fff;font-size: 1.5rem;">Out&nbsp;Of&nbsp;Stock</span>
@@ -64,7 +64,7 @@
 
 {% else %}
     <div class="product-actions">
-        {% if product.status == 'out_of_stock' or product.stock <= 0 %}
+        {% if product.status == 'out_of_stock' or product.stock <= 0 or not product.active %}
             <button class="btn btn-secondary btn-lg btn-block add-to-cart add-btn update-cart disabled" 
                     style="cursor: not-allowed;">Out&nbsp;Of&nbsp;Stock</button>
         {% else %}
