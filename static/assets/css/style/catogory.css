@@ -583,11 +583,6 @@ button:focus {
     border-color: #c96
 }
 
-.intro-slide,
-.intro-slider-container,
-.product {
-    background-color: #fff
-}
 
 .bg-image .btn-outline-dark:not(:disabled):not(.disabled).active,
 .bg-image .btn-outline-dark:not(:disabled):not(.disabled):active {
@@ -879,7 +874,7 @@ button:focus {
     align-items: center;
     justify-content: center;
     color: #fff;
-    margin-bottom: 1.5rem
+    margin-bottom: .5rem
 }
 
 .cat-block:hover {

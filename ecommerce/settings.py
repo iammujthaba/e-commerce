@@ -37,10 +37,22 @@ ALLOWED_HOSTS = [
     '2ae9-2402-3a80-1939-5cdc-f06e-7237-b4d-3110.ngrok-free.app',
     'localhost',
     '127.0.0.1',
+    'ckguppies.in', 'www.ckguppies.in', '69.62.77.187'
     ]
 
+# HTTPS Security Settings
+# SECURE_SSL_REDIRECT = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+
 CSRF_TRUSTED_ORIGINS = [
-    'https://2ae9-2402-3a80-1939-5cdc-f06e-7237-b4d-3110.ngrok-free.app',  # Add your ngrok URL here
+    'https://ckguppies.in',
+    'https://www.ckguppies.in',
+    # Remove or comment out the ngrok URL since you don't need it anymore
+    # 'https://2ae9-2402-3a80-1939-5cdc-f06e-7237-b4d-3110.ngrok-free.app',
 ]
 
 # Application definition
