@@ -923,7 +923,7 @@ button:focus {
 }
 
 .image-wrapper {
-    /* height: 200px; */
+    height: 200px; /* this line of code help to make card product image size constant {improtent line} */
     display: flex;
     align-items: center;
     justify-content: center;
