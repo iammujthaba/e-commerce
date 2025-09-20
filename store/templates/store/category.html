@@ -14,6 +14,90 @@
     </script>
 {% endif %}
 
+
+
+
+
+<!--================ alert box Area =================-->
+<!-- this code will remove after developpment -->
+<style>
+    .alert-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alert-box {
+  background: white;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  max-width: 400px;
+  text-align: center;
+  font-family: sans-serif;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.alert-box h3 {
+  margin-top: 0;
+  color: #e63946;
+}
+
+.alert-box p {
+  margin: 10px 0 20px;
+  color: #333;
+}
+
+.alert-box button {
+  background-color: #1d3557;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.alert-box button:hover {
+  background-color: #457b9d;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+</style>
+  <div id="devAlert" class="alert-overlay">
+    <div class="alert-box">
+        <h3>⚠️ Under Development</h3>
+        <p>Currently, you cannot make purchases through our website. Please contact us via WhatsApp to complete your orders.</p>
+        <button onclick="closeDevAlert()">OK</button>
+    </div>
+  </div>
+<script>
+  // Function to close the alert box
+  function closeDevAlert() {
+    document.getElementById('devAlert').style.display = 'none';
+  }
+
+  // Always show the alert on every visit
+  window.onload = function () {
+    document.getElementById('devAlert').style.display = 'flex';
+  };
+</script>
+<!--================ End of the alert box Area =================-->
+
+
+
+
+
     <div>
 
         {% if category %}
@@ -33,63 +117,82 @@
 
         {% else %}
 
-        <style>
-            @media screen and (max-width: 767px) {
-              .intro-slider-container {
-                margin-top: 1.4rem;
-              }
-            }
-          </style>
           
         <main class="main">
-            <div class="intro-slider-container mb-5">
-                <!--  <div class="intro-slider owl-carousel owl-theme owl-nav-inside owl-light" data-toggle="owl" 
-                    data-owl-options='{
-                        "dots": true,
-                        "nav": false, 
-                        "responsive": {
-                            "1200": {
-                                "nav": true,
-                                "dots": false
-                            }
-                        }
-                    }'> -->
-                <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-7.jpg');">
-                    <div class="container intro-content">
-                        <div class="row justify-content-end">
-                            <div class="col-auto col-sm-7 col-md-6 col-lg-5">
-
-                                <div class="intro-price">
-                                    <span class="text-third">
-                                        4700+
-                                    </span>
-                                </div><!-- End .intro-price -->
-                                <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Happy
-                                    Customer</h3>
-                                <!-- End .h3 intro-subtitle -->
-                                <div class="intro-price">
-                                    <span class="text-third">
-                                        5+ Year
-                                    </span>
-                                </div><!-- End .intro-price -->
-                                <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">
-                                    Experience</h3>
-                                <!-- End .h3 intro-subtitle -->
-                                    {#{% url 'store_app:allProductListing' %}#}
-                                <a href="{% url 'store_app:allProductListing' %}" class="btn btn-primary btn-round">
-                                    <span>Shop Now</span>
-                                    <i class="icon-long-arrow-right"></i>
-                                </a>
-                            </div><!-- End .col-lg-11 offset-lg-1 -->
-                        </div><!-- End .row -->
-                    </div><!-- End .intro-content -->
-                </div><!-- End .intro-slide -->
+            <div class="intro-slider-container mb-2">
+                <!-- Auto-carousel of 3 beautiful cards -->
+                <div id="introCarousel" class="carousel slide" data-ride="carousel" data-interval="4000">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-10.jpg');">
+                                <div class="container intro-content">
+                                    <div class="row justify-content-end">
+                                        <div class="col-auto col-sm-7 col-md-6 col-lg-5">
+                                            <div class="intro-price">
+                                                <span class="text-third">4700+</span>
+                                            </div>
+                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Happy Customer</h3>
+                                            <div class="intro-price">
+                                                <span class="text-third">5+ Year</span>
+                                            </div>
+                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Experience</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-8.jpg');">
+                                <div class="container intro-content">
+                                    <div class="row justify-content-end">
+                                        <div class="col-auto col-sm-7 col-md-6 col-lg-5">
+                                            <div class="intro-price">
+                                                <span class="text-third">100+ Varieties</span>
+                                            </div>
+                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Exotic Guppies</h3>
+                                            <div class="intro-price">
+                                                <span class="text-third">Premium Quality</span>
+                                            </div>
+                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Handpicked Stock</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-9.jpg');">
+                                <div class="container intro-content">
+                                    <div class="row justify-content-end">
+                                        <div class="col-auto col-sm-7 col-md-6 col-lg-5">
+                                            <div class="intro-price">
+                                                <span class="text-third">Live Arrival</span>
+                                            </div>
+                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Refund Guarantee</h3>
+                                            <div class="intro-price">
+                                                <span class="text-third">Expert Support</span>
+                                            </div>
+                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">WhatsApp Help</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carousel indicators -->
+                    <ol class="carousel-indicators" style="bottom: 10px;">
+                        <li data-target="#introCarousel" data-slide-to="0" class="active"></li>
+                        <li data-target="#introCarousel" data-slide-to="1"></li>
+                        <li data-target="#introCarousel" data-slide-to="2"></li>
+                    </ol>
+                    
+                </div>
+                <!-- End Auto-carousel -->
 
                 <!-- <span class="slider-loader"></span>End .slider-loader -->
             </div><!-- End .intro-slider-container -->
             
             <div class="container">
-                <h2 class="title text-center mb-2">Explore Categories</h2>
+                {% comment %} <h2 class="title text-center mb-2">Explore Categories</h2> {% endcomment %}
 
                 <div class="cat-blocks-container">
                     <div class="row justify-content-center">
@@ -128,6 +231,153 @@
                     </div>
                 </div>
             </div>
+
+
+            <div class="intro-slider-container mb-2">
+                <!-- Auto-carousel of 3 beautiful cards -->
+                <div id="introCarousel" class="carousel slide" data-ride="carousel" data-interval="4000">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-10.jpg');">
+                                <div class="container intro-content">
+                                    <div class="row justify-content-end">
+                                        <div class="col-auto col-sm-7 col-md-6 col-lg-5">
+                                            <div class="intro-price">
+                                                <span class="text-third">4700+</span>
+                                            </div>
+                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Happy Customer</h3>
+                                            <div class="intro-price">
+                                                <span class="text-third">5+ Year</span>
+                                            </div>
+                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Experience</h3>
+                                            <a href="{% url 'store_app:allProductListing' %}" class="btn btn-primary btn-round">
+                                                <span>Shop Now</span>
+                                                <i class="icon-long-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-8.jpg');">
+                                <div class="container intro-content">
+                                    <div class="row justify-content-end">
+                                        <div class="col-auto col-sm-7 col-md-6 col-lg-5">
+                                            <div class="intro-price">
+                                                <span class="text-third">100+ Varieties</span>
+                                            </div>
+                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Exotic Guppies</h3>
+                                            <div class="intro-price">
+                                                <span class="text-third">Premium Quality</span>
+                                            </div>
+                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Handpicked Stock</h3>
+                                            <a href="{% url 'store_app:category_list' %}" class="btn btn-primary btn-round">
+                                                <span>Explore Categories</span>
+                                                <i class="icon-long-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-9.jpg');">
+                                <div class="container intro-content">
+                                    <div class="row justify-content-end">
+                                        <div class="col-auto col-sm-7 col-md-6 col-lg-5">
+                                            <div class="intro-price">
+                                                <span class="text-third">Live Arrival</span>
+                                            </div>
+                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Refund Guarantee</h3>
+                                            <div class="intro-price">
+                                                <span class="text-third">Expert Support</span>
+                                            </div>
+                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">WhatsApp Help</h3>
+                                            <a href="{% url 'store_app:faq' %}" class="btn btn-primary btn-round">
+                                                <span>Learn More</span>
+                                                <i class="icon-long-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carousel indicators -->
+                    <style>
+                        .carousel{
+                            padding-left: 10px;
+                            padding-right: 10px;
+                        }
+                        .intro-content {
+                            background: rgba(0,0,0,0.32);
+                            border-radius: 16px;
+                            padding: 2rem 1.5rem;
+                            margin-top: 2.5rem;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+                        }
+                        .intro-price span {
+                            font-size: 2.2rem;
+                            font-weight: 700;
+                            color: #3498db;
+                            text-shadow: 0 1px 8px rgba(0,0,0,0.18);
+                        }
+                        .intro-slide h3 {
+                            font-size: 1.5rem;
+                            font-weight: 600;
+                            margin-bottom: 0.7rem;
+                            letter-spacing: 0.5px;
+                            color: #fff;
+                            text-shadow: 0 1px 8px rgba(0,0,0,0.18);
+                        }
+                        .btn.btn-primary.btn-round {
+                            border-radius: 20px;
+                            font-weight: 600;
+                            padding: 0.6rem 1.6rem;
+                            background: linear-gradient(90deg,#2874f0 60%,#0059b3 100%);
+                            border: none;
+                            box-shadow: 0 2px 8px rgba(40,116,240,0.12);
+                            transition: background 0.2s;
+                        }
+                        .btn.btn-primary.btn-round:hover {
+                            background: linear-gradient(90deg,#0059b3 60%,#2874f0 100%);
+                        }
+                        .carousel-indicators li {
+                            width: 12px;
+                            height: 12px;
+                            border-radius: 50%;
+                            background-color: #2874f0;
+                            opacity: 0.4;
+                            margin: 0 5px;
+                            transition: opacity 0.2s;
+                        }
+                        .carousel-indicators .active {
+                            opacity: 1;
+                            background-color: #3498db;
+                        }
+                        @media (max-width: 767px) {
+                            {% comment %} .intro-slide {
+                                min-height: 220px;
+                            } {% endcomment %}
+                            .intro-content {
+                                padding: 1rem 0.7rem;
+                                margin-top: 1.2rem;
+                            }
+                            .intro-price span {
+                                font-size: 1.3rem;
+                            }
+                            .intro-slide h3 {
+                                font-size: 1rem;
+                            }
+                        }
+                    </style>
+                </div>
+                <!-- End Auto-carousel -->
+
+                <!-- <span class="slider-loader"></span>End .slider-loader -->
+            </div><!-- End .intro-slider-container -->
+            
 
             <div class="container for-you" style="padding-top: 10px;">
                 <div class="heading heading-flex mb-3">

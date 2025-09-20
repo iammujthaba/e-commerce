@@ -406,6 +406,9 @@ def cart(request):
 
 @csrf_protect
 def checkout(request):
+
+    all_states = ShippingRate.objects.values_list('state', flat=True)
+            
     if request.user.is_authenticated:
         customer = request.user.customer
         
@@ -426,16 +429,7 @@ def checkout(request):
                 return render(request, 'store/Checkout.html', {
                     'error_message': 'All fields are required.',
                     'last_shipping': shipping_info,
-                    
-                    'frequent_customer_areas': ["Kerala", "Karnataka", "Tamil Nadu"],
-                    'other_states': [
-                        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", 
-                        "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh",
-                        "Jharkhand", "Madhya Pradesh", "Maharashtra", "Manipur", 
-                        "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", 
-                        "Rajasthan", "Sikkim", "Telangana", "Tripura", 
-                        "Uttar Pradesh", "Uttarakhand", "West Bengal"
-                    ],
+                    'all_states': all_states,
                 })
 
             # Store shipping info in session
@@ -449,15 +443,7 @@ def checkout(request):
         
         context = {
             'last_shipping': last_shipping,
-            'frequent_customer_areas': ["Kerala", "Karnataka", "Tamil Nadu"],
-            'other_states': [
-                "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", 
-                "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh",
-                "Jharkhand", "Madhya Pradesh", "Maharashtra", "Manipur", 
-                "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", 
-                "Rajasthan", "Sikkim", "Telangana", "Tripura", 
-                "Uttar Pradesh", "Uttarakhand", "West Bengal"
-            ],
+            'all_states': all_states,
         }
         return render(request, 'store/Checkout.html', context)
     else:

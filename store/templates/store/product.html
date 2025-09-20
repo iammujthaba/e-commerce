@@ -389,13 +389,14 @@
                                                 <th>category</th>
                                                 <td>{{product.category.name}}</td>
                                             </tr>
-                                            
-                                            <tr>
-                                                <th colspan="2">Description :</th>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2" style="border-top: 0px; padding-top:0px;">{{product.description}}</td>
-                                            </tr>
+                                            {% if product.description %}
+                                                <tr>
+                                                    <th colspan="2">Description :</th>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="border-top: 0px; padding-top:0px;">{{product.description}}</td>
+                                                </tr>
+                                            {% endif %}
                                         </table>
                                     </div>
 
@@ -475,7 +476,7 @@
     <!-- Share Modal -->
     <div id="shareModal" class="modal">
         <div class="modal-content">
-            <h2>Share this Book</h2>
+            <h2>Share this Item</h2>
             <div class="social-icons social-icons-colored justify-content-around mb-2 mt-3">
                 <a href="#" onclick="shareViaWhatsApp()" class="social-icon" target="_blank" title="WhatsApp" style="background-color: #25d366;"><i class="icon-whatsapp"></i></a>
                 <a href="#" onclick="shareViaInstagram()" class="social-icon social-instagram" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>

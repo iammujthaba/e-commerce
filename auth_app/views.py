@@ -16,17 +16,22 @@ from decouple import config
 SUPERUSER_CONTACT_NUMBER = config('SUPERUSER_CONTACT_NUMBER')
 PREDEFINED_SUPERUSER_PASSWORD = config('PREDEFINED_SUPERUSER_PASSWORD')
 
+from django.utils.crypto import get_random_string
 
 @csrf_exempt
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
+            username_input = form.cleaned_data['username']  # may not be unique
             contact_number = form.cleaned_data['contact_number']
+
+            # Generate a truly unique value for the DB, but keep the original for display
+            unique_username_for_db = f"{username_input}_{get_random_string(6)}"
+
             try:
-                user = User.objects.create_user(username=username)
-                Customer.objects.create(user=user, name=username, contact_number=contact_number)
+                user = User.objects.create_user(username=unique_username_for_db)
+                Customer.objects.create(user=user, name=username_input, contact_number=contact_number)
                 auth_login(request, user)
                 # Merge cookies cart and wishlist with user cart and wishlist
                 merge_cookie_cart_with_user_cart(request, user)
