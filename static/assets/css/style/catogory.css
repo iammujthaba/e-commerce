@@ -905,11 +905,11 @@ button:focus {
     object-fit: cover
 }
 
-.home-product {
+/* .home-product {
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 20px
-}
+} */
 
 .product-2 {
     display: flex;
@@ -922,7 +922,7 @@ button:focus {
 }
 
 .image-wrapper {
-    height: 200px; /* this line of code helps to make card product image size constant */
+    /*height: 200px;*/ /* this line of code helps to make card product image size constant */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -931,6 +931,7 @@ button:focus {
 
 
 .image-wrapper img {
+    border-radius: 10px;
     max-width: 100%;
     max-height: 100%;
     object-fit: contain

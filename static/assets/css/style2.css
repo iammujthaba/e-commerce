@@ -28,35 +28,43 @@
     
 
  .product-sale-label{
-    color: #fff;
+    color: #000;
     background: #da5555;
     font-size: 12px;
-    letter-spacing: 1px;
+    font-weight: 400;
+    /* letter-spacing: 1px; */
     line-height: 14px;
     padding: 5px 11px;
-    border-radius: 12px;
+    border-radius: 5px;
+    /* border-top-left-radius: 11px;
+    border-bottom-right-radius: 11px; */
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 133px;
+    left: 5px;
     transition: all 0.4s ease;
 }
 .product-sale-label{
-    background: #da5555;
-    left: 10px;
-    right: auto;
+    background: #ffffff;
+    opacity: 0.6;
+    /* left: 10px; */
+    /* right: auto; */
 }
 
 .product-discount-label{
     color: #fff;
     background: #2ba968;
+    background-image: linear-gradient(to right, green , yellow);
     font-size: 12px;
     letter-spacing: 1px;
     line-height: 14px;
     padding: 5px 11px;
-    border-radius: 12px;
+    /* border-radius: 12px; */
+    /* border-top-right-radius: 13px; */
+    border-bottom-left-radius: 11px;
+    border-top-right-radius: 11px;
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 2px;
+    right: 3px;
     transition: all 0.4s ease;
 }
 
@@ -80,7 +88,7 @@
   }
 
 .pricing{
-  margin-top: 4px;
+  /* margin-top: 4px; */
   margin-bottom: 4px;
 }
 

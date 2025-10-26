@@ -18,7 +18,7 @@
 
 
 
-<!--================ alert box Area =================-->
+{% comment %} <!--================ alert box Area =================-->
 <!-- this code will remove after developpment -->
 <style>
     .alert-overlay {
@@ -92,7 +92,7 @@
     document.getElementById('devAlert').style.display = 'flex';
   };
 </script>
-<!--================ End of the alert box Area =================-->
+<!--================ End of the alert box Area =================--> {% endcomment %}
 
 
 
@@ -124,7 +124,7 @@
                 <div id="introCarousel" class="carousel slide" data-ride="carousel" data-interval="4000">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-10.jpg');">
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584838.png');">
                                 <div class="container intro-content">
                                     <div class="row justify-content-end">
                                         <div class="col-auto col-sm-7 col-md-6 col-lg-5">
@@ -142,7 +142,7 @@
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584838.png');">
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584848.png');">
                                 <div class="container intro-content">
                                     <div class="row justify-content-end">
                                         <div class="col-auto col-sm-7 col-md-6 col-lg-5">
@@ -160,7 +160,7 @@
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-9.jpg');">
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-7.jpg');">
                                 <div class="container intro-content">
                                     <div class="row justify-content-end">
                                         <div class="col-auto col-sm-7 col-md-6 col-lg-5">
@@ -386,6 +386,7 @@
                     </div>
                 </div>
 
+
                 <div class="products">
                     <div class="row justify-content-center">
 
@@ -394,7 +395,7 @@
                             <div class="product product-2">
                                 {#{{product.get_url}}#}
                                 <a href="{{product.get_url}}">
-                                    <div id="carouselExampleIndicators{{product.slug}}" class="carousel slide">
+                                    <div id="carouselExampleIndicators{{product.slug}}" class="slide">
 
                                         <div class="carousel-inner">
                                             <div class="carousel-item active">
@@ -460,6 +461,7 @@
                 <hr class="mb-0">
             </div>
 
+
             <div class="bg-light deal-container pt-4 pb-2 mb-4">
                 <div class="container">
                     <div class="heading text-center mb-2">
@@ -478,7 +480,7 @@
                                 <div class="product product-2">
                                     {#{{product.get_url}}#}
                                     <a href="{{product.get_url}}">
-                                        <div id="carouselExampleIndicators2{{product.slug}}" class="carousel slide">
+                                        <div id="carouselExampleIndicators2{{product.slug}}" class="slide">
 
                                             <div class="carousel-inner">
                                                 <div class="carousel-item active">
@@ -817,9 +819,9 @@
             padding-left: 0px;
         }
 
-        /* .category-line .nav-item {
-            margin-right: 10px;
-        } */
+        .category-line .nav-item {
+            
+        }
 
         .category-line .nav-link {
             color: #333;
@@ -850,11 +852,51 @@
             {% endfor %}
         </ul>
     </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.category-line .nav-link');
+        const categoryLine = document.querySelector('.category-line');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Get the parent nav-item
+                const navItem = this.parentElement;
+                
+                // Calculate the scroll position to align the item to the left
+                // Account for container padding
+                const scrollPosition = navItem.offsetLeft - 15; // 15px to account for padding
+                
+                // Smooth scroll to position
+                categoryLine.scrollTo({
+                    left: scrollPosition,
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Also scroll to active item on page load
+        const activeLink = document.querySelector('.category-line .nav-link.active');
+        if (activeLink) {
+            const navItem = activeLink.parentElement;
+            const scrollPosition = navItem.offsetLeft - 15;
+            
+            // Use setTimeout to ensure DOM is fully rendered
+            setTimeout(() => {
+                categoryLine.scrollTo({
+                    left: scrollPosition,
+                    behavior: 'smooth'
+                });
+            }, 100);
+        }
+    });
+</script>
     
     <div class="container">
 
 
 
+        
         <div class="products">
             <div class="row justify-content-center">
                 {% if products.object_list %}
@@ -862,7 +904,7 @@
                     <div class="col-6 col-md-4 col-lg-2">
                         <div class="product product-2">
                             <a href="{{product.get_url}}">
-                                <div id="carouselExampleIndicators{{product.slug}}" class="carousel slide">
+                                <div id="carouselExampleIndicators{{product.slug}}" class="slide">
     
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
