@@ -978,3 +978,65 @@ button:focus {
     100% { background-color: #007bff; }
 }
 
+/* Styles for FIRST intro-slider-container only - carousel images without text */
+.intro-slider-container:first-of-type .intro-slide {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 250px;
+    height: auto;
+    padding-bottom: 40%; /* This creates responsive height (aspect ratio) */
+}
+
+.intro-slider-container:first-of-type .intro-content {
+    display: none; /* Hide all text content in first carousel */
+}
+
+/* .intro-slider-container:first-of-type .carousel-indicators {
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+} */
+
+/* Responsive adjustments for first carousel */
+@media (max-width: 575px) {
+    .intro-slider-container:first-of-type .intro-slide {
+        min-height: 180px;
+        padding-bottom: 50%;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+    .intro-slider-container:first-of-type .intro-slide {
+        min-height: 220px;
+        padding-bottom: 45%;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .intro-slider-container:first-of-type .intro-slide {
+        min-height: 280px;
+        padding-bottom: 40%;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .intro-slider-container:first-of-type .intro-slide {
+        min-height: 320px;
+        padding-bottom: 35%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .intro-slider-container:first-of-type .intro-slide {
+        min-height: 380px;
+        padding-bottom: 32%;
+    }
+}
+
+/* Keep second intro-slider-container unchanged with all its styles */
+.intro-slider-container:nth-of-type(2) .intro-slide {
+    background-size: cover;
+    background-position: center;
+}

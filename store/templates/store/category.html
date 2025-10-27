@@ -119,78 +119,30 @@
 
           
         <main class="main">
+            
             <div class="intro-slider-container mb-2">
-                <!-- Auto-carousel of 3 beautiful cards -->
+                <!-- Auto-carousel of images only -->
                 <div id="introCarousel" class="carousel slide" data-ride="carousel" data-interval="4000">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584838.png');">
-                                <div class="container intro-content">
-                                    <div class="row justify-content-end">
-                                        <div class="col-auto col-sm-7 col-md-6 col-lg-5">
-                                            <div class="intro-price">
-                                                <span class="text-third">4800+</span>
-                                            </div>
-                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Happy Customer</h3>
-                                            <div class="intro-price">
-                                                <span class="text-third">5+ Year</span>
-                                            </div>
-                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Experience</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584838.png');"></div>
                         </div>
                         <div class="carousel-item">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584848.png');">
-                                <div class="container intro-content">
-                                    <div class="row justify-content-end">
-                                        <div class="col-auto col-sm-7 col-md-6 col-lg-5">
-                                            <div class="intro-price">
-                                                <span class="text-third">100+ Varieties</span>
-                                            </div>
-                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Exotic Guppies</h3>
-                                            <div class="intro-price">
-                                                <span class="text-third">Premium Quality</span>
-                                            </div>
-                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Handpicked Stock</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584848.png');"></div>
                         </div>
                         <div class="carousel-item">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-7.jpg');">
-                                <div class="container intro-content">
-                                    <div class="row justify-content-end">
-                                        <div class="col-auto col-sm-7 col-md-6 col-lg-5">
-                                            <div class="intro-price">
-                                                <span class="text-third">Live Arrival</span>
-                                            </div>
-                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Refund Guarantee</h3>
-                                            <div class="intro-price">
-                                                <span class="text-third">Expert Support</span>
-                                            </div>
-                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">WhatsApp Help</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-7.jpg');"></div>
                         </div>
                     </div>
                     <!-- Carousel indicators -->
-                    <ol class="carousel-indicators" style="bottom: 10px;">
+                    <ol class="carousel-indicators">
                         <li data-target="#introCarousel" data-slide-to="0" class="active"></li>
                         <li data-target="#introCarousel" data-slide-to="1"></li>
                         <li data-target="#introCarousel" data-slide-to="2"></li>
                     </ol>
-                    
                 </div>
-                <!-- End Auto-carousel -->
-
-                <!-- <span class="slider-loader"></span>End .slider-loader -->
             </div><!-- End .intro-slider-container -->
-            
+
             <div class="container">
                 {% comment %} <h2 class="title text-center mb-2">Explore Categories</h2> {% endcomment %}
 
@@ -238,7 +190,7 @@
                 <div id="introCarousel" class="carousel slide" data-ride="carousel" data-interval="4000">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-10.jpg');">
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584838.png');">
                                 <div class="container intro-content">
                                     <div class="row justify-content-end">
                                         <div class="col-auto col-sm-7 col-md-6 col-lg-5">
@@ -260,7 +212,7 @@
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-8.jpg');">
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584848.png');">
                                 <div class="container intro-content">
                                     <div class="row justify-content-end">
                                         <div class="col-auto col-sm-7 col-md-6 col-lg-5">
@@ -282,7 +234,7 @@
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-9.jpg');">
+                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/slide-7.jpg');">
                                 <div class="container intro-content">
                                     <div class="row justify-content-end">
                                         <div class="col-auto col-sm-7 col-md-6 col-lg-5">
@@ -310,13 +262,13 @@
                             padding-left: 10px;
                             padding-right: 10px;
                         }
-                        .intro-content {
+                        {% comment %} .intro-content {
                             background: rgba(0,0,0,0.32);
                             border-radius: 16px;
                             padding: 2rem 1.5rem;
                             margin-top: 2.5rem;
                             box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-                        }
+                        } {% endcomment %}
                         .intro-price span {
                             font-size: 2.2rem;
                             font-weight: 700;
@@ -395,7 +347,7 @@
                             <div class="product product-2">
                                 {#{{product.get_url}}#}
                                 <a href="{{product.get_url}}">
-                                    <div id="carouselExampleIndicators{{product.slug}}" class="slide">
+                                    <div id="carouselExampleIndicators{{product.slug}}" class="slide" style="position: relative;">
 
                                         <div class="carousel-inner">
                                             <div class="carousel-item active">
@@ -480,7 +432,7 @@
                                 <div class="product product-2">
                                     {#{{product.get_url}}#}
                                     <a href="{{product.get_url}}">
-                                        <div id="carouselExampleIndicators2{{product.slug}}" class="slide">
+                                        <div id="carouselExampleIndicators2{{product.slug}}" class="slide" style="position: relative;">
 
                                             <div class="carousel-inner">
                                                 <div class="carousel-item active">
@@ -904,7 +856,7 @@
                     <div class="col-6 col-md-4 col-lg-2">
                         <div class="product product-2">
                             <a href="{{product.get_url}}">
-                                <div id="carouselExampleIndicators{{product.slug}}" class="slide">
+                                <div id="carouselExampleIndicators{{product.slug}}" class="slide" style="position: relative;">
     
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">

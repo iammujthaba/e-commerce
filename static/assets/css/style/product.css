@@ -693,7 +693,7 @@ button:focus {
 [class^=icon-]:before {
     font-family: molla;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 0;
     speak: none;
     display: inline-block;
     text-decoration: inherit;
@@ -718,11 +718,11 @@ button:focus {
 .product-gallery {
     position: relative;
     overflow: hidden;
-    padding-left: 30px;
+    /* padding-left: 30px;
     padding-right: 30px;
-    padding-top: 20px;
+    padding-top: 20px; */
     padding-bottom: 5px;
-    margin-bottom: 5px;
+    /* margin-bottom: 5px; */
 }
 
 .carousel-indicators {
@@ -866,13 +866,15 @@ button:focus {
 .left-icons {
     display: flex;
     justify-content: flex-start;
-    gap: 10px
+    gap: 10px;
+    padding-top: 10px;
 }
 
 .right-icons {
     display: flex;
     justify-content: flex-end;
-    gap: 10px
+    gap: 10px;
+    padding-top: 10px;
 }
 
 .share-btn {
