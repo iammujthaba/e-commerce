@@ -21,7 +21,7 @@ ALLOWED_HOSTS = [
     ]
 
 # HTTPS Security Settings
-SECURE_SSL_REDIRECT = True # comment this line during development
+# SECURE_SSL_REDIRECT = True # comment this line during development
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SESSION_COOKIE_SECURE = True
@@ -135,3 +135,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# support@hostinger.com
