@@ -184,8 +184,8 @@
                 </div>
             </div>
 
-
-            <div class="intro-slider-container mb-2">
+            <!-- --------------------------commented just for short time, don't remove this code------------------------ -->
+            {% comment %} <div class="intro-slider-container mb-2">
                 <!-- Auto-carousel of 3 beautiful cards -->
                 <div id="introCarousel" class="carousel slide" data-ride="carousel" data-interval="4000">
                     <div class="carousel-inner">
@@ -262,13 +262,6 @@
                             padding-left: 10px;
                             padding-right: 10px;
                         }
-                        {% comment %} .intro-content {
-                            background: rgba(0,0,0,0.32);
-                            border-radius: 16px;
-                            padding: 2rem 1.5rem;
-                            margin-top: 2.5rem;
-                            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-                        } {% endcomment %}
                         .intro-price span {
                             font-size: 2.2rem;
                             font-weight: 700;
@@ -309,9 +302,6 @@
                             background-color: #3498db;
                         }
                         @media (max-width: 767px) {
-                            {% comment %} .intro-slide {
-                                min-height: 220px;
-                            } {% endcomment %}
                             .intro-content {
                                 padding: 1rem 0.7rem;
                                 margin-top: 1.2rem;
@@ -329,7 +319,7 @@
 
                 <!-- <span class="slider-loader"></span>End .slider-loader -->
             </div><!-- End .intro-slider-container -->
-            
+             {% endcomment %}
 
             <div class="container for-you" style="padding-top: 10px;">
                 <div class="heading heading-flex mb-3">
@@ -372,7 +362,7 @@
 
                                                 <h6 class="pricing">
                                                     
-                                                    {% comment %} <h6 class="text-muted mb-0 cart-heading">{{product.category.name}}</h6> {% endcomment %}
+                                                    <!-- <h6 class="text-muted mb-0 cart-heading">{{product.category.name}}</h6> -->
                                                     {% if product.stock <= 3 and product.stock > 0 %}
                                                     <strong style="color: rgb(199, 0, 85);">Only few left</strong><br>
                                                     {% elif product.stock == 0 %}
