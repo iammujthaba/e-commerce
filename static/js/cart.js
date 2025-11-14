@@ -78,6 +78,20 @@ function handleAuthenticatedUserAction(button, productId, action, currentQuantit
         });
 }
 
+// function to show empty cart message
+function showEmptyCartMessage() {
+    const cartContainer = document.querySelector('.empty-cart-message');
+    cartContainer.innerHTML = `
+	<div>
+		<div class="text-center mb-3">
+			<br>
+			<h2>Your shopping cart is empty.</h2>
+			<p class="mt-4">Please click <a href="/"><b>Here</b></a> to
+				continue shopping.</p>
+		</div>
+	</div>
+    `;
+}
 
 // Add new function to update button state
 function updateUserOrder(productId, action, currentQuantity = NaN) {
@@ -447,20 +461,6 @@ function removeCartItem(productId) {
     }
     // Update all related product buttons to show "Add to Cart"
     updateButtonState(productId, false);
-}
-
-function showEmptyCartMessage() {
-    const cartContainer = document.querySelector('.empty-cart-message');
-    cartContainer.innerHTML = `
-	<div>
-		<div class="text-center mb-3">
-			<br>
-			<h2>Your shopping cart is empty.</h2>
-			<p class="mt-4">Please click <a href="{% url 'store_app:allProdCat' %}"><b>here</b></a> to
-				continue shopping.</p>
-		</div>
-	</div>
-    `;
 }
 
 function updateCartItemQuantity(productId, quantity) {
