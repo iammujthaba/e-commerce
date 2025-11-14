@@ -22,7 +22,6 @@
         width: 100%;
         height: 0;
         padding-bottom: 56.25%; /* 16:9 aspect ratio */
-        /*  padding-bottom: 75%;  Increased from 56.25% to 75% for a larger player */
     }
 
     .responsive-video iframe {
@@ -31,6 +30,7 @@
         left: 0;
         width: 100%;
         height: 100%;
+        border: none;
     }
 
     @media (min-width: 768px) {
@@ -44,11 +44,6 @@
             padding-bottom: 56.25%; /* 16:9 aspect ratio for even larger screens */
         }
     }
-
-    .responsive-video iframe {
-    pointer-events: none; /* Prevent touch interactions */
-}
-
     </style>
 
     <div class="page-content">
@@ -217,7 +212,7 @@
                                         image2: "{{ product.image_2.url|escapejs }}",
                                         {% endif %}
                                         {% if product.video_url %}
-                                        videoUrl: "https://www.youtube.com/embed/{{ product.video_url|youtube_id|escapejs }}",
+                                        videoUrl: "{{ product.video_url|youtube_id|escapejs }}",
                                         {% endif %}
                                         {% if product.image_3 %}
                                         image3: "{{ product.image_3.url|escapejs }}"
@@ -226,7 +221,7 @@
                                 </script>
                             
                                 <script>
-                                   document.addEventListener('DOMContentLoaded', function() {
+                                    document.addEventListener('DOMContentLoaded', function() {
                                         const carouselIndicators = document.querySelector('.carousel-indicators');
                                         const productMainImage = document.querySelector('.product-image');
                                         const leftArrow = document.querySelector('.left-arrow');
@@ -242,7 +237,7 @@
                                                 galleryItems.push({ type: 'image', url: productData.image2 });
                                             }
                                             if (productData.videoUrl) {
-                                                galleryItems.push({ type: 'video', url: productData.videoUrl });
+                                                galleryItems.push({ type: 'video', videoId: productData.videoUrl });
                                             }
                                             if (productData.image3) {
                                                 galleryItems.push({ type: 'image', url: productData.image3 });
@@ -264,6 +259,7 @@
                                         }
 
                                         function updateGallery(index) {
+                                            currentIndex = index;
                                             const item = galleryItems[index];
                                             const productMainImageContainer = productMainImage.parentNode;
                                             
@@ -278,22 +274,34 @@
                                                 productMainImage.style.display = 'block';
                                             } else if (item.type === 'video') {
                                                 productMainImage.style.display = 'none';
+                                                
+                                                // Create video container with optimized parameters for no sound
                                                 const videoContainer = document.createElement('div');
                                                 videoContainer.className = 'responsive-video';
+                                                
+                                                // Build embed URL with all necessary parameters
+                                                const embedUrl = `https://www.youtube.com/embed/${item.videoId}?` + 
+                                                    `autoplay=1` +           // Auto-play video
+                                                    `&mute=1` +              // Muted (required for autoplay)
+                                                    `&loop=1` +              // Loop the video
+                                                    `&playlist=${item.videoId}` + // Required for loop to work
+                                                    `&controls=1` +          // Show player controls
+                                                    `&rel=0` +               // Don't show related videos
+                                                    `&modestbranding=1` +    // Minimal YouTube branding
+                                                    `&playsinline=1` +       // Better mobile support
+                                                    `&enablejsapi=1` +       // Enable JavaScript API
+                                                    `&origin=${window.location.origin}`; // Security requirement
+                                                
                                                 videoContainer.innerHTML = `
                                                     <iframe 
-                                                        src="${item.url}?autoplay=1&mute=1&loop=1&playlist=${productData.videoUrl.split('/').pop()}" 
+                                                        src="${embedUrl}" 
                                                         frameborder="0" 
-                                                        allow="autoplay; encrypted-media" 
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                                                         allowfullscreen
+                                                        referrerpolicy="strict-origin-when-cross-origin"
                                                     ></iframe>`;
+                                                
                                                 productMainImageContainer.appendChild(videoContainer);
-
-                                                // Ensure the video is played
-                                                const iframe = videoContainer.querySelector('iframe');
-                                                iframe.onload = function() {
-                                                    iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-                                                };
                                             }
 
                                             updateIndicators(index);
@@ -301,9 +309,10 @@
                                             // Apply inline CSS to the product-gallery when video is loaded on mobile
                                             if (isMobileDevice()) {
                                                 const nowVideo = document.querySelector('.product-gallery');
-                                                nowVideo.style.paddingLeft = '0px';
-                                                nowVideo.style.paddingRight = '0px';
-                                                {% comment %} nowVideo.style.paddingTop = '23px'; {% endcomment %}
+                                                if (nowVideo) {
+                                                    nowVideo.style.paddingLeft = '0px';
+                                                    nowVideo.style.paddingRight = '0px';
+                                                }
                                             }
                                         }
 
@@ -315,7 +324,7 @@
                                         }
 
                                         function isMobileDevice() {
-                                            return window.innerWidth <= 767; // Adjust this value based on your mobile breakpoint
+                                            return window.innerWidth <= 767;
                                         }
 
                                         function updateIndicators(activeIndex) {
@@ -325,18 +334,22 @@
                                             });
                                         }
 
+                                        // Touch swipe functionality
                                         let touchStartX = 0;
                                         let touchEndX = 0;
-                                        productMainImage.parentNode.addEventListener('touchstart', e => {
+                                        const swipeContainer = productMainImage.parentNode;
+                                        
+                                        swipeContainer.addEventListener('touchstart', e => {
                                             touchStartX = e.changedTouches[0].screenX;
-                                        });
-                                        productMainImage.parentNode.addEventListener('touchend', e => {
+                                        }, { passive: true });
+                                        
+                                        swipeContainer.addEventListener('touchend', e => {
                                             touchEndX = e.changedTouches[0].screenX;
                                             handleSwipe();
-                                        });
+                                        }, { passive: true });
 
                                         function handleSwipe() {
-                                            const swipeThreshold = 30; // Minimum pixels for a swipe
+                                            const swipeThreshold = 30;
                                             if (Math.abs(touchEndX - touchStartX) > swipeThreshold) {
                                                 if (touchEndX < touchStartX) navigate(1);
                                                 if (touchEndX > touchStartX) navigate(-1);

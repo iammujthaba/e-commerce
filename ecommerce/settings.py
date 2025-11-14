@@ -21,7 +21,9 @@ ALLOWED_HOSTS = [
     ]
 
 # HTTPS Security Settings
-# SECURE_SSL_REDIRECT = True # comment this line during development
+
+# comment this line during development
+# SECURE_SSL_REDIRECT = True 
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SESSION_COOKIE_SECURE = True
