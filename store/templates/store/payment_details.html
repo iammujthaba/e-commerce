@@ -22,7 +22,11 @@
                 </tr>
                 <tr>
                     <th scope="row">Paid Amount</th>
-                    <td>₹{{ payment_record.amount }}</td>
+                        {% if payment_record.razorpay_payment_id == none  %}
+                            <td>Unpaid</td>
+                        {% else %}
+                            <td>₹{{ payment_record.amount }}</td>
+                        {% endif %}
                 </tr>
                 <tr>
                     <th scope="row">Order Status</th>
