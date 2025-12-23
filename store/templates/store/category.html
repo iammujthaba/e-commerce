@@ -16,104 +16,9 @@
 
 
 
-
-
-{% comment %} <!--================ alert box Area =================-->
-<!-- this code will remove after developpment -->
-<style>
-    .alert-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.alert-box {
-  background: white;
-  padding: 30px 40px;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  max-width: 400px;
-  text-align: center;
-  font-family: sans-serif;
-  animation: fadeIn 0.3s ease-out;
-}
-
-.alert-box h3 {
-  margin-top: 0;
-  color: #e63946;
-}
-
-.alert-box p {
-  margin: 10px 0 20px;
-  color: #333;
-}
-
-.alert-box button {
-  background-color: #1d3557;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.alert-box button:hover {
-  background-color: #457b9d;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-</style>
-  <div id="devAlert" class="alert-overlay">
-    <div class="alert-box">
-        <h3>⚠️ Under Development</h3>
-        <p>Currently, you cannot make purchases through our website. Please contact us via WhatsApp to complete your orders.</p>
-        <button onclick="closeDevAlert()">OK</button>
-    </div>
-  </div>
-<script>
-  // Function to close the alert box
-  function closeDevAlert() {
-    document.getElementById('devAlert').style.display = 'none';
-  }
-
-  // Always show the alert on every visit
-  window.onload = function () {
-    document.getElementById('devAlert').style.display = 'flex';
-  };
-</script>
-<!--================ End of the alert box Area =================--> {% endcomment %}
-
-
-
-
-
     <div>
 
         {% if category %}
-            <!-- <nav aria-label="breadcrumb" class="breadcrumb-nav">
-                <div class="container-fluid">
-                    <ol class="breadcrumb">
-                        {# {% url 'store_app:allProdCat' %} #}
-                        <li class="breadcrumb-item"><a href="{% url 'store_app:allProdCat' %}">Home</a></li>
-                        <li class="breadcrumb-item">{#{{category}}#}</li>
-                    </ol>
-                </div>
-            </nav> -->
-
-            <!-- <div class="text-center p-3">
-                <h2>{#{{category.name}}#}</h2>
-            </div> -->
 
         {% else %}
 
@@ -184,7 +89,7 @@
                 </div>
             </div>
 
-            <!-- --------------------------commented just for short time, don't remove this code------------------------ -->
+            <!-- --------------------------second testimonial, commented just for short time, don't remove this code------------------------ -->
             {% comment %} <div class="intro-slider-container mb-2">
                 <!-- Auto-carousel of 3 beautiful cards -->
                 <div id="introCarousel" class="carousel slide" data-ride="carousel" data-interval="4000">
