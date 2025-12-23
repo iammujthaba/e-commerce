@@ -29,10 +29,9 @@ def allProdCat(request, c_slug=None):
     else:
         products_list = Product.objects.filter(active=True, stock__gt=0)
     
-    offer_list = Product.objects.filter(active=True, old_price__gt=0, stock__gt=0)
+    offer = Product.objects.filter(active=True, old_price__gt=0, stock__gt=0)
     
-    paginator1 = Paginator(products_list, 6)
-    paginator2 = Paginator(offer_list, 6)
+    paginator1 = Paginator(products_list, 12)
     
     try:
         page = int(request.GET.get('page', '1'))
@@ -41,11 +40,9 @@ def allProdCat(request, c_slug=None):
     
     try:
         products = paginator1.page(page)
-        offer = paginator2.page(page)
     except (InvalidPage, EmptyPage):
         products = paginator1.page(paginator1.num_pages)
-        offer = paginator2.page(paginator2.num_pages)
-    
+
     message_list = []
     for message in messages.get_messages(request):
         message_list.append({
@@ -114,7 +111,7 @@ def allProductListing(request):
     products_list = Product.objects.filter(active=True)
     categories = Category.objects.all().order_by('priority', 'name')  # Get all categories
     
-    paginator = Paginator(products_list, 14)
+    paginator = Paginator(products_list, 18)
     
     try:
         page = int(request.GET.get('page', '1'))
@@ -136,7 +133,7 @@ def offerProductListing(request):
     products_list = Product.objects.filter(old_price__gt=0, active=True)
     categories = Category.objects.all().order_by('priority', 'name')  # Get all categories
     
-    paginator = Paginator(products_list, 14)
+    paginator = Paginator(products_list, 18)
     
     try:
         page = int(request.GET.get('page', '1'))

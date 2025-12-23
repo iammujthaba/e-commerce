@@ -44,18 +44,6 @@
     }
 </style>
 <div class="container">
-    <!-- <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
-        <div class="container-fluid">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'store_app:allProdCat' %}">Home</a></li>
-                {#{% if page == 'offer' %}#}
-                    <li class="breadcrumb-item"><a href="#">Offer</a></li>
-                {#{% else %}#}
-                    <li class="breadcrumb-item"><a href="#">Shop</a></li>
-                {#{% endif %}#}
-            </ol>
-        </div>
-    </nav> -->
 
     <!-- Category horizontal line -->
     <div class="category-line mb-2">
@@ -136,8 +124,82 @@
         </div>
     </div>
 
+    {% if products.has_other_pages %}
 
+        <style>
+            .pagination-wrapper .page-link {
+                margin: 0 6px;
+                transition: all 0.3s ease;
+                color: #007bff;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+            }
 
+            .pagination-wrapper .page-link:hover {
+                background-color: #007bff;
+                color: #fff;
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+            }
+
+            .pagination-wrapper .page-item.active .page-link {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: #fff;
+                box-shadow: 0 5px 15px rgba(0,123,255,0.4);
+            }
+
+            .pagination-wrapper .page-item.disabled .page-link {
+                background-color: #f8f9fa;
+                color: #aaa;
+                cursor: not-allowed;
+            }
+        </style>
+        <nav class="pagination-wrapper mt-5 d-flex justify-content-center">
+            <ul class="pagination pagination-lg">
+
+                <!-- Previous -->
+                {% if products.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.previous_page_number }}" aria-label="Previous">
+                        &laquo;
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo;</span>
+                </li>
+                {% endif %}
+
+                <!-- Page Numbers -->
+                {% for num in products.paginator.page_range %}
+                    {% if products.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Next -->
+                {% if products.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.next_page_number }}" aria-label="Next">
+                        &raquo;
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&raquo;</span>
+                </li>
+                {% endif %}
+
+            </ul>
+        </nav>
+    {% endif %}
 
 
 </div>
