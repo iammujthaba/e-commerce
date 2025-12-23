@@ -670,12 +670,17 @@ def processOrder(request):
         return JsonResponse({'success': False, 'message': f'An error occurred: {str(e)}'})
 
 
-@login_required
 def payment_cards(request):
+    if not request.user.is_authenticated:
+        return redirect('auth_app:login')
+
     payment_records = PaymentRecord.objects.filter(order__customer=request.user.customer).order_by('-created_at')
     return render(request, 'store/payment_cards.html', {'payment_records': payment_records})
 
 def payment_details(request, payment_id):
+    if not request.user.is_authenticated:
+        return redirect('auth_app:login')
+    
     payment_record = get_object_or_404(PaymentRecord, id=payment_id, order__customer=request.user.customer)
     return render(request, 'store/payment_details.html', {'payment_record': payment_record})
 
@@ -720,6 +725,9 @@ def updateOrderStatus(request, order_id):
 
 @login_required
 def trackOrder(request, order_id):
+    if not request.user.is_authenticated:
+        return redirect('auth_app:login')
+
     order = get_object_or_404(Order, id=order_id, customer=request.user.customer)
     order_items = OrderItem.objects.filter(order=order)
     shipping_address = ShippingAddress.objects.filter(order=order).first()
