@@ -236,66 +236,9 @@
 
                 <div class="products">
                     <div class="row justify-content-center">
-
                         {% for product in products.object_list %}
-                        <div class="col-6 col-md-4 col-lg-2">
-                            <div class="product product-2">
-                                {#{{product.get_url}}#}
-                                <a href="{{product.get_url}}">
-                                    <div id="carouselExampleIndicators{{product.slug}}" class="slide" style="position: relative;">
-
-                                        <div class="carousel-inner">
-                                            <div class="carousel-item active">
-                                                <div class="image-wrapper">
-                                                    <img src="{{ product.imageURL }}" class="home-product" alt="{{ product.name }}">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {% if product.new == True %}
-                                        <span class="product-sale-label">NEW</span>
-                                        {% endif %}
-
-                                        {% if product.get_discounted_price %}
-                                        <span class="product-discount-label">{{ product.get_discounted_price.percentage }}%</span>
-                                        {% endif %}
-
-                                    </div>
-                                    <div class="carousel-product-info">
-                                        <div style="margin-left: 1rem; margin-top: 1rem; margin-bottom: .2rem;">
-                                            <h5 class="card-title cart-heading">{{ product.name }}</h3>
-
-                                                <h6 class="pricing">
-                                                    
-                                                    <!-- <h6 class="text-muted mb-0 cart-heading">{{product.category.name}}</h6> -->
-                                                    {% if product.stock <= 3 and product.stock > 0 %}
-                                                    <strong style="color: rgb(199, 0, 85);">Only few left</strong><br>
-                                                    {% elif product.stock == 0 %}
-                                                        <strong style="color:#999999;">Will Back Soon...</strong><br>
-                                                    {% else %}
-                                                        <em class="related-product-publisher">{{product.category.name}}</em>
-                                                    {% endif %}
-                                                    
-                                                    <div class="product-price">
-                                                        <strong class="related-product-price">Rs {{ product.new_price|strip_decimal }}</strong>
-                                                        {% if product.old_price == 0 or product.old_price is None %}
-                                                        {% else %}
-                                                        <strong class="text-muted related-product-price">-</strong>
-                                                        <strong class="text-muted related-product-price"><s>₹{{product.old_price|strip_decimal}}</s></strong>
-                                                        {% endif %}
-                                                    </div>
-                                                </h6>
-                                                
-
-                                        </div>
-                                    </div>
-                                </a>
-                                {% render_cart_button product %}
-
-                            </div>
-                        </div>
+                            {% include "store/includes/product_card.html" with product=product %}
                         {% endfor %}
-
                     </div>
                 </div>
 
@@ -321,68 +264,9 @@
                 <div class="col-lg-12">
                     <div class="products">
                         <div class="row justify-content-center">
-
                             {% for product in offer %}
-                            <div class="col-6 col-md-4 col-lg-2">
-                                <div class="product product-2">
-                                    {#{{product.get_url}}#}
-                                    <a href="{{product.get_url}}">
-                                        <div id="carouselExampleIndicators2{{product.slug}}" class="slide" style="position: relative;">
-
-                                            <div class="carousel-inner">
-                                                <div class="carousel-item active">
-                                                    <div class="image-wrapper">
-                                                    <img src="{{ product.imageURL }}" class="home-product"
-                                                        alt="{{ product.name }}">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {% if product.new == True %}
-                                            <span class="product-sale-label">NEW</span>
-                                            {% endif %}
-
-                                            {% if product.get_discounted_price %}
-                                            <span class="product-discount-label">{{ product.get_discounted_price.percentage }}%</span>
-                                            {% endif %}
-
-                                        </div>
-                                        <div class="carousel-product-info">
-                                            <div style="margin-left: 1rem; margin-top: 1rem; margin-bottom: .2rem;">
-                                                <h5 class="card-title cart-heading">{{ product.name }}</h3>
-                
-                                                    <h6 class="pricing">
-                                                        
-                                                        {% comment %} <h6 class="text-muted mb-0 cart-heading">{{product.category.name}}</h6> {% endcomment %}
-                                                        {% if product.stock <= 3 and product.stock > 0 %}
-                                                        <strong style="color: rgb(199, 0, 85);">Only few left</strong><br>
-                                                        {% elif product.stock == 0 %}
-                                                            <strong style="color:#999999;">Will Back Soon...</strong><br>
-                                                        {% else %}
-                                                            <em class="related-product-publisher">{{product.category.name}}</em>
-                                                        {% endif %}
-                                                        
-                                                        <div class="product-price">
-                                                            <strong class="related-product-price">Rs {{ product.new_price|strip_decimal }}</strong>
-                                                            {% if product.old_price == 0 or product.old_price is None %}
-                                                            {% else %}
-                                                            <strong class="text-muted related-product-price">-</strong>
-                                                            <strong class="text-muted related-product-price"><s>₹{{product.old_price|strip_decimal}}</s></strong>
-                                                            {% endif %}
-                                                        </div>
-                                                    </h6>
-                                                    
-                
-                                            </div>
-                                        </div>
-                                    </a>
-                                    {#{% url 'cart_app:add_cart' product.id %}#}
-                                    {% render_cart_button product %}
-
-                                </div>
-                            </div>
+                                {% include "store/includes/product_card.html" with product=product %}
                             {% endfor %}
-
                         </div>
                     </div>
 
@@ -745,61 +629,7 @@
             <div class="row justify-content-center">
                 {% if products.object_list %}
                     {% for product in products.object_list %}
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <div class="product product-2">
-                            <a href="{{product.get_url}}">
-                                <div id="carouselExampleIndicators{{product.slug}}" class="slide" style="position: relative;">
-    
-                                    <div class="carousel-inner">
-                                        <div class="carousel-item active">
-                                            <div class="image-wrapper">
-                                                <img src="{{ product.imageURL }}" class="home-product" alt="{{ product.name }}">
-                                            </div>
-                                        </div>
-                                    </div>
-    
-                                    {% if product.new == True %}
-                                    <span class="product-sale-label">NEW</span>
-                                    {% endif %}
-    
-                                    {% if product.get_discounted_price %}
-                                    <span class="product-discount-label">{{ product.get_discounted_price.percentage }}%</span>
-                                    {% endif %}
-    
-                                </div>
-                                <div class="carousel-product-info">
-                                    <div style="margin-left: 1rem; margin-top: 1rem; margin-bottom: .2rem;">
-                                        <h5 class="card-title cart-heading">{{ product.name }}</h3>
-    
-                                            <h6 class="pricing">
-                                                
-                                                {% comment %} <h6 class="text-muted mb-0 cart-heading">{{product.category.name}}</h6> {% endcomment %}
-                                                {% if product.stock <= 3 and product.stock > 0 %}
-                                                <strong style="color: rgb(199, 0, 85);">Only few left</strong><br>
-                                                {% elif product.stock == 0 %}
-                                                    <strong style="color:#999999;">Will Back Soon...</strong><br>
-                                                {% else %}
-                                                    <em class="related-product-publisher">{{product.category.name}}</em>
-                                                {% endif %}
-                                                
-                                                <div class="product-price">
-                                                    <strong class="related-product-price">Rs {{ product.new_price|strip_decimal }}</strong>
-                                                    {% if product.old_price == 0 or product.old_price is None %}
-                                                    {% else %}
-                                                    <strong class="text-muted related-product-price">-</strong>
-                                                    <strong class="text-muted related-product-price"><s>₹{{product.old_price|strip_decimal}}</s></strong>
-                                                    {% endif %}
-                                                </div>
-                                            </h6>
-                                            
-    
-                                    </div>
-                                </div>
-                            </a>
-                            {% render_cart_button product %}
-    
-                        </div>
-                    </div>
+                        {% include "store/includes/product_card.html" with product=product %}
                     {% endfor %}
                 {% else %}
                     <h4 class="p-4" style="text-align: center;">This category items are out of stock.</h4>
@@ -841,9 +671,7 @@
     }
 </style>
 
-<hr>
-
-<nav class="pagination-wrapper mt-4 d-flex justify-content-center">
+<nav class="pagination-wrapper mt-5 d-flex justify-content-center">
     <ul class="pagination pagination-lg">
 
         <!-- Previous -->

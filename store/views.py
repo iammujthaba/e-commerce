@@ -28,6 +28,16 @@ def allProdCat(request, c_slug=None):
         products_list = Product.objects.filter(category=c_page, active=True, stock__gt=0)
     else:
         products_list = Product.objects.filter(active=True, stock__gt=0)
+
+    if request.user.is_authenticated:
+        wishlist_ids = set(
+            Wishlist.objects.filter(user=request.user)
+            .values_list('product_id', flat=True)
+        )
+    else:
+        cookie_data = cookieWishlist(request)
+        wishlist_ids = set(map(int, cookie_data['wishlist_ids']))  # ✅ FIX
+
     
     offer = Product.objects.filter(active=True, old_price__gt=0, stock__gt=0)
     
@@ -53,6 +63,7 @@ def allProdCat(request, c_slug=None):
     return render(request, 'store/category.html', {
         'category': c_page,
         'products': products,
+        'wishlist_ids': wishlist_ids,
         'offer': offer,
         'messages': message_list,
         'categories': categories,  # Pass all categories to the template
@@ -110,6 +121,15 @@ def Category_list(request):
 def allProductListing(request):
     products_list = Product.objects.filter(active=True)
     categories = Category.objects.all().order_by('priority', 'name')  # Get all categories
+
+    if request.user.is_authenticated:
+        wishlist_ids = set(
+            Wishlist.objects.filter(user=request.user)
+            .values_list('product_id', flat=True)
+        )
+    else:
+        cookie_data = cookieWishlist(request)
+        wishlist_ids = set(map(int, cookie_data['wishlist_ids']))  # ✅ FIX
     
     paginator = Paginator(products_list, 18)
     
@@ -125,6 +145,7 @@ def allProductListing(request):
     
     return render(request, 'store/shop.html', {
         'products': products,
+        'wishlist_ids': wishlist_ids,
         'categories': categories,  # Pass all categories to the template
     })
 
@@ -134,6 +155,15 @@ def offerProductListing(request):
     categories = Category.objects.all().order_by('priority', 'name')  # Get all categories
     
     paginator = Paginator(products_list, 18)
+
+    if request.user.is_authenticated:
+        wishlist_ids = set(
+            Wishlist.objects.filter(user=request.user)
+            .values_list('product_id', flat=True)
+        )
+    else:
+        cookie_data = cookieWishlist(request)
+        wishlist_ids = set(map(int, cookie_data['wishlist_ids']))  # ✅ FIX
     
     try:
         page = int(request.GET.get('page', '1'))
@@ -147,6 +177,7 @@ def offerProductListing(request):
     
     return render(request, 'store/shop.html', {
         'products': products,
+        'wishlist_ids': wishlist_ids,
         'page': 'offer',
         'categories': categories,  # Pass all categories to the template
     })

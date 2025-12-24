@@ -973,6 +973,31 @@ button:focus {
     border-color: #6c757d;
 }
 
+
+.wishlist-card-btn {
+    position: absolute;
+    top: 4px;          /* was 8px → move higher */
+    left: 8px;
+    z-index: 25;
+    background: transparent !important;
+    border: none !important;
+    padding: 0;
+    line-height: 1;    /* IMPORTANT: removes vertical offset */
+}
+
+.wishlist-card-btn i {
+    display: block;    /* removes inline baseline shift */
+    font-size: 22px;
+    color: #999;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.wishlist-card-btn:hover i {
+    transform: scale(1.15);
+    color: red;
+}
+
+
 @keyframes blink {
     0% { background-color: #007bff; }
     50% { background-color: #28a745; }

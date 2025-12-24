@@ -62,79 +62,20 @@
                                             </button>
                                         </div>
                                         <div class="right-icons">
-                                            <button class="icon-btn heart-btn" id="wishlist-icon-{{ product.id }}" onclick="toggleWishlist({{ product.id }})">
-                                                <i class="{% if in_wishlist %}fa-solid fa-heart{% else %}icon-heart-o{% endif %}" 
-                                                   style="font-size: 25px; font-weight: 800; {% if in_wishlist %}color: red;{% endif %}"></i>
+                                            <button
+                                                class="icon-btn heart-btn"
+                                                id="wishlist-icon-{{ product.id }}"
+                                                onclick="toggleWishlist(event, {{ product.id }})"
+                                                data-url="{% url 'store_app:add_to_wishlist' %}"
+                                                data-csrf="{{ csrf_token }}">
+                                                
+                                                <i class="{% if in_wishlist %}fa-solid fa-heart{% else %}icon-heart-o{% endif %}"
+                                                {% if in_wishlist %}style="color:red"{% endif %}></i>
                                             </button>
+
                                         </div>
                                     </div>
                                     
-                                    <script>
-                                        function toggleWishlist(productId) {
-                                            const url = '{% url "store_app:add_to_wishlist" %}';
-                                            const iconElement = document.getElementById(`wishlist-icon-${productId}`);
-                                            const wishlistCountElement = document.getElementById('wishlist-count');
-                                            const headerWishlistCount = document.querySelector('.wishlist .wishlist-count');
-
-                                            // Immediately toggle the heart icon
-                                            const isCurrentlyInWishlist = iconElement.querySelector('i').classList.contains('fa-solid');
-                                            if (isCurrentlyInWishlist) {
-                                                iconElement.innerHTML = '<i class="icon-heart-o" style="font-size: 30px; font-weight: 800;"></i>';
-                                            } else {
-                                                iconElement.innerHTML = '<i class="fa-solid fa-heart" style="font-size: 30px; font-weight: 800; color: red;"></i>';
-                                            }
-
-                                            // Update wishlist count immediately (we'll correct it if the server responds differently)
-                                            const currentCount = parseInt(wishlistCountElement.textContent);
-                                            const newCount = isCurrentlyInWishlist ? currentCount - 1 : currentCount + 1;
-                                            wishlistCountElement.textContent = newCount;
-                                            if (headerWishlistCount) {
-                                                headerWishlistCount.textContent = newCount;
-                                            }
-
-                                            // Send request to server
-                                            fetch(url, {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                    'X-CSRFToken': '{{ csrf_token }}',
-                                                },
-                                                body: JSON.stringify({ 'productId': productId }),
-                                            })
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                // If server response doesn't match our prediction, revert the changes
-                                                if (data.added !== !isCurrentlyInWishlist) {
-                                                    if (data.added) {
-                                                        iconElement.innerHTML = '<i class="fa-solid fa-heart" style="font-size: 30px; font-weight: 800; color: red;"></i>';
-                                                    } else {
-                                                        iconElement.innerHTML = '<i class="icon-heart-o" style="font-size: 30px; font-weight: 800;"></i>';
-                                                    }
-                                                    wishlistCountElement.textContent = data.wishlist_count;
-                                                    if (headerWishlistCount) {
-                                                        headerWishlistCount.textContent = data.wishlist_count;
-                                                    }
-                                                }
-
-                                                
-                                            })
-                                            .catch(error => {
-                                                console.error('Error:', error);
-                                                // Revert changes if there's an error
-                                                if (isCurrentlyInWishlist) {
-                                                    iconElement.innerHTML = '<i class="fa-solid fa-heart" style="font-size: 30px; font-weight: 800; color: red;"></i>';
-                                                } else {
-                                                    iconElement.innerHTML = '<i class="icon-heart-o" style="font-size: 30px; font-weight: 800;"></i>';
-                                                }
-                                                wishlistCountElement.textContent = currentCount;
-                                                if (headerWishlistCount) {
-                                                    headerWishlistCount.textContent = currentCount;
-                                                }
-                                            });
-                                        }
-                                        // Check localStorage on page load for unauthenticated users
-                                        
-                                        </script>
                                     
                                     <style>
                                         .product-image-container {
