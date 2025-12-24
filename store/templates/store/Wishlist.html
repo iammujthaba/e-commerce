@@ -101,12 +101,7 @@ function removeFromWishlist(productId, button) {
                     </div>`;
             }
 
-            // Update localStorage for unauthenticated users
-            if (!{% if request.user.is_authenticated %}true{% else %}false{% endif %}) {
-                const wishlist = JSON.parse(localStorage.getItem('wishlist') || '{}');
-                delete wishlist[productId];
-                localStorage.setItem('wishlist', JSON.stringify(wishlist));
-            }
+            
         }
     })
     .catch(error => {

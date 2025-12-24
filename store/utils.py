@@ -79,20 +79,23 @@ def cookieWishlist(request):
     for product_id in wishlist:
         try:
             product = Product.objects.get(id=product_id)
-            item = {
+            items.append({
                 'id': product.id,
                 'name': product.name,
                 'stock': product.stock,
                 'image_url': product.imageURL,
-                'new_price': float(product.new_price),  # Convert Decimal to float for JSON
+                'new_price': float(product.new_price),
                 'old_price': float(product.old_price) if product.old_price else None,
-                'product': product  # Add the product object for cart_tags
-            }
-            items.append(item)
+                'product': product
+            })
         except Product.DoesNotExist:
             continue
 
-    return {'wishlist_items': items, 'wishlist_count': wishlist_count}
+    return {
+        'wishlist_items': items,
+        'wishlist_ids': set(wishlist.keys()),  # ✅ ADD THIS
+        'wishlist_count': wishlist_count
+    }
 
 # from django.core.exceptions import ObjectDoesNotExist
 

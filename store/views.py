@@ -270,7 +270,7 @@ def is_product_in_wishlist(request, product):
         return Wishlist.objects.filter(user=request.user, product=product).exists()
     else:
         cookie_data = cookieWishlist(request)
-        return str(product.id) in cookie_data['wishlist_items']
+        return str(product.id) in cookie_data['wishlist_ids']
 
 
 def calculate_shipping(state, items):
