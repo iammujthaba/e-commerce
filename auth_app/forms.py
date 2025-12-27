@@ -15,34 +15,43 @@ class RegistrationForm(forms.Form):
         required=True,
         validators=[
             RegexValidator(
-                regex='^[a-zA-Z]{3,}$',
-                message='Username must be at least 3 characters long and contain only letters.',
+                regex=r'^[A-Za-z]+(?: [A-Za-z]+)*$',
+                message='Username can contain only letters and spaces.',
                 code='invalid_username'
             )
         ]
     )
+
     contact_number = forms.CharField(
         max_length=12,
         required=True,
         validators=[
             RegexValidator(
-                regex='^[0-9]{10,12}$',
+                regex=r'^[0-9]{10,12}$',
                 message='Contact number must be 10 or 12 digits.',
                 code='invalid_contact_number'
             )
         ]
     )
 
-    # def clean_username(self):
-    #     username = self.cleaned_data.get('username')
-    #     if User.objects.filter(username=username).exists():
-    #         raise ValidationError(f'The username "{username}" is already taken.')
-    #     return username
+    def clean_username(self):
+        username = self.cleaned_data['username'].strip()
+
+        # Count only letters (ignore spaces)
+        letter_count = sum(c.isalpha() for c in username)
+        if letter_count < 3:
+            raise ValidationError(
+                'Username must contain at least 3 letters.'
+            )
+
+        return username
 
     def clean_contact_number(self):
         contact_number = self.cleaned_data.get('contact_number')
         if Customer.objects.filter(contact_number=contact_number).exists():
-            raise ValidationError(f'This contact number {contact_number} is already registered.')
+            raise ValidationError(
+                f'This contact number {contact_number} is already registered.'
+            )
         return contact_number
     
 

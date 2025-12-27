@@ -25,6 +25,15 @@
 		</div>
 	</div>
 	{% else %}
+
+	{% if messages %}
+		<div id="popup-message-container" class="popup-message-container"></div>
+		
+		<script>
+			var messagesData = {{ messages|safe }};
+		</script>
+	{% endif %}
+
 	<div id="empty-cart-message" class="empty-cart-message">
 
 		<div class="text-center mb-2">
@@ -197,8 +206,7 @@
 				</dl>
 
 				<div class="d-grid gap-2 my-3">
-					<a href="{% url 'store_app:checkout' %}" class="btn btn-success w-100 mb-2"> Add Address and Make
-						Peyment </a>
+					<a href="{% url 'store_app:checkout' %}" class="btn btn-success w-100 mb-2"> Add Address and Make Payment </a>
 					<a href="/" class="btn btn-light w-100"> Back to shop </a>
 				</div>
 			</div> <!-- card-body.// -->

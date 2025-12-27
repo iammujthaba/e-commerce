@@ -103,8 +103,12 @@
                 {% csrf_token %}
                 
                 <!-- Display error message if fields are empty -->
-                {% if error_message %}
-                    <div class="alert alert-danger">{{ error_message }}</div>
+                {% if messages %}
+                    <div id="popup-message-container" class="popup-message-container"></div>
+
+                    <script>
+                        var messagesData = {{ messages|safe }};
+                    </script>
                 {% endif %}
                 
                 <div class="row g-3">

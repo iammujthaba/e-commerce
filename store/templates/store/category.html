@@ -8,7 +8,6 @@
 {% if messages %}
     <div id="popup-message-container" class="popup-message-container"></div>
 
-    <script src="{% static 'js/popup_message.js' %}"></script>
     <script>
         var messagesData = {{ messages|safe }};
     </script>

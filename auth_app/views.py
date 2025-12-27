@@ -4,6 +4,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from store.models import Product, Order, OrderItem, Customer, Wishlist
 from .forms import RegistrationForm, LoginForm, SuperuserPasswordForm
+from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import authenticate, login as auth_login
 import json
 from django.contrib.messages import get_messages
@@ -88,7 +89,57 @@ def login(request):
 
     return render(request, 'login.html', {'form': form})
 
-    
+
+@csrf_protect
+def account_info(request):
+    if request.user.is_authenticated:
+        return redirect('store_app:checkout')
+
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        contact_number = request.POST.get('contact_number', '').strip()
+
+        customer = Customer.objects.filter(contact_number=contact_number).first()
+        if customer:
+            auth_login(request, customer.user)
+
+            merge_cookie_cart_with_user_cart(request, customer.user)
+            merge_cookie_wishlist_with_user_wishlist(request, customer.user)
+
+            return redirect('store_app:cart')
+
+        form = RegistrationForm({
+            'username': name,
+            'contact_number': contact_number
+        })
+
+        if not form.is_valid():
+            # Convert form errors to template-friendly dict
+            errors = {field: error[0] for field, error in form.errors.items()}
+            return render(request, 'account_info.html', {
+                'errors': errors,
+                'name': name,
+                'contact_number': contact_number,
+            })
+
+        unique_username = f"{form.cleaned_data['username']}_{get_random_string(6)}"
+        user = User.objects.create_user(username=unique_username)
+
+        Customer.objects.create(
+            user=user,
+            name=form.cleaned_data['username'],
+            contact_number=form.cleaned_data['contact_number']
+        )
+
+        auth_login(request, user)
+
+        merge_cookie_cart_with_user_cart(request, user)
+        merge_cookie_wishlist_with_user_wishlist(request, user)
+
+        return redirect('store_app:checkout')
+
+    return render(request, 'account_info.html')    
+
 def superuser_password(request):
     if request.method == 'POST':
         form = SuperuserPasswordForm(request.POST)

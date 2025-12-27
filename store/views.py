@@ -418,9 +418,17 @@ def cart(request):
     # Calculate shipping
     shipping_charge = calculate_shipping(selected_state, items) if selected_state else Decimal('0.00')
 
+    message_list = []
+    for message in messages.get_messages(request):
+        message_list.append({
+            'message': message.message,
+            'tags': message.tags
+        })
+
     context = {
         'items': items,
         'order': order,
+        'messages': message_list,
         # 'cartItems': cartItems,
         'total_price_difference': total_price_difference,
         'all_states': all_states,
@@ -475,7 +483,7 @@ def checkout(request):
         }
         return render(request, 'store/Checkout.html', context)
     else:
-        return redirect('store_app:account_info')
+        return redirect('auth_app:account_info')
 
 
 @csrf_protect
@@ -553,7 +561,7 @@ def payment(request):
         messages.error(request, "An unexpected error occurred!, Please Check Your internet connection and Please try again.")
 
     # Redirect back to the checkout page if any error occurs
-    return redirect('store_app:payment')
+    return redirect('store_app:cart')
 
 # order validation and creation
 # this function only work after successfull peyment
@@ -776,7 +784,8 @@ def account_info(request):
     last_shipping = ShippingAddress.objects.filter(customer=customer).order_by('-date_added').first()
 
     context = {
-        'user': request.user,
+        'user': customer.name,
+        'number': customer.contact_number,
         'shipping_info': last_shipping,
     }
     return render(request, 'store/account_info.html', context)

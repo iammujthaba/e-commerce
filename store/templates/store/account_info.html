@@ -82,18 +82,18 @@
                 <div class="card-body">
                     <table class="info-table">
                         <tr>
-                            <th>Name:</th>
-                            <td>{{ user.customer.name }}</td>
+                            <th>User:</th>
+                            <td>{{ user }}</td>
                         </tr>
                         <tr>
-                            <th>Contact Number:</th>
-                        <td>{{ shipping_info.number }}</td>
+                            <th>Customer ID:</th>
+                        <td>{{ number }}</td>
                         </tr>
                     </table>
                 </div>
             </div>
             <div class="info-card">
-                <h6>This displayed shipping address is your last purchase shipping address.</h6>
+                {% comment %} <h6>You can update your shipping address from checkout.</h6> {% endcomment %}
                 <div class="card-header">
                     <h5 class="mb-0">Shipping Address</h5>
                 </div>
@@ -126,7 +126,7 @@
                         </tr>
                     </table>
                     {% else %}
-                    <p>You can add shipping information during cart checkout.</p>
+                    <p>You can update your shipping address from checkout.</p>
                     {% endif %}
                 </div>
             </div>

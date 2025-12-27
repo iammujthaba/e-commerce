@@ -120,11 +120,15 @@
 <body>
     <div class="page-wrapper">
         <header class="header header-intro-clearance header-4">
+
+            <!-- only work for authenticated superuser -->
+            {% if user.is_superuser %}
             <div class="header-top">
                 <div class="container">
+
                     <div class="header-left">
-                        <a href="tel:#"><i class="icon-phone"></i>Call: +91 9747377338</a>
-                    </div><!-- End .header-left -->
+                        <a href="tel:#"><i class="icon-user"></i>welcome back to admin panel;</a>
+                    </div>
 
                     <div class="header-right">
                         <ul class="top-menu" id="account-toggle">
@@ -132,22 +136,21 @@
                                 <p id="account-toggle">Account</p>
                                 <ul id="account-menu">
                                     {% if user.is_authenticated %}
-                                    <li><a href="{% url 'store_app:account_info' %}">{{user.customer.name|default:user.username}}</a></li>
-                                    {% if user.is_superuser %}
-                                    <li><a href="{% url 'admin_app:dashboard' %}" id="signin-button">Admin panel</a>
-                                    </li>
-                                    {% endif %}
-                                    <li><a href="{% url 'auth_app:logout' %}" id="signin-button">Logout</a></li>
-                                    {% else %}
-                                    <li><a href="{% url 'auth_app:register' %}" id="signup-button">Sign up</a></li>
-                                    <li><a href="{% url 'auth_app:login' %}" id="signin-button">Sign in</a></li>
+                                        <li><a href="{% url 'store_app:account_info' %}">{{user.customer.name|default:user.username}}</a></li>
+                                        <li><a href="{% url 'admin_app:dashboard' %}" id="signin-button">Admin panel</a></li>
+                                        <li><a href="{% url 'auth_app:logout' %}" id="signin-button">Logout</a></li>
+                                        {% comment %} {% else %}
+                                        <li><a href="{% url 'auth_app:register' %}" id="signup-button">Sign up</a></li>
+                                        <li><a href="{% url 'auth_app:login' %}" id="signin-button">Sign in</a></li> {% endcomment %}
                                     {% endif %}
                                 </ul>
                             </li>
                         </ul><!-- End .top-menu -->
                     </div><!-- End .header-right -->
+                    
                 </div><!-- End .container -->
             </div><!-- End .header-top -->
+            {% endif %}
 
             <div class="header-middle">
                 <div class="container">
@@ -751,6 +754,7 @@
     <!-- Main JS File -->
     <script src="{% static 'assets/js/main.js' %}"></script>
     <script src="{% static 'assets/js/demos/demo-4.js' %}"></script>
+    <script src="{% static 'js/popup_message.js' %}"></script>
     <!-- nave baar link active -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
