@@ -34,6 +34,29 @@
 		</script>
 	{% endif %}
 
+	{% if show_old_cart_alert %}
+		<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			Swal.fire({
+				icon: 'info',
+				title: 'Old Cart Found',
+				text: 'We found some items in your previous cart. Would you like to review them or continue with checkout?',
+				showCancelButton: true,
+				confirmButtonText: 'Review Cart',
+				cancelButtonText: 'Continue Checkout',
+				reverseButtons: true
+			}).then((result) => {
+				if (result.isConfirmed) {
+					window.location.href = "{% url 'store_app:cart' %}";
+				} else {
+					window.location.href = "{% url 'store_app:checkout' %}";
+				}
+			});
+		});
+		</script>
+	{% endif %}
+
+
 	<div id="empty-cart-message" class="empty-cart-message">
 
 		<div class="text-center mb-2">

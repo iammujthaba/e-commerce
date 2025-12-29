@@ -425,11 +425,14 @@ def cart(request):
             'tags': message.tags
         })
 
+    show_old_cart_alert = request.session.pop('show_old_cart_alert', False)
+
     context = {
         'items': items,
         'order': order,
         'messages': message_list,
         # 'cartItems': cartItems,
+        'show_old_cart_alert': show_old_cart_alert,
         'total_price_difference': total_price_difference,
         'all_states': all_states,
         'selected_state': selected_state,

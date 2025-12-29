@@ -101,12 +101,32 @@ def account_info(request):
 
         customer = Customer.objects.filter(contact_number=contact_number).first()
         if customer:
-            auth_login(request, customer.user)
+            user = customer.user
+            auth_login(request, user)
 
-            merge_cookie_cart_with_user_cart(request, customer.user)
-            merge_cookie_wishlist_with_user_wishlist(request, customer.user)
+            # Check OLD cart items BEFORE merge
+            existing_order = Order.objects.filter(
+                customer=user.customer,
+                order_created=False,
+                payment_success=False
+            ).first()
 
-            return redirect('store_app:cart')
+            had_old_items = False
+            if existing_order and existing_order.orderitem_set.exists():
+                had_old_items = True
+
+            # merge cookie cart
+            merge_cookie_cart_with_user_cart(request, user)
+            merge_cookie_wishlist_with_user_wishlist(request, user)
+
+            # Decide UX
+            if had_old_items:
+                request.session['show_old_cart_alert'] = True
+                return redirect('store_app:cart')
+            else:
+                return redirect('store_app:checkout')
+
+
 
         form = RegistrationForm({
             'username': name,
