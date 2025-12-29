@@ -115,14 +115,14 @@
                     <div class="col-md-6">
                         <label for="contact-number" class="form-label">Contact Number</label>
                         <div class="margin_bott">
-                            <input type="tel" class="form-control" id="contact-number" name="number" style="margin-bottom: 0rem;" value="{{ last_shipping.number|default:'' }}" required>
+                            <input type="tel" class="form-control" id="contact-number" name="number" style="margin-bottom: 0rem;" value="{{ last_shipping.number|default:customer_number }}" required>
                             <span class="text-danger small" id="contact-number-error"></span> 
                         </div>
                     </div>
                     <div class="col-md-6">
                         <label for="whatsapp-number" class="form-label">WhatsApp Number</label>
                         <div class="margin_bott">                            
-                            <input type="tel" class="form-control" id="whatsapp-number" name="whatsapp" style="margin-bottom: 0rem;" value="{{ last_shipping.whatsapp|default:'' }}" required>
+                            <input type="tel" class="form-control" id="whatsapp-number" name="whatsapp" style="margin-bottom: 0rem;" value="{{ last_shipping.whatsapp|default:customer_number }}" required>
                             <span class="text-danger small" id="whatsapp-number-error"></span>
                         </div>
                     </div>

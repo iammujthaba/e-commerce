@@ -480,6 +480,7 @@ def checkout(request):
         context = {
             'last_shipping': last_shipping,
             'all_states': all_states,
+            'customer_number': customer.contact_number,
         }
         return render(request, 'store/Checkout.html', context)
     else:
