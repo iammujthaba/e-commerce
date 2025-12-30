@@ -63,8 +63,8 @@
                                         </div>
                                         <div class="right-icons">
                                             <button
-                                                class="icon-btn heart-btn"
-                                                id="wishlist-icon-{{ product.id }}"
+                                                class="icon-btn wishlist-card-btn"
+                                                data-product-id="{{ product.id }}"
                                                 onclick="toggleWishlist(event, {{ product.id }})"
                                                 data-url="{% url 'store_app:add_to_wishlist' %}"
                                                 data-csrf="{{ csrf_token }}">
