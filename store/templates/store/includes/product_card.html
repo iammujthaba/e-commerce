@@ -8,7 +8,7 @@
             <!-- Wishlist icon -->
             <button
                 class="icon-btn wishlist-card-btn"
-                id="wishlist-icon-{{ product.id }}"
+                data-product-id="{{ product.id }}"
                 onclick="toggleWishlist(event, {{ product.id }})"
                 data-url="{% url 'store_app:add_to_wishlist' %}"
                 data-csrf="{{ csrf_token }}"

@@ -1,25 +1,32 @@
 (function () {
 
     function toggleWishlist(event, productId) {
-        if (event) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
+        event.preventDefault();
+        event.stopPropagation();
 
-        const btn = document.getElementById(`wishlist-icon-${productId}`);
-        if (!btn) return;
+        const clickedBtn = event.currentTarget;
+        const url = clickedBtn.dataset.url;
+        const csrf = clickedBtn.dataset.csrf;
 
-        const icon = btn.querySelector('i');
-        const url = btn.dataset.url;
-        const csrf = btn.dataset.csrf;
+        // 🔥 SELECT ALL HEARTS FOR THIS PRODUCT
+        const allButtons = document.querySelectorAll(
+            `.wishlist-card-btn[data-product-id="${productId}"]`
+        );
 
-        const wishlistCountEls = document.querySelectorAll('.wishlist-count');
+        if (!allButtons.length) return;
 
-        const wasInWishlist = icon.classList.contains('fa-solid');
+        const wasInWishlist = allButtons[0]
+            .querySelector('i')
+            .classList.contains('fa-solid');
 
-        // Optimistic UI
-        icon.className = wasInWishlist ? 'icon-heart-o' : 'fa-solid fa-heart';
-        if (!wasInWishlist) icon.style.color = 'red';
+        // ✅ Optimistic UI (update ALL hearts)
+        allButtons.forEach(btn => {
+            const icon = btn.querySelector('i');
+            icon.className = wasInWishlist
+                ? 'icon-heart-o'
+                : 'fa-solid fa-heart';
+            icon.style.color = wasInWishlist ? '' : 'red';
+        });
 
         fetch(url, {
             method: 'POST',
@@ -31,27 +38,32 @@
         })
         .then(res => res.json())
         .then(data => {
-            // Final UI from backend truth
-            if (data.added) {
-                icon.className = 'fa-solid fa-heart';
-                icon.style.color = 'red';
-            } else {
-                icon.className = 'icon-heart-o';
-                icon.style.color = '';
-            }
-
-            wishlistCountEls.forEach(el => {
-                el.textContent = data.wishlist_count;
+            allButtons.forEach(btn => {
+                const icon = btn.querySelector('i');
+                if (data.added) {
+                    icon.className = 'fa-solid fa-heart';
+                    icon.style.color = 'red';
+                } else {
+                    icon.className = 'icon-heart-o';
+                    icon.style.color = '';
+                }
             });
+
+            document.querySelectorAll('.wishlist-count')
+                .forEach(el => el.textContent = data.wishlist_count);
         })
         .catch(() => {
-            // rollback
-            icon.className = wasInWishlist ? 'fa-solid fa-heart' : 'icon-heart-o';
-            if (wasInWishlist) icon.style.color = 'red';
+            // rollback on error
+            allButtons.forEach(btn => {
+                const icon = btn.querySelector('i');
+                icon.className = wasInWishlist
+                    ? 'fa-solid fa-heart'
+                    : 'icon-heart-o';
+                icon.style.color = wasInWishlist ? 'red' : '';
+            });
         });
     }
 
-    // expose globally
     window.toggleWishlist = toggleWishlist;
 
 })();
