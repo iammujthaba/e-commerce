@@ -9,11 +9,12 @@ padding: 5px;
 }
 
 .cart-quantity {
-width: 50px;
-text-align: center;
-border: none;
-outline: none;
-background: none;
+    width: 45px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-weight: 600;
+    pointer-events: none;
 }
 
 .cart-decrement,

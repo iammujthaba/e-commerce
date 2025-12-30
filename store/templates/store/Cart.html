@@ -99,10 +99,10 @@
 								<div class="product-details-quantity">
 									<div class="cart-item-counter">
 										<button data-product="{{cart_item.product.id}}" data-action="remove"
-											class="cart-decrement chg-quantity update-cart">-</button>
-										<input id="cart-quantity" class="cart-quantity" value="{{ cart_item.quantity }}">
+											class="cart-decrement chg-quantity update-cart" aria-label="Decrease quantity">-</button>
+										<input type="text" id="cart-quantity" class="cart-quantity" value="{{ cart_item.quantity }}" readonly tabindex="-1">
 										<button data-quantity="{{cart_item.product.stock}}" data-product="{{cart_item.product.id}}" 
-										data-action="add" class="cart-increment chg-quantity update-cart">+</button>
+										data-action="add" class="cart-increment chg-quantity update-cart" aria-label="Increase quantity">+</button>
 									</div>
 								</div>
 							</div><!-- End .product-details-quantity -->
