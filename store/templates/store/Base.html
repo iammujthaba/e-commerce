@@ -32,7 +32,6 @@
 
     <link rel="stylesheet" href="{% static 'assets/css/skins/skin-demo-4.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/demos/demo-4.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/style/store/style2.css' %}">
 
 
     <script type="text/javascript">
@@ -135,18 +134,23 @@
                                 <p id="account-toggle">Account</p>
                                 <ul id="account-menu">
                                     {% if user.is_authenticated %}
-                                        <li><a href="{% url 'store_app:account_info' %}">{{user.customer.name|default:user.username}}</a></li>
-                                        <li><a href="{% url 'admin_app:dashboard' %}" id="signin-button">Admin panel</a></li>
-                                        <li><a href="{% url 'auth_app:logout' %}" id="signin-button">Logout</a></li>
-                                        {% comment %} {% else %}
-                                        <li><a href="{% url 'auth_app:register' %}" id="signup-button">Sign up</a></li>
-                                        <li><a href="{% url 'auth_app:login' %}" id="signin-button">Sign in</a></li> {% endcomment %}
+                                    <li><a
+                                            href="{% url 'store_app:account_info' %}">{{user.customer.name|default:user.username}}</a>
+                                    </li>
+                                    <li><a href="{% url 'admin_app:dashboard' %}" id="signin-button">Admin panel</a>
+                                    </li>
+                                    <li><a href="{% url 'auth_app:logout' %}" id="signin-button">Logout</a></li>
+                                    {% comment %}
+                                    {% else %}
+                                    <li><a href="{% url 'auth_app:register' %}" id="signup-button">Sign up</a></li>
+                                    <li><a href="{% url 'auth_app:login' %}" id="signin-button">Sign in</a></li>
+                                    {% endcomment %}
                                     {% endif %}
                                 </ul>
                             </li>
                         </ul><!-- End .top-menu -->
                     </div><!-- End .header-right -->
-                    
+
                 </div><!-- End .container -->
             </div><!-- End .header-top -->
             {% endif %}
@@ -161,8 +165,8 @@
                         </button>
                         <a href="{% url 'store_app:allProdCat' %}" class="logo">
                             <!-- logo -->
-                            <img src="{% static 'assets/images/demos/demo-4/Frame.png' %}" alt="Logo"
-                                width="150" height="25">
+                            <img src="{% static 'assets/images/demos/demo-4/Frame.png' %}" alt="Logo" width="150"
+                                height="25">
                         </a>
 
                     </div><!-- End .header-left -->
@@ -230,20 +234,20 @@
                     </div>
 
                     <script>
-                        window.onscroll = function() {myFunction()};
-                        
+                        window.onscroll = function () { myFunction() };
+
                         var header = document.getElementById("sticky-icon");
                         var cart_rm = document.getElementById("cart-dropdown");
                         var sticky = header.offsetTop;
-                        
+
                         function myFunction() {
-                          if (window.pageYOffset > sticky) {
-                            header.classList.add("sticky");
-                            cart_rm.classList.add("cart-padding-rm");
-                          } else {
-                            header.classList.remove("sticky");
-                            cart_rm.classList.remove("cart-padding-rm");
-                          }
+                            if (window.pageYOffset > sticky) {
+                                header.classList.add("sticky");
+                                cart_rm.classList.add("cart-padding-rm");
+                            } else {
+                                header.classList.remove("sticky");
+                                cart_rm.classList.remove("cart-padding-rm");
+                            }
                         }
                     </script>
 
@@ -253,70 +257,70 @@
 
 
                 <style>
-                   .mobile-search-container {
-                    width: 100%;
-                    padding: 10px;
-                    box-sizing: border-box;
-                    display: block;
-                }
-
-                @media screen and (min-width: 992px) {
                     .mobile-search-container {
-                        display: none;
+                        width: 100%;
+                        padding: 10px;
+                        box-sizing: border-box;
+                        display: block;
                     }
-                }
 
-                .mobile-search-form {
-                    display: flex;
-                    width: 100%;
-                    justify-content: center;
-                }
+                    @media screen and (min-width: 992px) {
+                        .mobile-search-container {
+                            display: none;
+                        }
+                    }
 
-                .search-input-wrapper {
-                    display: flex;
-                    width: 100%;
-                    max-width: 100%; /* Prevent overflow */
-                    border: 1px solid #ccc;
-                    border-radius: 8px;
-                    overflow: hidden;
-                    background-color: white;
-                }
+                    .mobile-search-form {
+                        display: flex;
+                        width: 100%;
+                        justify-content: center;
+                    }
 
-                .mobile-search-input {
-                    flex: 1;
-                    border: none;
-                    padding: 10px 15px;
-                    font-size: 16px;
-                    min-height: 40px;
-                    box-sizing: border-box;
-                }
-
-                .mobile-search-button {
-                    background: #3498db;
-                    width: 50px;
-                    height: 50px;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    border: none;
-                    color: #fff;
-                    font-size: 16px;
-                    cursor: pointer;
-                    box-sizing: border-box;
-                }
-
-                /* Optional for very small screens */
-                @media screen and (max-width: 340px) {
-                    .mobile-search-button {
-                        width: 40px;
-                        height: 40px;
+                    .search-input-wrapper {
+                        display: flex;
+                        width: 100%;
+                        max-width: 100%;
+                        /* Prevent overflow */
+                        border: 1px solid #ccc;
+                        border-radius: 8px;
+                        overflow: hidden;
+                        background-color: white;
                     }
 
                     .mobile-search-input {
-                        font-size: 14px;
+                        flex: 1;
+                        border: none;
+                        padding: 10px 15px;
+                        font-size: 16px;
+                        min-height: 40px;
+                        box-sizing: border-box;
                     }
-                }
 
+                    .mobile-search-button {
+                        background: #3498db;
+                        width: 50px;
+                        height: 50px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        border: none;
+                        color: #fff;
+                        font-size: 16px;
+                        cursor: pointer;
+                        box-sizing: border-box;
+                    }
+
+                    /* Optional for very small screens */
+                    @media screen and (max-width: 340px) {
+                        .mobile-search-button {
+                            width: 40px;
+                            height: 40px;
+                        }
+
+                        .mobile-search-input {
+                            font-size: 14px;
+                        }
+                    }
                 </style>
 
                 <style>
@@ -419,8 +423,8 @@
                         <div class="row">
                             <div class="col-sm-6 col-lg-3">
                                 <div class="widget widget-about">
-                                    <img src="{% static 'assets/images/demos/demo-4/Frame.png' %}"
-                                        class="footer-logo" alt="Footer Logo" width="105" height="25">
+                                    <img src="{% static 'assets/images/demos/demo-4/Frame.png' %}" class="footer-logo"
+                                        alt="Footer Logo" width="105" height="25">
                                     <p>Welcome to our online store, where we offer a wide variety of guppies and bettas
                                         for your aquarium. Enjoy your shopping experience!</p>
 
@@ -464,7 +468,8 @@
                                             <div class="widget">
                                                 <h4 class="widget-title">Terms & Policies</h4>
                                                 <ul class="widget-list">
-                                                    <li><a href="{% url 'store_app:terms_and_conditions' %}">T&C</a></li>
+                                                    <li><a href="{% url 'store_app:terms_and_conditions' %}">T&C</a>
+                                                    </li>
                                                     <li><a href="{% url 'store_app:refund_policy' %}">Refunds</a></li>
                                                     <li><a href="{% url 'store_app:shipping_info' %}">shipment</a></li>
                                                     <li><a href="{% url 'store_app:privacy_policy' %}">policy</a></li>
@@ -501,88 +506,89 @@
                     </div> -->
                     <div class="footer-bottom">
                         <div class="container">
-                            <p class="footer-copyright text-center">Copyright © {% now "Y" %} <a href="https://iammujthaba.github.io/portfolio/index.html">Mujthaba MK.</a></p>
+                            <p class="footer-copyright text-center">Copyright © {% now "Y" %} <a
+                                    href="https://iammujthaba.github.io/portfolio/index.html">Mujthaba MK.</a></p>
                         </div>
                     </div>
                 </div>
             </div>
-                <!-- Desktop Footer Design -->
-                <div class="footer-desktop">
-                    <div class="footer-middle">
-                        <div class="container">
-                            <div class="row footer-row">
-                                <div class="col-12 col-lg-3">
-                                    <div class="widget widget-about">
-                                        <img src="{% static 'assets/images/demos/demo-4/logo 19a.png' %}"
-                                            class="footer-logo" alt="Footer Logo" width="105" height="25">
-                                        <p>Welcome to our online store, where we offer a wide variety of guppies and
-                                            bettas for your aquarium. Enjoy your shopping experience!</p>
-                                        <div class="social-icons social-icons-colored">
-                                            <a href="#" class="social-icon social-whatsapp" title="WhatsApp"
-                                                target="_blank" style="background-color: #25d366;"><i
-                                                    class="icon-whatsapp"></i></a>
-                                            <a href="#" class="social-icon social-instagram" title="Instagram"
-                                                target="_blank"><i class="icon-instagram"></i></a>
-                                            <a href="#" class="social-icon social-facebook" title="Facebook"
-                                                target="_blank"><i class="icon-facebook-f"></i></a>
-                                            <a href="#" class="social-icon social-youtube" title="Youtube"
-                                                target="_blank"><i class="icon-youtube"></i></a>
-                                        </div>
+            <!-- Desktop Footer Design -->
+            <div class="footer-desktop">
+                <div class="footer-middle">
+                    <div class="container">
+                        <div class="row footer-row">
+                            <div class="col-12 col-lg-3">
+                                <div class="widget widget-about">
+                                    <img src="{% static 'assets/images/demos/demo-4/logo 19a.png' %}"
+                                        class="footer-logo" alt="Footer Logo" width="105" height="25">
+                                    <p>Welcome to our online store, where we offer a wide variety of guppies and
+                                        bettas for your aquarium. Enjoy your shopping experience!</p>
+                                    <div class="social-icons social-icons-colored">
+                                        <a href="#" class="social-icon social-whatsapp" title="WhatsApp" target="_blank"
+                                            style="background-color: #25d366;"><i class="icon-whatsapp"></i></a>
+                                        <a href="#" class="social-icon social-instagram" title="Instagram"
+                                            target="_blank"><i class="icon-instagram"></i></a>
+                                        <a href="#" class="social-icon social-facebook" title="Facebook"
+                                            target="_blank"><i class="icon-facebook-f"></i></a>
+                                        <a href="#" class="social-icon social-youtube" title="Youtube"
+                                            target="_blank"><i class="icon-youtube"></i></a>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="col-12 col-lg-3">
-                                    <div class="widget text-center">
-                                        <h4 class="widget-title">Additional Links</h4>
-                                        <ul class="widget-list">
-                                            <li><a href="{% url 'store_app:allProdCat' %}">Home</a></li>
-                                            <li><a href="{% url 'store_app:allProductListing' %}">Shopping</a></li>
-                                            <li><a href="{% url 'store_app:gallery' %}">Gallery</a></li>
-                                            <li><a href="{% url 'store_app:about' %}">About us</a></li>
-                                            <li><a href="{% url 'store_app:contact' %}">Contact</a></li>
-                                        </ul>
-                                    </div>
+                            <div class="col-12 col-lg-3">
+                                <div class="widget text-center">
+                                    <h4 class="widget-title">Additional Links</h4>
+                                    <ul class="widget-list">
+                                        <li><a href="{% url 'store_app:allProdCat' %}">Home</a></li>
+                                        <li><a href="{% url 'store_app:allProductListing' %}">Shopping</a></li>
+                                        <li><a href="{% url 'store_app:gallery' %}">Gallery</a></li>
+                                        <li><a href="{% url 'store_app:about' %}">About us</a></li>
+                                        <li><a href="{% url 'store_app:contact' %}">Contact</a></li>
+                                    </ul>
                                 </div>
+                            </div>
 
-                                <div class="col-12 col-lg-3">
-                                    <div class="widget text-center">
-                                        <h4 class="widget-title">Terms & Policies</h4>
-                                        <ul class="widget-list">
-                                            <li><a href="{% url 'store_app:terms_and_conditions' %}">T&C</a></li>
-                                            <li><a href="{% url 'store_app:refund_policy' %}">Refunds</a></li>
-                                            <li><a href="{% url 'store_app:shipping_info' %}">shipment</a></li>
-                                            <li><a href="{% url 'store_app:privacy_policy' %}">Privacy Policy</a></li>
-                                            <li><a href="{% url 'store_app:faq' %}">Questions</a></li>
-                                        </ul>
-                                    </div>
+                            <div class="col-12 col-lg-3">
+                                <div class="widget text-center">
+                                    <h4 class="widget-title">Terms & Policies</h4>
+                                    <ul class="widget-list">
+                                        <li><a href="{% url 'store_app:terms_and_conditions' %}">T&C</a></li>
+                                        <li><a href="{% url 'store_app:refund_policy' %}">Refunds</a></li>
+                                        <li><a href="{% url 'store_app:shipping_info' %}">shipment</a></li>
+                                        <li><a href="{% url 'store_app:privacy_policy' %}">Privacy Policy</a></li>
+                                        <li><a href="{% url 'store_app:faq' %}">Questions</a></li>
+                                    </ul>
                                 </div>
+                            </div>
 
-                                <div class="col-12 col-lg-3">
-                                    <div class="widget text-center">
-                                        <h4 class="widget-title">My Account</h4>
-                                        <ul class="widget-list">
-                                            <li><a href="{% url 'auth_app:login' %}">Sign In</a></li>
-                                            <li><a href="{% url 'auth_app:register' %}">Sign Up</a></li>
-                                            <li><a href="{% url 'store_app:payment_cards' %}">Payment</a></li>
-                                            <li><a href="{% url 'store_app:myorders' %}">Orders</a></li>
-                                            <li><a href="{% url 'store_app:account_info' %}">Account</a></li>
-                                        </ul>
-                                    </div>
+                            <div class="col-12 col-lg-3">
+                                <div class="widget text-center">
+                                    <h4 class="widget-title">My Account</h4>
+                                    <ul class="widget-list">
+                                        <li><a href="{% url 'auth_app:login' %}">Sign In</a></li>
+                                        <li><a href="{% url 'auth_app:register' %}">Sign Up</a></li>
+                                        <li><a href="{% url 'store_app:payment_cards' %}">Payment</a></li>
+                                        <li><a href="{% url 'store_app:myorders' %}">Orders</a></li>
+                                        <li><a href="{% url 'store_app:account_info' %}">Account</a></li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- <div>
+                </div>
+                <!-- <div>
                         <a href="{% url 'store_app:devolopper' %}">
                             <p class="footer-copyright text-center">About Devolopper</p>
                         </a>
                     </div> -->
-                    <div class="footer-bottom">
-                        <div class="container">
-                            <p class="footer-copyright text-center">Copyright © {% now "Y" %} <a href="https://iammujthaba.github.io/portfolio/index.html">Mujthaba MK.</a></p>
-                        </div>
+                <div class="footer-bottom">
+                    <div class="container">
+                        <p class="footer-copyright text-center">Copyright © {% now "Y" %} <a
+                                href="https://iammujthaba.github.io/portfolio/index.html">Mujthaba MK.</a></p>
                     </div>
                 </div>
+            </div>
 
         </footer>
 
@@ -685,7 +691,7 @@
             </div><!-- End .social-icons -->
         </div><!-- End .mobile-menu-wrapper -->
     </div><!-- End .mobile-menu-container -->
-    
+
     <!-- WhatsApp Floating Button -->
     <style>
         .whatsapp-float {
@@ -727,10 +733,10 @@
                 width: 30px;
             }
         }
-
     </style>
 
-    <a href="https://wa.me/919747377338?text=Hello!%20I'm%20interested%20in%20your%20fish%20products.%20I%20came%20from%20your%20website." class="whatsapp-float" target="_blank" title="Need help? Chat with our fish experts on WhatsApp">
+    <a href="https://wa.me/919747377338?text=Hello!%20I'm%20interested%20in%20your%20fish%20products.%20I%20came%20from%20your%20website."
+        class="whatsapp-float" target="_blank" title="Need help? Chat with our fish experts on WhatsApp">
         <img src="{% static 'assets/images/whatsapp-icon.png' %}" alt="WhatsApp" />
     </a>
 
@@ -768,7 +774,7 @@
         });
     </script>
 
-<!-- header section stiky code (header-middle:sticky-header)-->
+    <!-- header section stiky code (header-middle:sticky-header)-->
 
     <!-- <script>
         window.onscroll = function() { makeHeaderSticky() };
@@ -784,7 +790,7 @@
         }
         }
     </script> -->
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var accountToggle = document.getElementById('account-toggle');
