@@ -172,7 +172,12 @@ def superuser_password(request):
                     superuser = Customer.objects.get(contact_number=SUPERUSER_CONTACT_NUMBER).user
                 except Customer.DoesNotExist:
                     messages.error(request, "Superuser not found. Please contact support.")
-                    return render(request, 'store/error.html')
+                    return render(request, 'store/error.html', {
+                        'error_title': 'Account Not Found',
+                        'error_code': '404',
+                        'error_message': 'Superuser account not found. Please contact support.',
+                        'error_details': 'The superuser account associated with this login could not be found in the system.'
+                    })
 
                 auth_login(request, superuser)
                 return redirect('/')

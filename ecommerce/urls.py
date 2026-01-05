@@ -37,3 +37,7 @@ from django.views.generic import RedirectView
 urlpatterns += [
     path('favicon.ico', RedirectView.as_view(url='/static/images/favicon.ico'))
 ]
+
+# Custom error handlers
+handler404 = 'store.views.custom_404'
+handler500 = 'store.views.custom_500'

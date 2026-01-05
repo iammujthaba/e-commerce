@@ -31,8 +31,18 @@ body.error-page {
 }
 
 .error-message {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     color: #e74c3c;
+}
+
+.error-details {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    background-color: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+    border-left: 3px solid #3498db;
 }
 
 .error-container .button {

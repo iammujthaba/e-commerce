@@ -84,7 +84,12 @@ def proDetail(request, c_slug, product_slug):
 
     except Product.DoesNotExist:
         logger.error(f"Product not found: category_slug={c_slug}, product_slug={product_slug}")
-        return render(request, 'store/error.html')
+        return render(request, 'store/error.html', {
+            'error_title': 'Product Not Found',
+            'error_code': '404',
+            'error_message': f'The product you are looking for does not exist or may have been removed.',
+            'error_details': f'We couldn\'t find a product matching "{product_slug}" in the "{c_slug}" category.'
+        })
 
     if c_slug:
         c_page = get_object_or_404(Category, slug=c_slug)
@@ -821,3 +826,23 @@ def faq(request):
 def devolopper(request):
     return render(request, 'resources/About_Devolopper.html')
 
+
+# Custom Error Handlers
+def custom_404(request, exception):
+    """Custom 404 error handler - Page Not Found"""
+    return render(request, 'store/error.html', {
+        'error_title': 'Page Not Found',
+        'error_code': '404',
+        'error_message': 'The page you are looking for does not exist.',
+        'error_details': f'The URL "{request.path}" could not be found on this server. Please check the URL and try again.'
+    }, status=404)
+
+
+def custom_500(request):
+    """Custom 500 error handler - Internal Server Error"""
+    return render(request, 'store/error.html', {
+        'error_title': 'Server Error',
+        'error_code': '500',
+        'error_message': 'Something went wrong on our end.',
+        'error_details': 'We encountered an unexpected error. Please try again later or contact support if the problem persists.'
+    }, status=500)

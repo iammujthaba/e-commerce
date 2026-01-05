@@ -3,20 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error Occurred</title>
+    <title>{{ error_title|default:"Error Occurred" }} | CK Guppies</title>
     <link rel="stylesheet" href="/static/assets/css/style/store/error.css">
+    <link rel="icon" href="/static/assets/images/icons/favicon4.ico" type="image/x-icon">
 </head>
 <body class="error-page">
     <div class="error-container">
-        <h1>Oops! An Error Occurred</h1>
-        <div class="error-code">Error Code: 500</div>
+        <h1>{{ error_title|default:"Oops! An Error Occurred" }}</h1>
+        <div class="error-code">Error Code: {{ error_code|default:"500" }}</div>
         
         {% if messages %}
             {% for message in messages %}
                 <div class="error-message {{ message.tags }}">{{ message }}</div>
             {% endfor %}
+        {% elif error_message %}
+            <div class="error-message">{{ error_message }}</div>
         {% else %}
             <div class="error-message">We're sorry, but something went wrong.</div>
+        {% endif %}
+
+        {% if error_details %}
+            <div class="error-details">{{ error_details }}</div>
         {% endif %}
 
         <a href="/" class="button">Go Back to Homepage</a>
