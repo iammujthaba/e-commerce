@@ -118,6 +118,10 @@
     color: #000;
 }
 
+.nav-item {
+    margin-right: 8px;
+}
+
 /* Wishlist Button */
 .wishlist-card-btn {
     position: absolute;
