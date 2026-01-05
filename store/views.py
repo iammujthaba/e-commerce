@@ -60,7 +60,7 @@ def allProdCat(request, c_slug=None):
             'tags': message.tags
         })
     
-    return render(request, 'store/category.html', {
+    return render(request, 'store/index.html', {
         'category': c_page,
         'products': products,
         'wishlist_ids': wishlist_ids,
