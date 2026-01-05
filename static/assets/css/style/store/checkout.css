@@ -1,0 +1,110 @@
+/* Checkout Page Styles */
+
+.checkout-container {
+    max-width: 100rem;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+}
+
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0rem;
+}
+
+.form-control,
+.form-select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 0.75rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn-continue {
+    background-color: #007bff;
+    border: none;
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.btn-continue:hover {
+    background-color: #0056b3;
+}
+
+.btn-back {
+    background-color: #f8f9fa;
+    color: #495057;
+    border: 1px solid #ced4da;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.btn-back:hover {
+    background-color: #e2e6ea;
+    color: #212529;
+}
+
+.checkout-header {
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 576px) {
+    .checkout-container {
+        padding: 2rem;
+        margin: 1rem;
+    }
+}
+
+.margin_bott {
+    margin-bottom: 1rem;
+}
+
+.checkout-page .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: .85rem 1.5rem;
+    font-weight: 400;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    letter-spacing: -.01em;
+    min-width: 170px;
+    border-radius: 0;
+    white-space: normal;
+    transition: all .3s;
+}
+
+#form-button {
+    border-radius: 5px;
+    height: 45px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Input field margin fix */
+.checkout-page input[style*="margin-bottom: 0rem"],
+.checkout-page select[style*="margin-bottom: 0rem"] {
+    margin-bottom: 0rem;
+}
+
+/* Container padding adjustment */
+.checkout-wrapper {
+    padding-right: 2px;
+    padding-left: 2px;
+}

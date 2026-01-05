@@ -1,6 +1,10 @@
 {% extends 'store/Base.html' %}
+{% load static %}
 {% block content %}
-<div class="container mt-5">
+
+<link rel="stylesheet" href="{% static 'assets/css/style/store/payment_details.css' %}">
+
+<div class="container mt-5 payment-details-page">
     <h2 class="text-center mb-4">Payment Details</h2>
 
     <div class="card shadow-sm p-3 mb-4 bg-white rounded">
@@ -46,9 +50,9 @@
         </table>
     </div>
 
-    <div class="card-footer text-center" style="padding: 0rem 0rem; margin-bottom: 12px;">
+    <div class="card-footer text-center">
         {% if payment_record.order.order_created %}
-            <a href="{% url 'store_app:trackOrder' payment_record.order.id %}" class="btn btn-success w-100" style="border-radius: 6px;">
+            <a href="{% url 'store_app:trackOrder' payment_record.order.id %}" class="btn btn-success w-100">
                 <i class="fas fa-truck"></i> Track Order
             </a>
         {% else %}

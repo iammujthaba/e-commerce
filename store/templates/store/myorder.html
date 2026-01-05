@@ -1,115 +1,9 @@
 {% extends "store/Base.html" %}
 {% load static %}
 {% block content %}
-    <style>
-        .order-card {
-            background-color: white;
-            border-radius: 12px;
-            padding: 24px;
-            padding-bottom: 15px;
-            padding-top: 15px;
-            width: 330px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        }
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-        .order-date {
-            display: flex;
-            align-items: center;
-        }
-        .date-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #39f;
-            margin-right: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .date-info, .order-amount, .progress-labels {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .date-info {
-            font-size: 14px;
-            color: #555;
-        }
-        .order-amount {
-            font-weight: bold;
-            font-size: 18px;
-            color: #333;
-        }
-        .progress-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: relative;
-        flex-direction: row;
-        background-color: #ffffff;
-        margin-bottom: 4px;
-        height: 16px;
-    }
-    .progress-step {
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        background-color: #e0e0e0;
-        z-index: 3;
-        transition: background-color 0.3s ease;
-        position: relative;
-    }
-    .progress-step.active {
-        background-color: #4CAF50;
-    }
-    .progress-line-background {
-        position: absolute;
-        top: 7px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background-color: #e0e0e0;
-        z-index: 1;
-    }
-    
-    .progress-line {
-        position: absolute;
-        top: 7px;
-        left: 0;
-        height: 2px;
-        background-color: #4CAF50;
-        z-index: 2;
-        transition: width 0.5s ease;
-    }
 
-        .progress-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 8px;
-        }
-        .track-order {
-            display: flex;
-            justify-content: flex-end;
-            /* align-items: center; */
-            margin-top: 0px;
-            padding-top: 9px;
-            border-top: 1px solid #eee;
-            color: #4285f4;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .track-order:hover {
-            color: #2b5797;
-        }
-    </style>
+<link rel="stylesheet" href="{% static 'assets/css/style/store/myorder.css' %}">
+
     <!-- <h3 class="container mt-4">My Orders</h3> -->
      <div class="container">
 <div class="row">
@@ -123,7 +17,7 @@
                     </svg>
                 </div>
                 <div class="date-info">
-                    <div style="font-weight: 800; margin-bottom: -5px;">{{ order.date_ordered|date:"D, d M" }}</div>
+                    <div class="date-info-bold">{{ order.date_ordered|date:"D, d M" }}</div>
                     <div>Quantity: {{ order.total_quantity }}</div>
                 </div>
             </div>
@@ -137,15 +31,15 @@
             <div class="progress-step" data-step="Product Shipped"></div>
             <div class="progress-step" data-step="Product Delivered"></div>
         </div>
-        <div class="progress-labels" style="text-align: center;">
+        <div class="progress-labels">
             <span>Ordered</span>
             <span>Confirmed</span>
             <span>Shipped</span>
             <span>Delivered</span>
         </div>
         <div class="track-order">
-            <a href="{% url 'store_app:trackOrder' order.order.id %}" style="display: flex;">Track Your Order
-                <div class="fs-2" style="padding-left: 15px;">
+            <a href="{% url 'store_app:trackOrder' order.order.id %}">Track Your Order
+                <div class="fs-2 track-arrow">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"></path>
                     </svg>
@@ -190,6 +84,6 @@
                 }
             });
         });
-        </script>
+    </script>
 
 {% endblock %}

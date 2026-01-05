@@ -1,0 +1,72 @@
+/* Payment Cards Page Styles */
+
+/* General Styles for Cards */
+.payment-cards-page .card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+}
+
+.payment-cards-page .card:hover {
+    transform: translateY(-5px);
+}
+
+.payment-cards-page .card-body {
+    padding: 1.5rem;
+}
+
+/* Improved Typography */
+.payment-cards-page .card-title {
+    font-size: 1.25rem;
+}
+
+.fw-bold {
+    font-weight: bold;
+}
+
+/* Grid row styles */
+.payment-cards-page .row.gx-4.gy-4 {
+    flex-wrap: wrap;
+    align-content: stretch;
+    align-items: center;
+}
+
+/* Column padding adjustments */
+.payment-cards-page .col-md-6.col-lg-4 {
+    padding-right: 8px;
+    padding-left: 8px;
+}
+
+/* Amount styling */
+.payment-cards-page .card-title span {
+    font-weight: bolder;
+    font-size: large;
+}
+
+/* Date styling */
+.payment-cards-page .text-muted {
+    font-weight: bolder;
+}
+
+/* Grid Adjustments for Larger Screens */
+@media (min-width: 992px) {
+    .payment-cards-page .container {
+        max-width: 1100px;
+    }
+}
+
+/* Mobile Adjustments */
+@media (max-width: 576px) {
+    .payment-cards-page .card-title {
+        font-size: 1rem;
+    }
+
+    .payment-cards-page .btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+    }
+
+    .payment-cards-page .d-flex {
+        font-size: 0.9rem;
+    }
+}

@@ -1,23 +1,25 @@
 {% extends 'store/Base.html' %}
+{% load static %}
 {% block content %}
-<div class="container mt-4">
+
+<link rel="stylesheet" href="{% static 'assets/css/style/store/payment_cards.css' %}">
+
+<div class="container mt-4 payment-cards-page">
     <h2 class="mb-4 text-center">Payment History</h2>
 
     {% if payment_records %}
         <!-- Responsive Grid Layout for Cards -->
-        <div class="row gx-4 gy-4" style="    flex-wrap: wrap;
-        align-content: stretch;
-        align-items: center;">
+        <div class="row gx-4 gy-4">
             {% for record in payment_records %}
-            <div class="col-md-6 col-lg-4 mb-4" style="    padding-right: 8px; padding-left: 8px;"> <!-- Adjust grid for larger screens -->
+            <div class="col-md-6 col-lg-4 mb-4"> <!-- Adjust grid for larger screens -->
                 <div class="card shadow-sm h-100">
                     <div class="card-body">
                         <!-- Header: Amount and Date -->
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h5 class="card-title text-primary">
-                                <span style="font-weight: bolder; font-size:large;">₹{{ record.amount }}</span>
+                                <span class="amount-text">₹{{ record.amount }}</span>
                             </h5>
-                            <span class="text-muted"  style="font-weight: bolder;">{{ record.created_at|date:"d M Y" }}</span>
+                            <span class="text-muted date-text">{{ record.created_at|date:"d M Y" }}</span>
                         </div>
 
                         <!-- Order Details -->
@@ -60,55 +62,4 @@
         </div>
     {% endif %}
 </div>
-{% endblock %}
-
-{% block extra_css %}
-<style>
-    /* General Styles for Cards */
-    .card {
-        border-radius: 12px;
-        overflow: hidden;
-        transition: transform 0.2s ease-in-out;
-    }
-
-    .card:hover {
-        transform: translateY(-5px); /* Subtle lift on hover */
-    }
-
-    .card-body {
-        padding: 1.5rem;
-    }
-
-    /* Improved Typography */
-    .card-title {
-        font-size: 1.25rem;
-    }
-
-    .fw-bold {
-        font-weight: bold;
-    }
-
-    /* Grid Adjustments for Larger Screens */
-    @media (min-width: 992px) {
-        .container {
-            max-width: 1100px;
-        }
-    }
-
-    /* Mobile Adjustments */
-    @media (max-width: 576px) {
-        .card-title {
-            font-size: 1rem;
-        }
-
-        .btn {
-            font-size: 0.9rem;
-            padding: 0.6rem 1rem;
-        }
-
-        .d-flex {
-            font-size: 0.9rem;
-        }
-    }
-</style>
 {% endblock %}

@@ -1,0 +1,24 @@
+/* Payment Details Page Styles */
+
+.payment-details-page .card {
+    border-radius: 8px;
+}
+
+.payment-details-page .card-footer {
+    padding: 0rem 0rem;
+    margin-bottom: 12px;
+}
+
+.payment-details-page .btn-success {
+    border-radius: 6px;
+}
+
+/* Table styling */
+.payment-details-page .table th {
+    width: 40%;
+    font-weight: 600;
+}
+
+.payment-details-page .table td {
+    word-break: break-all;
+}

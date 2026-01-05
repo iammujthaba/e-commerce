@@ -2,77 +2,9 @@
 {% load static %}
 {% block content %}
 
-<style>
-    /* General Styles */
-    .info-card {
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-        overflow: hidden;
-        margin-bottom: 30px;
-    }
+<link rel="stylesheet" href="{% static 'assets/css/style/store/account_info.css' %}">
 
-    .info-card .card-header {
-        background-color: #39f;
-        color: #fff;
-        padding: 15px;
-    }
-
-    .info-card .card-body {
-        padding: 20px;
-    }
-
-    .info-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .info-table th,
-    .info-table td {
-        padding: 10px;
-        text-align: left;
-    }
-
-    .info-table th {
-        font-weight: bold;
-        width: 30%;
-    }
-
-    .info-table tr:nth-child(even) {
-        background-color: #f8f9fa;
-    }
-
-    /* Responsive Styles */
-    @media (max-width: 767px) {
-        .info-table th,
-        .info-table td {
-            display: block;
-            width: 100%;
-            text-align: left;
-        }
-
-        .info-table th {
-            padding-bottom: 0;
-        }
-
-        .info-table td {
-            padding-top: 5px;
-            padding-bottom: 10px;
-        }
-    }
-
-    /* Styles for the h6 element */
-    .info-card h6 {
-        padding: 10px 20px;
-        background-color: #f8f9fa;
-        color: #6c757d;
-        font-size: 14px;
-        font-weight: 500;
-        margin-bottom: 0;
-        border-bottom: 1px solid #dee2e6;
-    }
-</style>
-
-<div class="container my-5">
+<div class="container my-5 account-info-page">
     <div class="row">
         <div class="col-12">
             <div class="info-card">
@@ -130,28 +62,6 @@
                     {% endif %}
                 </div>
             </div>
-            <style>
-                #signin-button2 {
-                  display: block;
-                  width: 80%; /* Adjust width as needed */
-                  padding: 10px 20px; /* Padding for button-like appearance */
-                  background-color: #4CAF50; /* Green background */
-                  color: white; /* White text */
-                  text-align: center; /* Center the text inside the button */
-                  text-decoration: none; /* Remove underline */
-                  border: none; /* No border */
-                  border-radius: 5px; /* Rounded corners */
-                  font-size: 16px; /* Larger text size */
-                  margin: 10px auto; /* Center button horizontally and add margin for spacing */
-                  transition: background-color 0.3s; /* Smooth transition for hover effect */
-              }
-                #signin-button:hover {
-                    background-color: #45a049; /* Darker green on hover */
-                }
-                li {
-                    list-style-type: none; /* Removes the bullet points */
-                }
-            </style>
               
             <li>
                 <a href="{% url 'auth_app:logout' %}" id="signin-button2">Logout</a>
