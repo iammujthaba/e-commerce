@@ -126,7 +126,12 @@ h6 {
 }
 
 h2 {
-    font-size: 3.6rem
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #343a40;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    text-align: center;
 }
 
 h3 {
@@ -268,7 +273,8 @@ p {
 }
 
 p {
-    margin-bottom: 0
+    margin-bottom: 0;
+    text-align: center;
 }
 
 .header-2 .btn-primary:not(:disabled):not(.disabled).active,
@@ -1027,4 +1033,60 @@ button:focus {
 .intro-slider-container:nth-of-type(2) .intro-slide {
     background-size: cover;
     background-position: center;
+}
+
+
+/* =====================
+    Hero Section
+===================== */
+
+
+
+.hero-section {
+    position: relative;
+    margin: -120px -15px 0;
+    padding-top: 120px;
+    overflow: hidden;
+}
+
+.hero-carousel {
+    position: relative;
+}
+
+.hero-slide {
+    position: relative;
+    height: 50vh;
+    min-height: 350px;
+    max-height: 500px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(11, 22, 44, 0.7) 0%, rgba(11, 22, 44, 0.4) 100%);
+}
+
+.carousel-indicators {
+    bottom: 20px;
+}
+
+.carousel-indicators li {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: none;
+    margin: 0 6px;
+    transition: all 0.3s ease;
+}
+
+.carousel-indicators li.active {
+    background-color: #4594c2;
+    transform: scale(1.2);
 }
