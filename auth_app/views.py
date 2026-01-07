@@ -19,7 +19,7 @@ PREDEFINED_SUPERUSER_PASSWORD = config('PREDEFINED_SUPERUSER_PASSWORD')
 
 from django.utils.crypto import get_random_string
 
-@csrf_exempt
+@csrf_protect
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)

@@ -17,7 +17,7 @@ DEBUG = config('DEBUG', default=False, cast=bool) # change to True for developme
 ALLOWED_HOSTS = [    
     'localhost',
     '127.0.0.1',
-    'ckguppies.in', 'www.ckguppies.in', '69.62.77.187'
+    'ckguppies.in', 'www.ckguppies.in'
     ]
 
 # HTTPS Security Settings
