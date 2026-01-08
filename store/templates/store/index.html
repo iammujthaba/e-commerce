@@ -15,432 +15,424 @@
 
 
 
-<div>
-    {% if category %}
+{% if not category %}
+    <main class="main">
 
-    {% else %}
-        <main class="main">
-
-            <div class="intro-slider-container mb-2">
-                <!-- Auto-carousel of images only -->
-                <div id="introCarousel" class="carousel slide" data-ride="carousel" data-interval="4000">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <div class="intro-slide"
-                                style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584838.png');">
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <div class="intro-slide"
-                                style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584848.png');">
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <div class="intro-slide"
-                                style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584838.png');">
-                            </div>
+        <div class="intro-slider-container mb-2">
+            <!-- Auto-carousel of images only -->
+            <div id="introCarousel" class="carousel slide" data-ride="carousel" data-interval="4000">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="intro-slide"
+                            style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584838.png');">
                         </div>
                     </div>
-                    <!-- Carousel indicators -->
-                    <ol class="carousel-indicators">
-                        <li data-target="#introCarousel" data-slide-to="0" class="active"></li>
-                        <li data-target="#introCarousel" data-slide-to="1"></li>
-                        <li data-target="#introCarousel" data-slide-to="2"></li>
-                    </ol>
-                </div>
-            </div><!-- End .intro-slider-container -->
-
-            <div class="container">
-                <!-- <h2 class="title text-center mb-2">Explore Categories</h2> -->
-
-                <div class="cat-blocks-container">
-                    <div class="row justify-content-center">
-
-                        {% for i in links|slice:":6" %}
-                        <div class="col-4 col-sm-3 col-md-2">
-                            <a href="{{i.get_url}}" class="cat-block text-center">
-                                <figure>
-                                    <span>
-                                        <img src="{{i.image.url}}" alt="{{i.name}}" class="img-fluid">
-                                    </span>
-                                </figure>
-                                <h3 class="cat-block-title">{{i.name}}</h3>
-                            </a>
+                    <div class="carousel-item">
+                        <div class="intro-slide"
+                            style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584848.png');">
                         </div>
-                        {% endfor %}
+                    </div>
+                    <div class="carousel-item">
+                        <div class="intro-slide"
+                            style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584838.png');">
+                        </div>
+                    </div>
+                </div>
+                <!-- Carousel indicators -->
+                <ol class="carousel-indicators">
+                    <li data-target="#introCarousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#introCarousel" data-slide-to="1"></li>
+                    <li data-target="#introCarousel" data-slide-to="2"></li>
+                </ol>
+            </div>
+        </div><!-- End .intro-slider-container -->
 
-                        {% if links|length > 6 %}
-                        <a href="{% url 'store_app:category_list' %}" class="btn btn-primary btn-round mb-3">
-                            <span>Explore More</span>
-                            <i class="icon-long-arrow-right"></i>
+        <div class="container">
+            <!-- <h2 class="title text-center mb-2">Explore Categories</h2> -->
+
+            <div class="cat-blocks-container">
+                <div class="row justify-content-center">
+
+                    {% for i in links|slice:":6" %}
+                    <div class="col-4 col-sm-3 col-md-2">
+                        <a href="{{i.get_url}}" class="cat-block text-center">
+                            <figure>
+                                <span>
+                                    <img src="{{i.image.url}}" alt="{{i.name}}" class="img-fluid">
+                                </span>
+                            </figure>
+                            <h3 class="cat-block-title">{{i.name}}</h3>
                         </a>
-                        {% endif %}
-
                     </div>
+                    {% endfor %}
+
+                    {% if links|length > 6 %}
+                    <a href="{% url 'store_app:category_list' %}" class="btn btn-primary btn-round mb-3">
+                        <span>Explore More</span>
+                        <i class="icon-long-arrow-right"></i>
+                    </a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+
+        <div class="container for-you" style="padding-top: 10px;">
+            <div class="heading heading-flex mb-3">
+                <div class="justify-content-center">
+                    <h2 class="title">Best Sellers</h2>
                 </div>
             </div>
 
-            <div class="container for-you" style="padding-top: 10px;">
-                <div class="heading heading-flex mb-3">
-                    <div class="justify-content-center">
-                        <h2 class="title">Best Sellers</h2>
-                    </div>
+
+            <div class="products">
+                <div class="row justify-content-center">
+                    {% for product in products.object_list %}
+                    {% include "store/includes/product_card.html" with product=product %}
+                    {% endfor %}
                 </div>
-
-
-                <div class="products">
-                    <div class="row justify-content-center">
-                        {% for product in products.object_list %}
-                        {% include "store/includes/product_card.html" with product=product %}
-                        {% endfor %}
-                    </div>
-                </div>
-
-                {#{% url 'store_app:allProductListing' %}#}
-                <a href="{% url 'store_app:allProductListing' %}" id="loadMore">Shop more</a>
-
             </div>
 
+            {#{% url 'store_app:allProductListing' %}#}
+            <a href="{% url 'store_app:allProductListing' %}" id="loadMore">Shop more</a>
+
+        </div>
+
+        <div class="container">
+            <hr class="mb-0">
+        </div>
+
+
+        <div class="bg-light deal-container pt-4 pb-2 mb-4">
             <div class="container">
-                <hr class="mb-0">
-            </div>
+                <div class="heading text-center mb-2">
+                    <h2 class="title">Deals & Offers</h2>
+                    <p class="title-desc">Today’s deal and more</p>
+                </div>
 
+                <div class="row">
 
-            <div class="bg-light deal-container pt-4 pb-2 mb-4">
-                <div class="container">
-                    <div class="heading text-center mb-2">
-                        <h2 class="title">Deals & Offers</h2>
-                        <p class="title-desc">Today’s deal and more</p>
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-lg-12">
-                            <div class="products">
-                                <div class="row justify-content-center">
-                                    {% for product in offer %}
-                                    {% include "store/includes/product_card.html" with product=product %}
-                                    {% endfor %}
-                                </div>
+                    <div class="col-lg-12">
+                        <div class="products">
+                            <div class="row justify-content-center">
+                                {% for product in offer %}
+                                {% include "store/includes/product_card.html" with product=product %}
+                                {% endfor %}
                             </div>
-
                         </div>
-                    </div>
 
-                    <div class="more-container text-center mb-0">
-                        {#{% url 'store_app:offerProductListing' %}#}
-                        <a href="{% url 'store_app:offerProductListing' %}" id="loadMore">Shop more</a>
                     </div>
                 </div>
+
+                <div class="more-container text-center mb-0">
+                    {#{% url 'store_app:offerProductListing' %}#}
+                    <a href="{% url 'store_app:offerProductListing' %}" id="loadMore">Shop more</a>
+                </div>
             </div>
+        </div>
 
-            <div class="bg-transparent">
-                <div class="container">
-                    <div class="row justify-content-center">
+        <div class="bg-transparent">
+            <div class="container">
+                <div class="row justify-content-center">
 
-                        <div class="col-lg-3 col-md-3 col-6">
-                            <div class="icon-box text-center">
-                                <span class="icon-box-icon">
-                                    <i class="icon-truck"></i>
-                                </span>
-                                <div class="icon-box-content">
-                                    <h3 class="icon-box-title">Fast Delivery</h3>
-                                    <p>Free shipping on orders over ₹5000</p>
-                                </div>
+                    <div class="col-lg-3 col-md-3 col-6">
+                        <div class="icon-box text-center">
+                            <span class="icon-box-icon">
+                                <i class="icon-truck"></i>
+                            </span>
+                            <div class="icon-box-content">
+                                <h3 class="icon-box-title">Fast Delivery</h3>
+                                <p>Free shipping on orders over ₹5000</p>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="col-lg-3 col-md-3 col-6">
-                            <div class="icon-box text-center">
-                                <span class="icon-box-icon">
-                                    <i class="icon-rotate-left"></i>
-                                </span>
-                                <div class="icon-box-content">
-                                    <h3 class="icon-box-title">Refund Guarantee</h3>
-                                    <p>Live arrival refund or free replacement</p>
-                                </div>
+                    <div class="col-lg-3 col-md-3 col-6">
+                        <div class="icon-box text-center">
+                            <span class="icon-box-icon">
+                                <i class="icon-rotate-left"></i>
+                            </span>
+                            <div class="icon-box-content">
+                                <h3 class="icon-box-title">Refund Guarantee</h3>
+                                <p>Live arrival refund or free replacement</p>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="col-lg-3 col-md-3 col-6">
-                            <div class="icon-box text-center">
-                                <span class="icon-box-icon">
-                                    <i class="icon-unlock"></i>
-                                </span>
-                                <div class="icon-box-content">
-                                    <h3 class="icon-box-title">Secure Payments</h3>
-                                    <p>Pay via UPI, GPay, PhonePe & Bank</p>
-                                </div>
+                    <div class="col-lg-3 col-md-3 col-6">
+                        <div class="icon-box text-center">
+                            <span class="icon-box-icon">
+                                <i class="icon-unlock"></i>
+                            </span>
+                            <div class="icon-box-content">
+                                <h3 class="icon-box-title">Secure Payments</h3>
+                                <p>Pay via UPI, GPay, PhonePe & Bank</p>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="col-lg-3 col-md-3 col-6">
-                            <div class="icon-box text-center">
-                                <span class="icon-box-icon">
-                                    <i class="icon-headphones"></i>
-                                </span>
-                                <div class="icon-box-content">
-                                    <h3 class="icon-box-title">Expert Support</h3>
-                                    <p>WhatsApp support for setup & care</p>
-                                </div>
+                    <div class="col-lg-3 col-md-3 col-6">
+                        <div class="icon-box text-center">
+                            <span class="icon-box-icon">
+                                <i class="icon-headphones"></i>
+                            </span>
+                            <div class="icon-box-content">
+                                <h3 class="icon-box-title">Expert Support</h3>
+                                <p>WhatsApp support for setup & care</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="bg-light-2 pt-4 pb-1 testimonials">
-                <div class="container">
-                    <h3 class="text-center mb-3">Our Customers Say</h3>
+        <div class="bg-light-2 pt-4 pb-1 testimonials">
+            <div class="container">
+                <h3 class="text-center mb-3">Our Customers Say</h3>
 
-                    <!-- Desktop Layout (hidden on mobile) -->
-                    <div class="row d-none d-md-flex">
-                        <div class="col-md-6 col-lg-4">
-                            <blockquote class="testimonial text-center">
-                                <img src="{% static 'assets/images/testimonials/1000217689.jpg' %}" alt="user">
-                            </blockquote>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <blockquote class="testimonial text-center">
-                                <img src="{% static 'assets/images/testimonials/1000217688.jpg' %}" alt="user">
-                            </blockquote>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <blockquote class="testimonial text-center">
-                                <img src="{% static 'assets/images/testimonials/1000217687.jpg' %}" alt="user">
-                            </blockquote>
-                        </div>
+                <!-- Desktop Layout (hidden on mobile) -->
+                <div class="row d-none d-md-flex">
+                    <div class="col-md-6 col-lg-4">
+                        <blockquote class="testimonial text-center">
+                            <img src="{% static 'assets/images/testimonials/1000217689.jpg' %}" alt="user">
+                        </blockquote>
                     </div>
-                    <div class="row justify-content-center d-none d-md-flex">
-                        <div class="col-md-6 col-lg-4">
-                            <blockquote class="testimonial text-center">
-                                <h3 class="icon-box-title">Read more Review from <br>Google Review</h3>
-                                <div class="text-center pt-1">
-                                    <a href="https://www.google.com/search?sca_esv=f7156635f6e9a261&sxsrf=AE3TifMa4jC9Dtu_f9XTuQRtfI2lfm5d7A:1752080869832&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-E_Fuszb98kjXFn370t-GrEViTWuqLFBUS3fydgrC6wgvajpmVvax3gqgr8izcB9TBTVr14Uhj0W0XPIwLw9jl09RWb_cRse_fJhk84dG8snZrA3zM277bhBVP_9jOCir-FuDGrA%3D&q=CK+GUPPIES+AND+BETTAS+%5B+Guppy+farm+%5D+Reviews&sa=X&ved=2ahUKEwiLzfTuobCOAxW02DgGHbZZGowQ0bkNegQIMRAE&biw=1366&bih=607&dpr=1"
-                                        class="btn btn-outline-dark-2 btn-round btn-more">
-                                        <span>More Reviews</span>
-                                        <i class="icon-long-arrow-right"></i>
-                                    </a>
-                                </div>
-                            </blockquote>
-                        </div>
+                    <div class="col-md-6 col-lg-4">
+                        <blockquote class="testimonial text-center">
+                            <img src="{% static 'assets/images/testimonials/1000217688.jpg' %}" alt="user">
+                        </blockquote>
                     </div>
-
-                    <!-- Mobile Carousel (hidden on desktop) -->
-                    <div class="d-md-none">
-                        <div id="testimonialCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <blockquote class="testimonial text-center">
-                                        <img src="{% static 'assets/images/testimonials/1000217689.jpg' %}"
-                                            alt="Customer Review 1" class="testimonial-img">
-                                    </blockquote>
-                                </div>
-                                <div class="carousel-item">
-                                    <blockquote class="testimonial text-center">
-                                        <img src="{% static 'assets/images/testimonials/1000217688.jpg' %}"
-                                            alt="Customer Review 2" class="testimonial-img">
-                                    </blockquote>
-                                </div>
-                                <div class="carousel-item">
-                                    <blockquote class="testimonial text-center">
-                                        <img src="{% static 'assets/images/testimonials/1000217687.jpg' %}"
-                                            alt="Customer Review 3" class="testimonial-img">
-                                    </blockquote>
-                                </div>
-                                <div class="carousel-item">
-                                    <blockquote class="testimonial text-center testimonial-cta">
-                                        <h3 class="icon-box-title">Read more Review from <br>Google Review</h3>
-                                        <div class="text-center pt-2">
-                                            <a href="https://www.google.com/search?sca_esv=f7156635f6e9a261&sxsrf=AE3TifMa4jC9Dtu_f9XTuQRtfI2lfm5d7A:1752080869832&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-E_Fuszb98kjXFn370t-GrEViTWuqLFBUS3fydgrC6wgvajpmVvax3gqgr8izcB9TBTVr14Uhj0W0XPIwLw9jl09RWb_cRse_fJhk84dG8snZrA3zM277bhBVP_9jOCir-FuDGrA%3D&q=CK+GUPPIES+AND+BETTAS+%5B+Guppy+farm+%5D+Reviews&sa=X&ved=2ahUKEwiLzfTuobCOAxW02DgGHbZZGowQ0bkNegQIMRAE&biw=1366&bih=607&dpr=1"
-                                                class="btn btn-outline-dark-2 btn-round btn-more">
-                                                <span>More Reviews</span>
-                                                <i class="icon-long-arrow-right"></i>
-                                            </a>
-                                        </div>
-                                    </blockquote>
-                                </div>
+                    <div class="col-md-6 col-lg-4">
+                        <blockquote class="testimonial text-center">
+                            <img src="{% static 'assets/images/testimonials/1000217687.jpg' %}" alt="user">
+                        </blockquote>
+                    </div>
+                </div>
+                <div class="row justify-content-center d-none d-md-flex">
+                    <div class="col-md-6 col-lg-4">
+                        <blockquote class="testimonial text-center">
+                            <h3 class="icon-box-title">Read more Review from <br>Google Review</h3>
+                            <div class="text-center pt-1">
+                                <a href="https://www.google.com/search?sca_esv=f7156635f6e9a261&sxsrf=AE3TifMa4jC9Dtu_f9XTuQRtfI2lfm5d7A:1752080869832&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-E_Fuszb98kjXFn370t-GrEViTWuqLFBUS3fydgrC6wgvajpmVvax3gqgr8izcB9TBTVr14Uhj0W0XPIwLw9jl09RWb_cRse_fJhk84dG8snZrA3zM277bhBVP_9jOCir-FuDGrA%3D&q=CK+GUPPIES+AND+BETTAS+%5B+Guppy+farm+%5D+Reviews&sa=X&ved=2ahUKEwiLzfTuobCOAxW02DgGHbZZGowQ0bkNegQIMRAE&biw=1366&bih=607&dpr=1"
+                                    class="btn btn-outline-dark-2 btn-round btn-more">
+                                    <span>More Reviews</span>
+                                    <i class="icon-long-arrow-right"></i>
+                                </a>
                             </div>
-                            <!-- Carousel indicators -->
-                            <ol class="carousel-indicators testimonial-indicators">
-                                <li data-target="#testimonialCarousel" data-slide-to="0" class="active"></li>
-                                <li data-target="#testimonialCarousel" data-slide-to="1"></li>
-                                <li data-target="#testimonialCarousel" data-slide-to="2"></li>
-                                <li data-target="#testimonialCarousel" data-slide-to="3"></li>
-                            </ol>
+                        </blockquote>
+                    </div>
+                </div>
+
+                <!-- Mobile Carousel (hidden on desktop) -->
+                <div class="d-md-none">
+                    <div id="testimonialCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <blockquote class="testimonial text-center">
+                                    <img src="{% static 'assets/images/testimonials/1000217689.jpg' %}"
+                                        alt="Customer Review 1" class="testimonial-img">
+                                </blockquote>
+                            </div>
+                            <div class="carousel-item">
+                                <blockquote class="testimonial text-center">
+                                    <img src="{% static 'assets/images/testimonials/1000217688.jpg' %}"
+                                        alt="Customer Review 2" class="testimonial-img">
+                                </blockquote>
+                            </div>
+                            <div class="carousel-item">
+                                <blockquote class="testimonial text-center">
+                                    <img src="{% static 'assets/images/testimonials/1000217687.jpg' %}"
+                                        alt="Customer Review 3" class="testimonial-img">
+                                </blockquote>
+                            </div>
+                            <div class="carousel-item">
+                                <blockquote class="testimonial text-center testimonial-cta">
+                                    <h3 class="icon-box-title">Read more Review from <br>Google Review</h3>
+                                    <div class="text-center pt-2">
+                                        <a href="https://www.google.com/search?sca_esv=f7156635f6e9a261&sxsrf=AE3TifMa4jC9Dtu_f9XTuQRtfI2lfm5d7A:1752080869832&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-E_Fuszb98kjXFn370t-GrEViTWuqLFBUS3fydgrC6wgvajpmVvax3gqgr8izcB9TBTVr14Uhj0W0XPIwLw9jl09RWb_cRse_fJhk84dG8snZrA3zM277bhBVP_9jOCir-FuDGrA%3D&q=CK+GUPPIES+AND+BETTAS+%5B+Guppy+farm+%5D+Reviews&sa=X&ved=2ahUKEwiLzfTuobCOAxW02DgGHbZZGowQ0bkNegQIMRAE&biw=1366&bih=607&dpr=1"
+                                            class="btn btn-outline-dark-2 btn-round btn-more">
+                                            <span>More Reviews</span>
+                                            <i class="icon-long-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </blockquote>
+                            </div>
                         </div>
+                        <!-- Carousel indicators -->
+                        <ol class="carousel-indicators testimonial-indicators">
+                            <li data-target="#testimonialCarousel" data-slide-to="0" class="active"></li>
+                            <li data-target="#testimonialCarousel" data-slide-to="1"></li>
+                            <li data-target="#testimonialCarousel" data-slide-to="2"></li>
+                            <li data-target="#testimonialCarousel" data-slide-to="3"></li>
+                        </ol>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <style>
-                @media (max-width: 576px) {
-                    .faq-title {
-                        display: flex;
-                        flex-wrap: nowrap;
-                        align-items: flex-start;
-                        gap: 8px;
-                    }
-
-                    .faq-title .badge {
-                        flex-shrink: 0;
-                        margin-top: 2px;
-                    }
-
-                    .faq-title::after {
-                        content: none !important;
-                        /* optional: disable arrows if misaligned */
-                    }
+        <style>
+            @media (max-width: 576px) {
+                .faq-title {
+                    display: flex;
+                    flex-wrap: nowrap;
+                    align-items: flex-start;
+                    gap: 8px;
                 }
-            </style>
 
-            <section class="faq-section">
-                <div class="container">
-                    <div class="row">
+                .faq-title .badge {
+                    flex-shrink: 0;
+                    margin-top: 2px;
+                }
 
-                        <div class="col-md-12">
+                .faq-title::after {
+                    content: none !important;
+                    /* optional: disable arrows if misaligned */
+                }
+            }
+        </style>
 
-                            <div class="faq-title text-center" style="justify-content: center;">
-                                <h2>FAQ</h2>
+        <section class="faq-section">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-12">
+
+                        <div class="faq-title text-center" style="justify-content: center;">
+                            <h2>FAQ</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="faq row" id="accordion">
+                            <hr>
+                            <div class="card col-lg-6">
+                                <div class="card-header" id="faqHeading-1">
+                                    <div class="mb-0">
+                                        <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-1"
+                                            aria-expanded="true" aria-controls="faqCollapse-1">
+                                            <span class="badge">1</span> How are the fish packed for delivery?
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div id="faqCollapse-1" class="collapse" aria-labelledby="faqHeading-1"
+                                    data-parent="#accordion">
+                                    <div class="card-body">
+                                        <p>Each guppy is packed individually in airtight bags, placed in thermocol
+                                            boxes, and clearly labeled “Live Fish” for safe handling during transit.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card col-lg-6">
+                                <div class="card-header" id="faqHeading-2">
+                                    <div class="mb-0">
+                                        <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-2"
+                                            aria-expanded="false" aria-controls="faqCollapse-2">
+                                            <span class="badge">2</span> What should I do if fish arrive dead or
+                                            injured?
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div id="faqCollapse-2" class="collapse" aria-labelledby="faqHeading-2"
+                                    data-parent="#accordion">
+                                    <div class="card-body">
+                                        <p>Please share an unboxing video within 2 hours of delivery. Based on your
+                                            location, you’ll receive either a 70% refund or a free replacement (you only
+                                            pay for shipping).</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card col-lg-6">
+                                <div class="card-header" id="faqHeading-3">
+                                    <div class="mb-0">
+                                        <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-3"
+                                            aria-expanded="false" aria-controls="faqCollapse-3">
+                                            <span class="badge">3</span> Do you offer Cash on Delivery (COD)?
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div id="faqCollapse-3" class="collapse" aria-labelledby="faqHeading-3"
+                                    data-parent="#accordion">
+                                    <div class="card-body">
+                                        <p>No, we do not offer COD. We accept UPI (GPay, PhonePe, Paytm) and direct bank
+                                            transfers only for secure and verified payments.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card col-lg-6">
+                                <div class="card-header" id="faqHeading-4">
+                                    <div class="mb-0">
+                                        <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-4"
+                                            aria-expanded="false" aria-controls="faqCollapse-4">
+                                            <span class="badge">4</span> I’m new to fish keeping. Can I still buy?
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div id="faqCollapse-4" class="collapse" aria-labelledby="faqHeading-4"
+                                    data-parent="#accordion">
+                                    <div class="card-body">
+                                        <p>Absolutely! We guide beginners in choosing the right guppies and setting up a
+                                            healthy tank environment. Feel free to reach out anytime.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card col-lg-6">
+                                <div class="card-header" id="faqHeading-5">
+                                    <div class="mb-0">
+                                        <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-5"
+                                            aria-expanded="false" aria-controls="faqCollapse-5">
+                                            <span class="badge">5</span> Do you ship to remote and North-East regions?
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div id="faqCollapse-5" class="collapse" aria-labelledby="faqHeading-5"
+                                    data-parent="#accordion">
+                                    <div class="card-body">
+                                        <p>Yes, we deliver across India, including North-East and remote areas. Please
+                                            note: refund policy for these regions is 50% or free replacement (shipping
+                                            applies).</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card col-lg-6">
+                                <div class="card-header" id="faqHeading-6">
+                                    <div class="mb-0">
+                                        <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-6"
+                                            aria-expanded="false" aria-controls="faqCollapse-6">
+                                            <span class="badge">6</span> How do I join your WhatsApp group or get
+                                            updates?
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div id="faqCollapse-6" class="collapse" aria-labelledby="faqHeading-6"
+                                    data-parent="#accordion">
+                                    <div class="card-body">
+                                        <p>Click the “Join WhatsApp Group” button on our website or contact us directly.
+                                            We regularly share updates, stock info, and helpful fish-keeping tips.</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                         <div class="col-md-12">
-                            <div class="faq row" id="accordion">
-                                <hr>
-                                <div class="card col-lg-6">
-                                    <div class="card-header" id="faqHeading-1">
-                                        <div class="mb-0">
-                                            <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-1"
-                                                aria-expanded="true" aria-controls="faqCollapse-1">
-                                                <span class="badge">1</span> How are the fish packed for delivery?
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div id="faqCollapse-1" class="collapse" aria-labelledby="faqHeading-1"
-                                        data-parent="#accordion">
-                                        <div class="card-body">
-                                            <p>Each guppy is packed individually in airtight bags, placed in thermocol
-                                                boxes, and clearly labeled “Live Fish” for safe handling during transit.</p>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div class="card col-lg-6">
-                                    <div class="card-header" id="faqHeading-2">
-                                        <div class="mb-0">
-                                            <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-2"
-                                                aria-expanded="false" aria-controls="faqCollapse-2">
-                                                <span class="badge">2</span> What should I do if fish arrive dead or
-                                                injured?
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div id="faqCollapse-2" class="collapse" aria-labelledby="faqHeading-2"
-                                        data-parent="#accordion">
-                                        <div class="card-body">
-                                            <p>Please share an unboxing video within 2 hours of delivery. Based on your
-                                                location, you’ll receive either a 70% refund or a free replacement (you only
-                                                pay for shipping).</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card col-lg-6">
-                                    <div class="card-header" id="faqHeading-3">
-                                        <div class="mb-0">
-                                            <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-3"
-                                                aria-expanded="false" aria-controls="faqCollapse-3">
-                                                <span class="badge">3</span> Do you offer Cash on Delivery (COD)?
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div id="faqCollapse-3" class="collapse" aria-labelledby="faqHeading-3"
-                                        data-parent="#accordion">
-                                        <div class="card-body">
-                                            <p>No, we do not offer COD. We accept UPI (GPay, PhonePe, Paytm) and direct bank
-                                                transfers only for secure and verified payments.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card col-lg-6">
-                                    <div class="card-header" id="faqHeading-4">
-                                        <div class="mb-0">
-                                            <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-4"
-                                                aria-expanded="false" aria-controls="faqCollapse-4">
-                                                <span class="badge">4</span> I’m new to fish keeping. Can I still buy?
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div id="faqCollapse-4" class="collapse" aria-labelledby="faqHeading-4"
-                                        data-parent="#accordion">
-                                        <div class="card-body">
-                                            <p>Absolutely! We guide beginners in choosing the right guppies and setting up a
-                                                healthy tank environment. Feel free to reach out anytime.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card col-lg-6">
-                                    <div class="card-header" id="faqHeading-5">
-                                        <div class="mb-0">
-                                            <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-5"
-                                                aria-expanded="false" aria-controls="faqCollapse-5">
-                                                <span class="badge">5</span> Do you ship to remote and North-East regions?
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div id="faqCollapse-5" class="collapse" aria-labelledby="faqHeading-5"
-                                        data-parent="#accordion">
-                                        <div class="card-body">
-                                            <p>Yes, we deliver across India, including North-East and remote areas. Please
-                                                note: refund policy for these regions is 50% or free replacement (shipping
-                                                applies).</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card col-lg-6">
-                                    <div class="card-header" id="faqHeading-6">
-                                        <div class="mb-0">
-                                            <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-6"
-                                                aria-expanded="false" aria-controls="faqCollapse-6">
-                                                <span class="badge">6</span> How do I join your WhatsApp group or get
-                                                updates?
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div id="faqCollapse-6" class="collapse" aria-labelledby="faqHeading-6"
-                                        data-parent="#accordion">
-                                        <div class="card-body">
-                                            <p>Click the “Join WhatsApp Group” button on our website or contact us directly.
-                                                We regularly share updates, stock info, and helpful fish-keeping tips.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-
-                                <div class="text-center pt-3 pb-3">
-                                    {#{% url 'store_app:faq' %}#}
-                                    <a href="{% url 'store_app:faq' %}" class="btn btn-outline-dark-2 btn-round btn-more">
-                                        <span>More Questions</span>
-                                        <i class="icon-long-arrow-right"></i></a>
-                                </div>
+                            <div class="text-center pt-3 pb-3">
+                                {#{% url 'store_app:faq' %}#}
+                                <a href="{% url 'store_app:faq' %}" class="btn btn-outline-dark-2 btn-round btn-more">
+                                    <span>More Questions</span>
+                                    <i class="icon-long-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-        </main>
-    {% endif %}
-</div>
-
-
-
-{% if category %}
+    </main>
+{% else %}
     <style>
         .add-to-cart:active {
             animation: blink 0.1s ease-in-out;
@@ -486,8 +478,7 @@
             </li>
             {% for cat in categories %}
             <li class="nav-item">
-                <a class="nav-link {% if category.slug == cat.slug %}active{% endif %}" href="{{ cat.get_url }}">{{ cat.name
-                    }}</a>
+                <a class="nav-link {% if category.slug == cat.slug %}active{% endif %}" href="{{ cat.get_url }}">{{ cat.name }}</a>
             </li>
             {% endfor %}
         </ul>
