@@ -337,28 +337,27 @@
             <div class="bg-light-2 pt-4 pb-1 testimonials">
                 <div class="container">
                     <h3 class="text-center mb-3">Our Customers Say</h3>
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-4">
+                    
+                    <!-- Desktop Layout (hidden on mobile) -->
+                    <div class="row d-none d-md-flex">
+                        <div class="col-md-6 col-lg-4">
                             <blockquote class="testimonial text-center">
                                 <img src="{% static 'assets/images/testimonials/1000217689.jpg' %}" alt="user">
-                                
                             </blockquote>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-4">
+                        <div class="col-md-6 col-lg-4">
                             <blockquote class="testimonial text-center">
                                 <img src="{% static 'assets/images/testimonials/1000217688.jpg' %}" alt="user">
-                                
                             </blockquote>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-4 d-none d-md-block">
+                        <div class="col-md-6 col-lg-4">
                             <blockquote class="testimonial text-center">
                                 <img src="{% static 'assets/images/testimonials/1000217687.jpg' %}" alt="user">
-                                
                             </blockquote>
                         </div>
                     </div>
-                    <div class="row justify-content-center">
-                        <div class="col-12 col-md-6 col-lg-4">
+                    <div class="row justify-content-center d-none d-md-flex">
+                        <div class="col-md-6 col-lg-4">
                             <blockquote class="testimonial text-center">
                                 <h3 class="icon-box-title">Read more Review from <br>Google Review</h3>
                                 <div class="text-center pt-1">
@@ -369,6 +368,48 @@
                                     </a>
                                 </div>
                             </blockquote>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Carousel (hidden on desktop) -->
+                    <div class="d-md-none">
+                        <div id="testimonialCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <blockquote class="testimonial text-center">
+                                        <img src="{% static 'assets/images/testimonials/1000217689.jpg' %}" alt="Customer Review 1" class="testimonial-img">
+                                    </blockquote>
+                                </div>
+                                <div class="carousel-item">
+                                    <blockquote class="testimonial text-center">
+                                        <img src="{% static 'assets/images/testimonials/1000217688.jpg' %}" alt="Customer Review 2" class="testimonial-img">
+                                    </blockquote>
+                                </div>
+                                <div class="carousel-item">
+                                    <blockquote class="testimonial text-center">
+                                        <img src="{% static 'assets/images/testimonials/1000217687.jpg' %}" alt="Customer Review 3" class="testimonial-img">
+                                    </blockquote>
+                                </div>
+                                <div class="carousel-item">
+                                    <blockquote class="testimonial text-center testimonial-cta">
+                                        <h3 class="icon-box-title">Read more Review from <br>Google Review</h3>
+                                        <div class="text-center pt-2">
+                                            <a href="https://www.google.com/search?sca_esv=f7156635f6e9a261&sxsrf=AE3TifMa4jC9Dtu_f9XTuQRtfI2lfm5d7A:1752080869832&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-E_Fuszb98kjXFn370t-GrEViTWuqLFBUS3fydgrC6wgvajpmVvax3gqgr8izcB9TBTVr14Uhj0W0XPIwLw9jl09RWb_cRse_fJhk84dG8snZrA3zM277bhBVP_9jOCir-FuDGrA%3D&q=CK+GUPPIES+AND+BETTAS+%5B+Guppy+farm+%5D+Reviews&sa=X&ved=2ahUKEwiLzfTuobCOAxW02DgGHbZZGowQ0bkNegQIMRAE&biw=1366&bih=607&dpr=1" 
+                                            class="btn btn-outline-dark-2 btn-round btn-more">
+                                                <span>More Reviews</span>
+                                                <i class="icon-long-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </blockquote>
+                                </div>
+                            </div>
+                            <!-- Carousel indicators -->
+                            <ol class="carousel-indicators testimonial-indicators">
+                                <li data-target="#testimonialCarousel" data-slide-to="0" class="active"></li>
+                                <li data-target="#testimonialCarousel" data-slide-to="1"></li>
+                                <li data-target="#testimonialCarousel" data-slide-to="2"></li>
+                                <li data-target="#testimonialCarousel" data-slide-to="3"></li>
+                            </ol>
                         </div>
                     </div>
                 </div>
