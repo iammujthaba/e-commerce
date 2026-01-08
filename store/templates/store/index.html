@@ -9,33 +9,36 @@
     <div id="popup-message-container" class="popup-message-container"></div>
 
     <script>
-        var messagesData = {{ messages|safe }};
+        var messagesData = {{ messages| safe }};
     </script>
 {% endif %}
 
 
 
-    <div>
+<div>
+    {% if category %}
 
-        {% if category %}
-
-        {% else %}
-
-          
+    {% else %}
         <main class="main">
-            
+
             <div class="intro-slider-container mb-2">
                 <!-- Auto-carousel of images only -->
                 <div id="introCarousel" class="carousel slide" data-ride="carousel" data-interval="4000">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584838.png');"></div>
+                            <div class="intro-slide"
+                                style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584838.png');">
+                            </div>
                         </div>
                         <div class="carousel-item">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584848.png');"></div>
+                            <div class="intro-slide"
+                                style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584848.png');">
+                            </div>
                         </div>
                         <div class="carousel-item">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584838.png');"></div>
+                            <div class="intro-slide"
+                                style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584838.png');">
+                            </div>
                         </div>
                     </div>
                     <!-- Carousel indicators -->
@@ -48,21 +51,10 @@
             </div><!-- End .intro-slider-container -->
 
             <div class="container">
-                {% comment %} <h2 class="title text-center mb-2">Explore Categories</h2> {% endcomment %}
+                <!-- <h2 class="title text-center mb-2">Explore Categories</h2> -->
 
                 <div class="cat-blocks-container">
                     <div class="row justify-content-center">
-
-                        <!-- <div class="col-4 col-sm-3 col-md-2">
-                            <a href="{% url 'store_app:allProductListing' %}" class="cat-block text-center">
-                                <figure>
-                                    <span>
-                                        <img src="{% static 'assets/images/demos/demo-4/cats/jj.png' %}" alt="Category image" class="img-fluid">
-                                    </span>
-                                </figure>
-                                <h3 class="cat-block-title">Guppies</h3>
-                            </a>
-                        </div> -->
 
                         {% for i in links|slice:":6" %}
                         <div class="col-4 col-sm-3 col-md-2">
@@ -82,148 +74,11 @@
                             <span>Explore More</span>
                             <i class="icon-long-arrow-right"></i>
                         </a>
-                    {% endif %}
+                        {% endif %}
 
                     </div>
                 </div>
             </div>
-
-            <!-- --------------------------second testimonial, commented just for short time, don't remove this code------------------------ -->
-            {% comment %} <div class="intro-slider-container mb-2">
-                <!-- Auto-carousel of 3 beautiful cards -->
-                <div id="introCarousel" class="carousel slide" data-ride="carousel" data-interval="4000">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584838.png');">
-                                <div class="container intro-content">
-                                    <div class="row justify-content-end">
-                                        <div class="col-auto col-sm-7 col-md-6 col-lg-5">
-                                            <div class="intro-price">
-                                                <span class="text-third">4700+</span>
-                                            </div>
-                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Happy Customer</h3>
-                                            <div class="intro-price">
-                                                <span class="text-third">5+ Year</span>
-                                            </div>
-                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Experience</h3>
-                                            <a href="{% url 'store_app:allProductListing' %}" class="btn btn-primary btn-round">
-                                                <span>Shop Now</span>
-                                                <i class="icon-long-arrow-right"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/demos/demo-4/slider/1003584848.png');">
-                                <div class="container intro-content">
-                                    <div class="row justify-content-end">
-                                        <div class="col-auto col-sm-7 col-md-6 col-lg-5">
-                                            <div class="intro-price">
-                                                <span class="text-third">100+ Varieties</span>
-                                            </div>
-                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Exotic Guppies</h3>
-                                            <div class="intro-price">
-                                                <span class="text-third">Premium Quality</span>
-                                            </div>
-                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Handpicked Stock</h3>
-                                            <a href="{% url 'store_app:category_list' %}" class="btn btn-primary btn-round">
-                                                <span>Explore Categories</span>
-                                                <i class="icon-long-arrow-right"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <div class="intro-slide" style="background-image: url('/static/assets/images/icons/Frame2.png');">
-                                <div class="container intro-content">
-                                    <div class="row justify-content-end">
-                                        <div class="col-auto col-sm-7 col-md-6 col-lg-5">
-                                            <div class="intro-price">
-                                                <span class="text-third">Live Arrival</span>
-                                            </div>
-                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">Refund Guarantee</h3>
-                                            <div class="intro-price">
-                                                <span class="text-third">Expert Support</span>
-                                            </div>
-                                            <h3 class="text-third" style="font-family: Roboto, sans-serif; color:#e2e2e2;">WhatsApp Help</h3>
-                                            <a href="{% url 'store_app:faq' %}" class="btn btn-primary btn-round">
-                                                <span>Learn More</span>
-                                                <i class="icon-long-arrow-right"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Carousel indicators -->
-                    <style>
-                        .carousel{
-                            padding-left: 10px;
-                            padding-right: 10px;
-                        }
-                        .intro-price span {
-                            font-size: 2.2rem;
-                            font-weight: 700;
-                            color: #3498db;
-                            text-shadow: 0 1px 8px rgba(0,0,0,0.18);
-                        }
-                        .intro-slide h3 {
-                            font-size: 1.5rem;
-                            font-weight: 600;
-                            margin-bottom: 0.7rem;
-                            letter-spacing: 0.5px;
-                            color: #fff;
-                            text-shadow: 0 1px 8px rgba(0,0,0,0.18);
-                        }
-                        .btn.btn-primary.btn-round {
-                            border-radius: 20px;
-                            font-weight: 600;
-                            padding: 0.6rem 1.6rem;
-                            background: linear-gradient(90deg,#2874f0 60%,#0059b3 100%);
-                            border: none;
-                            box-shadow: 0 2px 8px rgba(40,116,240,0.12);
-                            transition: background 0.2s;
-                        }
-                        .btn.btn-primary.btn-round:hover {
-                            background: linear-gradient(90deg,#0059b3 60%,#2874f0 100%);
-                        }
-                        .carousel-indicators li {
-                            width: 12px;
-                            height: 12px;
-                            border-radius: 50%;
-                            background-color: #2874f0;
-                            opacity: 0.4;
-                            margin: 0 5px;
-                            transition: opacity 0.2s;
-                        }
-                        .carousel-indicators .active {
-                            opacity: 1;
-                            background-color: #3498db;
-                        }
-                        @media (max-width: 767px) {
-                            .intro-content {
-                                padding: 1rem 0.7rem;
-                                margin-top: 1.2rem;
-                            }
-                            .intro-price span {
-                                font-size: 1.3rem;
-                            }
-                            .intro-slide h3 {
-                                font-size: 1rem;
-                            }
-                        }
-                    </style>
-                </div>
-                <!-- End Auto-carousel -->
-
-                <!-- <span class="slider-loader"></span>End .slider-loader -->
-            </div><!-- End .intro-slider-container -->
-             {% endcomment %}
 
             <div class="container for-you" style="padding-top: 10px;">
                 <div class="heading heading-flex mb-3">
@@ -236,7 +91,7 @@
                 <div class="products">
                     <div class="row justify-content-center">
                         {% for product in products.object_list %}
-                            {% include "store/includes/product_card.html" with product=product %}
+                        {% include "store/includes/product_card.html" with product=product %}
                         {% endfor %}
                     </div>
                 </div>
@@ -260,17 +115,17 @@
 
                     <div class="row">
 
-                <div class="col-lg-12">
-                    <div class="products">
-                        <div class="row justify-content-center">
-                            {% for product in offer %}
-                                {% include "store/includes/product_card.html" with product=product %}
-                            {% endfor %}
+                        <div class="col-lg-12">
+                            <div class="products">
+                                <div class="row justify-content-center">
+                                    {% for product in offer %}
+                                    {% include "store/includes/product_card.html" with product=product %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-
-                </div>
-            </div>
 
                     <div class="more-container text-center mb-0">
                         {#{% url 'store_app:offerProductListing' %}#}
@@ -337,7 +192,7 @@
             <div class="bg-light-2 pt-4 pb-1 testimonials">
                 <div class="container">
                     <h3 class="text-center mb-3">Our Customers Say</h3>
-                    
+
                     <!-- Desktop Layout (hidden on mobile) -->
                     <div class="row d-none d-md-flex">
                         <div class="col-md-6 col-lg-4">
@@ -361,8 +216,8 @@
                             <blockquote class="testimonial text-center">
                                 <h3 class="icon-box-title">Read more Review from <br>Google Review</h3>
                                 <div class="text-center pt-1">
-                                    <a href="https://www.google.com/search?sca_esv=f7156635f6e9a261&sxsrf=AE3TifMa4jC9Dtu_f9XTuQRtfI2lfm5d7A:1752080869832&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-E_Fuszb98kjXFn370t-GrEViTWuqLFBUS3fydgrC6wgvajpmVvax3gqgr8izcB9TBTVr14Uhj0W0XPIwLw9jl09RWb_cRse_fJhk84dG8snZrA3zM277bhBVP_9jOCir-FuDGrA%3D&q=CK+GUPPIES+AND+BETTAS+%5B+Guppy+farm+%5D+Reviews&sa=X&ved=2ahUKEwiLzfTuobCOAxW02DgGHbZZGowQ0bkNegQIMRAE&biw=1366&bih=607&dpr=1" 
-                                    class="btn btn-outline-dark-2 btn-round btn-more">
+                                    <a href="https://www.google.com/search?sca_esv=f7156635f6e9a261&sxsrf=AE3TifMa4jC9Dtu_f9XTuQRtfI2lfm5d7A:1752080869832&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-E_Fuszb98kjXFn370t-GrEViTWuqLFBUS3fydgrC6wgvajpmVvax3gqgr8izcB9TBTVr14Uhj0W0XPIwLw9jl09RWb_cRse_fJhk84dG8snZrA3zM277bhBVP_9jOCir-FuDGrA%3D&q=CK+GUPPIES+AND+BETTAS+%5B+Guppy+farm+%5D+Reviews&sa=X&ved=2ahUKEwiLzfTuobCOAxW02DgGHbZZGowQ0bkNegQIMRAE&biw=1366&bih=607&dpr=1"
+                                        class="btn btn-outline-dark-2 btn-round btn-more">
                                         <span>More Reviews</span>
                                         <i class="icon-long-arrow-right"></i>
                                     </a>
@@ -370,32 +225,35 @@
                             </blockquote>
                         </div>
                     </div>
-                    
+
                     <!-- Mobile Carousel (hidden on desktop) -->
                     <div class="d-md-none">
                         <div id="testimonialCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
                             <div class="carousel-inner">
                                 <div class="carousel-item active">
                                     <blockquote class="testimonial text-center">
-                                        <img src="{% static 'assets/images/testimonials/1000217689.jpg' %}" alt="Customer Review 1" class="testimonial-img">
+                                        <img src="{% static 'assets/images/testimonials/1000217689.jpg' %}"
+                                            alt="Customer Review 1" class="testimonial-img">
                                     </blockquote>
                                 </div>
                                 <div class="carousel-item">
                                     <blockquote class="testimonial text-center">
-                                        <img src="{% static 'assets/images/testimonials/1000217688.jpg' %}" alt="Customer Review 2" class="testimonial-img">
+                                        <img src="{% static 'assets/images/testimonials/1000217688.jpg' %}"
+                                            alt="Customer Review 2" class="testimonial-img">
                                     </blockquote>
                                 </div>
                                 <div class="carousel-item">
                                     <blockquote class="testimonial text-center">
-                                        <img src="{% static 'assets/images/testimonials/1000217687.jpg' %}" alt="Customer Review 3" class="testimonial-img">
+                                        <img src="{% static 'assets/images/testimonials/1000217687.jpg' %}"
+                                            alt="Customer Review 3" class="testimonial-img">
                                     </blockquote>
                                 </div>
                                 <div class="carousel-item">
                                     <blockquote class="testimonial text-center testimonial-cta">
                                         <h3 class="icon-box-title">Read more Review from <br>Google Review</h3>
                                         <div class="text-center pt-2">
-                                            <a href="https://www.google.com/search?sca_esv=f7156635f6e9a261&sxsrf=AE3TifMa4jC9Dtu_f9XTuQRtfI2lfm5d7A:1752080869832&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-E_Fuszb98kjXFn370t-GrEViTWuqLFBUS3fydgrC6wgvajpmVvax3gqgr8izcB9TBTVr14Uhj0W0XPIwLw9jl09RWb_cRse_fJhk84dG8snZrA3zM277bhBVP_9jOCir-FuDGrA%3D&q=CK+GUPPIES+AND+BETTAS+%5B+Guppy+farm+%5D+Reviews&sa=X&ved=2ahUKEwiLzfTuobCOAxW02DgGHbZZGowQ0bkNegQIMRAE&biw=1366&bih=607&dpr=1" 
-                                            class="btn btn-outline-dark-2 btn-round btn-more">
+                                            <a href="https://www.google.com/search?sca_esv=f7156635f6e9a261&sxsrf=AE3TifMa4jC9Dtu_f9XTuQRtfI2lfm5d7A:1752080869832&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-E_Fuszb98kjXFn370t-GrEViTWuqLFBUS3fydgrC6wgvajpmVvax3gqgr8izcB9TBTVr14Uhj0W0XPIwLw9jl09RWb_cRse_fJhk84dG8snZrA3zM277bhBVP_9jOCir-FuDGrA%3D&q=CK+GUPPIES+AND+BETTAS+%5B+Guppy+farm+%5D+Reviews&sa=X&ved=2ahUKEwiLzfTuobCOAxW02DgGHbZZGowQ0bkNegQIMRAE&biw=1366&bih=607&dpr=1"
+                                                class="btn btn-outline-dark-2 btn-round btn-more">
                                                 <span>More Reviews</span>
                                                 <i class="icon-long-arrow-right"></i>
                                             </a>
@@ -415,27 +273,28 @@
                 </div>
             </div>
 
-<style>
-    @media (max-width: 576px) {
-    .faq-title {
-        display: flex;
-        flex-wrap: nowrap;
-        align-items: flex-start;
-        gap: 8px;
-    }
+            <style>
+                @media (max-width: 576px) {
+                    .faq-title {
+                        display: flex;
+                        flex-wrap: nowrap;
+                        align-items: flex-start;
+                        gap: 8px;
+                    }
 
-    .faq-title .badge {
-        flex-shrink: 0;
-        margin-top: 2px;
-    }
+                    .faq-title .badge {
+                        flex-shrink: 0;
+                        margin-top: 2px;
+                    }
 
-    .faq-title::after {
-        content: none !important; /* optional: disable arrows if misaligned */
-    }
-}
-</style>
+                    .faq-title::after {
+                        content: none !important;
+                        /* optional: disable arrows if misaligned */
+                    }
+                }
+            </style>
 
-    <section class="faq-section">
+            <section class="faq-section">
                 <div class="container">
                     <div class="row">
 
@@ -460,7 +319,8 @@
                                     <div id="faqCollapse-1" class="collapse" aria-labelledby="faqHeading-1"
                                         data-parent="#accordion">
                                         <div class="card-body">
-                                            <p>Each guppy is packed individually in airtight bags, placed in thermocol boxes, and clearly labeled “Live Fish” for safe handling during transit.</p>
+                                            <p>Each guppy is packed individually in airtight bags, placed in thermocol
+                                                boxes, and clearly labeled “Live Fish” for safe handling during transit.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -470,13 +330,17 @@
                                         <div class="mb-0">
                                             <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-2"
                                                 aria-expanded="false" aria-controls="faqCollapse-2">
-                                                <span class="badge">2</span> What should I do if fish arrive dead or injured?
+                                                <span class="badge">2</span> What should I do if fish arrive dead or
+                                                injured?
                                             </h5>
                                         </div>
                                     </div>
-                                    <div id="faqCollapse-2" class="collapse" aria-labelledby="faqHeading-2" data-parent="#accordion">
+                                    <div id="faqCollapse-2" class="collapse" aria-labelledby="faqHeading-2"
+                                        data-parent="#accordion">
                                         <div class="card-body">
-                                            <p>Please share an unboxing video within 2 hours of delivery. Based on your location, you’ll receive either a 70% refund or a free replacement (you only pay for shipping).</p>
+                                            <p>Please share an unboxing video within 2 hours of delivery. Based on your
+                                                location, you’ll receive either a 70% refund or a free replacement (you only
+                                                pay for shipping).</p>
                                         </div>
                                     </div>
                                 </div>
@@ -490,9 +354,11 @@
                                             </h5>
                                         </div>
                                     </div>
-                                    <div id="faqCollapse-3" class="collapse" aria-labelledby="faqHeading-3" data-parent="#accordion">
+                                    <div id="faqCollapse-3" class="collapse" aria-labelledby="faqHeading-3"
+                                        data-parent="#accordion">
                                         <div class="card-body">
-                                            <p>No, we do not offer COD. We accept UPI (GPay, PhonePe, Paytm) and direct bank transfers only for secure and verified payments.</p>
+                                            <p>No, we do not offer COD. We accept UPI (GPay, PhonePe, Paytm) and direct bank
+                                                transfers only for secure and verified payments.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -506,9 +372,11 @@
                                             </h5>
                                         </div>
                                     </div>
-                                    <div id="faqCollapse-4" class="collapse" aria-labelledby="faqHeading-4" data-parent="#accordion">
+                                    <div id="faqCollapse-4" class="collapse" aria-labelledby="faqHeading-4"
+                                        data-parent="#accordion">
                                         <div class="card-body">
-                                            <p>Absolutely! We guide beginners in choosing the right guppies and setting up a healthy tank environment. Feel free to reach out anytime.</p>
+                                            <p>Absolutely! We guide beginners in choosing the right guppies and setting up a
+                                                healthy tank environment. Feel free to reach out anytime.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -522,9 +390,12 @@
                                             </h5>
                                         </div>
                                     </div>
-                                    <div id="faqCollapse-5" class="collapse" aria-labelledby="faqHeading-5" data-parent="#accordion">
+                                    <div id="faqCollapse-5" class="collapse" aria-labelledby="faqHeading-5"
+                                        data-parent="#accordion">
                                         <div class="card-body">
-                                            <p>Yes, we deliver across India, including North-East and remote areas. Please note: refund policy for these regions is 50% or free replacement (shipping applies).</p>
+                                            <p>Yes, we deliver across India, including North-East and remote areas. Please
+                                                note: refund policy for these regions is 50% or free replacement (shipping
+                                                applies).</p>
                                         </div>
                                     </div>
                                 </div>
@@ -534,13 +405,16 @@
                                         <div class="mb-0">
                                             <h5 class="faq-title" data-toggle="collapse" data-target="#faqCollapse-6"
                                                 aria-expanded="false" aria-controls="faqCollapse-6">
-                                                <span class="badge">6</span> How do I join your WhatsApp group or get updates?
+                                                <span class="badge">6</span> How do I join your WhatsApp group or get
+                                                updates?
                                             </h5>
                                         </div>
                                     </div>
-                                    <div id="faqCollapse-6" class="collapse" aria-labelledby="faqHeading-6" data-parent="#accordion">
+                                    <div id="faqCollapse-6" class="collapse" aria-labelledby="faqHeading-6"
+                                        data-parent="#accordion">
                                         <div class="card-body">
-                                            <p>Click the “Join WhatsApp Group” button on our website or contact us directly. We regularly share updates, stock info, and helpful fish-keeping tips.</p>
+                                            <p>Click the “Join WhatsApp Group” button on our website or contact us directly.
+                                                We regularly share updates, stock info, and helpful fish-keeping tips.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -561,14 +435,12 @@
             </section>
 
         </main>
-
-        {% endif %}
-    </div>
-
+    {% endif %}
+</div>
 
 
-    {% if category %}
 
+{% if category %}
     <style>
         .add-to-cart:active {
             animation: blink 0.1s ease-in-out;
@@ -587,9 +459,7 @@
             padding-left: 0px;
         }
 
-        .category-line .nav-item {
-            
-        }
+        .category-line .nav-item {}
 
         .category-line .nav-link {
             color: #333;
@@ -611,174 +481,168 @@
     <div class="category-line mb-2 container">
         <ul class="nav nav-pills justify-content-center">
             <li class="nav-item">
-                <a class="nav-link {% if not category %}active{% endif %}" href="{% url 'store_app:allProductListing' %}">All Product</a>
+                <a class="nav-link {% if not category %}active{% endif %}"
+                    href="{% url 'store_app:allProductListing' %}">All Product</a>
             </li>
             {% for cat in categories %}
-                <li class="nav-item">
-                    <a class="nav-link {% if category.slug == cat.slug %}active{% endif %}" href="{{ cat.get_url }}">{{ cat.name }}</a>
-                </li>
+            <li class="nav-item">
+                <a class="nav-link {% if category.slug == cat.slug %}active{% endif %}" href="{{ cat.get_url }}">{{ cat.name
+                    }}</a>
+            </li>
             {% endfor %}
         </ul>
     </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const navLinks = document.querySelectorAll('.category-line .nav-link');
-        const categoryLine = document.querySelector('.category-line');
-        
-        navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                // Get the parent nav-item
-                const navItem = this.parentElement;
-                
-                // Calculate the scroll position to align the item to the left
-                // Account for container padding
-                const scrollPosition = navItem.offsetLeft - 15; // 15px to account for padding
-                
-                // Smooth scroll to position
-                categoryLine.scrollTo({
-                    left: scrollPosition,
-                    behavior: 'smooth'
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.querySelectorAll('.category-line .nav-link');
+            const categoryLine = document.querySelector('.category-line');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // Get the parent nav-item
+                    const navItem = this.parentElement;
+
+                    // Calculate the scroll position to align the item to the left
+                    // Account for container padding
+                    const scrollPosition = navItem.offsetLeft - 15; // 15px to account for padding
+
+                    // Smooth scroll to position
+                    categoryLine.scrollTo({
+                        left: scrollPosition,
+                        behavior: 'smooth'
+                    });
                 });
             });
+
+            // Also scroll to active item on page load
+            const activeLink = document.querySelector('.category-line .nav-link.active');
+            if (activeLink) {
+                const navItem = activeLink.parentElement;
+                const scrollPosition = navItem.offsetLeft - 15;
+
+                // Use setTimeout to ensure DOM is fully rendered
+                setTimeout(() => {
+                    categoryLine.scrollTo({
+                        left: scrollPosition,
+                        behavior: 'smooth'
+                    });
+                }, 100);
+            }
         });
-        
-        // Also scroll to active item on page load
-        const activeLink = document.querySelector('.category-line .nav-link.active');
-        if (activeLink) {
-            const navItem = activeLink.parentElement;
-            const scrollPosition = navItem.offsetLeft - 15;
-            
-            // Use setTimeout to ensure DOM is fully rendered
-            setTimeout(() => {
-                categoryLine.scrollTo({
-                    left: scrollPosition,
-                    behavior: 'smooth'
-                });
-            }, 100);
-        }
-    });
-</script>
-    
+    </script>
+
     <div class="container">
-
-
-
-        
         <div class="products">
             <div class="row justify-content-center">
                 {% if products.object_list %}
-                    {% for product in products.object_list %}
-                        {% include "store/includes/product_card.html" with product=product %}
-                    {% endfor %}
+                {% for product in products.object_list %}
+                {% include "store/includes/product_card.html" with product=product %}
+                {% endfor %}
                 {% else %}
-                    <h4 class="p-4" style="text-align: center;">This category items are out of stock.</h4>
+                <h4 class="p-4" style="text-align: center;">This category items are out of stock.</h4>
                 {% endif %}
             </div>
         </div>
     </div>
 
-    
-{% if products.has_other_pages %}
+    {% if products.has_other_pages %}
+        <style>
+            .pagination-wrapper .page-link {
+                margin: 0 6px;
+                transition: all 0.3s ease;
+                color: #007bff;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+            }
 
-<style>
-    .pagination-wrapper .page-link {
-        margin: 0 6px;
-        transition: all 0.3s ease;
-        color: #007bff;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-    }
+            .pagination-wrapper .page-link:hover {
+                background-color: #007bff;
+                color: #fff;
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+            }
 
-    .pagination-wrapper .page-link:hover {
-        background-color: #007bff;
-        color: #fff;
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(0,123,255,0.3);
-    }
+            .pagination-wrapper .page-item.active .page-link {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: #fff;
+                box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+            }
 
-    .pagination-wrapper .page-item.active .page-link {
-        background-color: #007bff;
-        border-color: #007bff;
-        color: #fff;
-        box-shadow: 0 5px 15px rgba(0,123,255,0.4);
-    }
+            .pagination-wrapper .page-item.disabled .page-link {
+                background-color: #f8f9fa;
+                color: #aaa;
+                cursor: not-allowed;
+            }
+        </style>
 
-    .pagination-wrapper .page-item.disabled .page-link {
-        background-color: #f8f9fa;
-        color: #aaa;
-        cursor: not-allowed;
-    }
-</style>
+        <nav class="pagination-wrapper mt-5 d-flex justify-content-center">
+            <ul class="pagination pagination-lg">
 
-<nav class="pagination-wrapper mt-5 d-flex justify-content-center">
-    <ul class="pagination pagination-lg">
+                <!-- Previous -->
+                {% if products.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.previous_page_number }}" aria-label="Previous">
+                        &laquo;
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo;</span>
+                </li>
+                {% endif %}
 
-        <!-- Previous -->
-        {% if products.has_previous %}
-        <li class="page-item">
-            <a class="page-link" href="?page={{ products.previous_page_number }}" aria-label="Previous">
-                &laquo;
-            </a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-            <span class="page-link">&laquo;</span>
-        </li>
-        {% endif %}
-
-        <!-- Page Numbers -->
-        {% for num in products.paginator.page_range %}
-            {% if products.number == num %}
+                <!-- Page Numbers -->
+                {% for num in products.paginator.page_range %}
+                {% if products.number == num %}
                 <li class="page-item active">
                     <span class="page-link">{{ num }}</span>
                 </li>
-            {% else %}
+                {% else %}
                 <li class="page-item">
                     <a class="page-link" href="?page={{ num }}">{{ num }}</a>
                 </li>
-            {% endif %}
-        {% endfor %}
+                {% endif %}
+                {% endfor %}
 
-        <!-- Next -->
-        {% if products.has_next %}
-        <li class="page-item">
-            <a class="page-link" href="?page={{ products.next_page_number }}" aria-label="Next">
-                &raquo;
-            </a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-            <span class="page-link">&raquo;</span>
-        </li>
-        {% endif %}
+                <!-- Next -->
+                {% if products.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.next_page_number }}" aria-label="Next">
+                        &raquo;
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&raquo;</span>
+                </li>
+                {% endif %}
 
-    </ul>
-</nav>
-
+            </ul>
+        </nav>
+    {% endif %}
 {% endif %}
 
-
-    {% endif %}
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
 
-        $('.faq-title').on('click', function(event) {
+        $('.faq-title').on('click', function (event) {
             var target = $(this).data('target');
             $(target).collapse('toggle');
             event.stopPropagation();
         });
 
-        $(document).on('click', function() {
+        $(document).on('click', function () {
             $('.collapse.show').collapse('hide');
         });
 
-        $('.card').on('click', function(event) {
+        $('.card').on('click', function (event) {
             event.stopPropagation();
         });
     });
 </script>
+
 
 {% endblock %}
