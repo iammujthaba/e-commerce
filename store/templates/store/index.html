@@ -472,12 +472,12 @@
 
     <div class="category-line mb-2 container">
         <ul class="nav nav-pills justify-content-center">
-            <li class="nav-item">
+            <li class="nav-item mr-2">
                 <a class="nav-link {% if not category %}active{% endif %}"
                     href="{% url 'store_app:allProductListing' %}">All Product</a>
             </li>
             {% for cat in categories %}
-            <li class="nav-item">
+            <li class="nav-item mr-2">
                 <a class="nav-link {% if category.slug == cat.slug %}active{% endif %}" href="{{ cat.get_url }}">{{ cat.name }}</a>
             </li>
             {% endfor %}
