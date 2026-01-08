@@ -131,12 +131,12 @@
 /* Font Icons */
 @font-face {
     font-family: molla;
-    src: url(../fonts/molla0ab2.eot?74273691);
-    src: url(../fonts/molla0ab2.eot?74273691#iefix) format("embedded-opentype"),
-         url(../fonts/molla0ab2.woff2?74273691) format("woff2"),
-         url(../fonts/molla0ab2.woff?74273691) format("woff"),
-         url(../fonts/molla0ab2.ttf?74273691) format("truetype"),
-         url(../fonts/molla0ab2.svg?74273691#molla) format("svg");
+    src: url(/static/assets/fonts/molla0ab2.eot?74273691);
+    src: url(/static/assets/fonts/molla0ab2.eot?74273691#iefix) format("embedded-opentype"),
+         url(/static/assets/fonts/molla0ab2.woff2?74273691) format("woff2"),
+         url(/static/assets/fonts/molla0ab2.woff?74273691) format("woff"),
+         url(/static/assets/fonts/molla0ab2.ttf?74273691) format("truetype"),
+         url(/static/assets/fonts/molla0ab2.svg?74273691#molla) format("svg");
     font-weight: 400;
     font-style: normal;
 }
