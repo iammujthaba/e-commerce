@@ -547,6 +547,8 @@ def payment(request):
                 payment_record.details = "Waiting for payment."
                 payment_record.save()
         
+        customer = request.user.customer
+        
         context = {
             'items': items,
             'order': order,
@@ -555,6 +557,8 @@ def payment(request):
             'razorpay_key_id': settings.RAZORPAY_KEY_ID,
             'razorpay_order_id': payment_record.razorpay_order_id,
             'csrf_token': get_token(request),
+            'customer_name': customer.name,
+            'customer_contact': customer.contact_number,
         }
 
         return render(request, 'store/payment.html', context)
@@ -624,9 +628,10 @@ def processOrder(request):
                 order=order,
                 razorpay_order_id=razorpay_order_id,
             )
-            payment_record.payment_status='Payment Successful'
-            payment_record.amount=total
-            payment_record.details="Invalid payment signature."
+            # FIX: Mark as FAILED
+            payment_record.payment_status = 'Payment Failed' 
+            payment_record.amount = total
+            payment_record.details = "Invalid payment signature."
             payment_record.razorpay_payment_id = razorpay_payment_id
             payment_record.save()
             return JsonResponse({'success': False, 'message': 'Invalid payment signature.'})
